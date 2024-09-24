@@ -1,0 +1,5 @@
+- type: vendingMachineInventoryPricing
+  id: AllEntsPricing
+  entsPricing:
+    PowerCellMedium: 5
+    ClothingHandsGlovesColorYellow: 10

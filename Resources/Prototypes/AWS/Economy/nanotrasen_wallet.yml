@@ -1,0 +1,85 @@
+- type: entity
+  id: Thaler
+  suffix: 1 TR
+  # components:
+  # - type: Stack
+  #   count: 1
+
+- type: entity
+  parent: BaseItem
+  id: MoneyHolder
+  name: money holder
+  description: A lot of money, probably.
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: AWS/economy/moneyholder.rsi
+    layers:
+    - state: icon
+  - type: Item
+    size: Small
+    heldPrefix: default
+    shape:
+    - 0,0,1,0
+  - type: EconomyMoneyHolder
+    allowCurrency: Thaler
+    amount: 0
+
+- type: entity
+  parent: MoneyHolder
+  id: ThalerHolder
+  name: thaler holder
+  components:
+  - type: Sprite
+    sprite: AWS/economy/moneyholder.rsi
+    layers:
+    - state: icon
+  - type: EconomyMoneyHolder
+    allowCurrency: Thaler
+
+- type: entity
+  parent: MoneyHolder
+  id: AdminThalerHolder
+  name: admin thaler holder
+  components:
+  - type: Sprite
+    sprite: AWS/economy/moneyholder.rsi
+    layers:
+    - state: icon
+  - type: EconomyMoneyHolder
+    balance: 10000
+    allowCurrency: Thaler
+
+- type: currency
+  id: Thaler
+  displayName: store-currency-display-telecrystal
+  cash:
+    1: Thaler
+  canWithdraw: true
+
+- type: economyAccountIdPrototype
+  id: Nanotrasen
+  descriptior: "-"
+  prefix: "NT"
+  strik: 1
+  numbersPerStrik: 6
+
+- type: entity
+  parent: BaseItem
+  id: BankAccountNanotrasen
+  name: bank account
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/id_cards.rsi
+    layers:
+    - state: admin
+    - state: idadmin
+  - type: Item
+    size: Small
+    heldPrefix: default
+    storedRotation: -90
+  - type: EconomyBankAccount
+    allowCurrency: Thaler
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 10000
