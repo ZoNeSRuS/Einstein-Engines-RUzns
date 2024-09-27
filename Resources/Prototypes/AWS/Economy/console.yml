@@ -1,88 +1,45 @@
 - type: entity
-  id: ConsoleLog
-  parent: BaseMachinePowered
-  name: LogComp
+  parent: BaseComputer
+  id: ComputerLogs
+  name: Консоль финансовых операций
+  description: Компьютер, используемый для просмотра и анализа логов финансовых операций.
   components:
+  - type: StationAiWhitelist
   - type: Sprite
-    sprite: AWS/economy/ATM.rsi
     layers:
-      - map: ["computerLayerBody"]
-        state: ATM
-      - map: ["enum.PowerDeviceVisualLayers.Powered"]
-        state: ATM-on
-        shader: unshaded
-      - map: ["enum.WiresVisualLayers.MaintenancePanel"]
-        state: panel
-        visible: false
-  - type: GenericVisualizer
-    visuals:
-      enum.PowerDeviceVisuals.Powered:
-        enum.PowerDeviceVisualLayers.Powered:
-          True: { visible: true }
-          False: { visible: false }
-  - type: Icon
-    sprite: AWS/economy/ATM.rsi
-    state: icon
-  - type: Physics
-    bodyType: Static
-  - type: Transform
-    noRot: true
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.25,-0.45,0.25,0.45"
-        mask:
-        - MachineMask
-        layer:
-        - MachineLayer
-        density: 200
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 100
-      behaviors:
-      - !type:DoActsBehavior
-        acts: ["Breakage"]
-      - !type:EjectVendorItems
-    - trigger:
-        !type:DamageTrigger
-        damage: 200
-      behaviors:
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          SheetSteel1:
-            min: 1
-            max: 1
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalGlassBreak
-  - type: Repairable
-    doAfterDelay: 8
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: AccessReader
+    access: [[ "Command", "Security" ]]
   - type: ActivatableUI
     key: enum.EconomyLogConsoleMenuUiKey.Key
-  - type: ActivatableUIRequiresPower
   - type: UserInterface
     interfaces:
       enum.EconomyLogConsoleMenuUiKey.Key:
         type: EconomyLogConsoleBoundUserInterface
-  - type: WiresPanel
-  - type: WiresVisuals
-  - type: Anchorable
-  - type: DoAfter
-  - type: Electrified
-    enabled: false
-    usesApcPower: true
+  - type: Computer
+    board: ComputerLogsCircuitboard
   - type: PointLight
-    enabled: false
-    castShadows: false
     radius: 1.5
-  - type: LitOnPowered
-  - type: ApcPowerReceiver
-    powerLoad: 200
-  - type: Actions
-  - type: Appearance
+    energy: 1.6
+    color: "#3c5eb5"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+
+- type: entity
+  parent: [ BaseComputerCircuitboard, BaseGrandTheftContraband ]
+  id: ComputerLogsCircuitboard
+  name: Плата консоли финансовых операций
+  description: Печатная плата для консоли финансовых операций, используемая для обработки и регистрации данных о транзакциях на станции.
+  components:
+    - type: Sprite
+      state: cpu_command
+    - type: ComputerBoard
+      prototype: ComputerLogs
