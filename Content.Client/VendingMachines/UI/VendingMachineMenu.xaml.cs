@@ -121,6 +121,13 @@ namespace Content.Client.VendingMachines.UI
                 var itemName = Identity.Name(dummy, _entityManager);
                 var itemText = $"{itemName} [{entry.Amount}]";
 
+                var adjustText = "";
+                if (entry.Price > 0)
+                {
+                    adjustText = $" [{entry.Price}]";
+                }
+                itemText = $"{itemName} [{entry.Amount}]{adjustText}";
+
                 if (itemText.Length > longestEntry.Length)
                     longestEntry = itemText;
 

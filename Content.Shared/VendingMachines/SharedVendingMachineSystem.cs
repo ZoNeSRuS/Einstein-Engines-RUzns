@@ -13,7 +13,6 @@ namespace Content.Shared.VendingMachines;
 
 public abstract partial class SharedVendingMachineSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly INetManager _net = default!;
     [Dependency] protected readonly IPrototypeManager PrototypeManager = default!;
     [Dependency] protected readonly SharedAudioSystem Audio = default!;
@@ -36,7 +35,7 @@ public abstract partial class SharedVendingMachineSystem : EntitySystem
 
     public void ReCalculateEntriesPrice(EntityUid uid, VendingMachineComponent component)
     {
-        if (!_prototype.TryIndex<VendingMachineInventoryPricingPrototype>("AllEntsPricing", out var prototype))
+        if (!PrototypeManager.TryIndex<VendingMachineInventoryPricingPrototype>("AllEntsPricing", out var prototype))
             return;
         var inv = GetAllInventory(uid, component);
         foreach (var item in inv)

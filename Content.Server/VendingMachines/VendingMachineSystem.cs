@@ -26,6 +26,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Content.Shared.AWS.Economy;
 
 namespace Content.Server.VendingMachines
 {
@@ -40,6 +41,7 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly UserInterfaceSystem _userInterfaceSystem = default!;
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly SpeakOnUIClosedSystem _speakOnUIClosed = default!;
+        [Dependency] private readonly SharedPopupSystem _popup = default!;
 
         private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -61,6 +63,9 @@ namespace Content.Server.VendingMachines
             {
                 subs.Event<BoundUIOpenedEvent>(OnBoundUIOpened);
                 subs.Event<VendingMachineEjectMessage>(OnInventoryEjectMessage);
+                // SS14RU
+                subs.Event<VendingMachineSelectMessage>(OnSelectMessage);
+                // SS14RU
             });
 
             SubscribeLocalEvent<VendingMachineComponent, VendingMachineSelfDispenseEvent>(OnSelfDispense);
@@ -68,6 +73,24 @@ namespace Content.Server.VendingMachines
             SubscribeLocalEvent<VendingMachineComponent, RestockDoAfterEvent>(OnDoAfter);
 
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
+        }
+
+        private void OnSelectMessage(EntityUid uid, VendingMachineComponent component, VendingMachineSelectMessage args)
+        {
+            var entry = GetEntry(uid, args.ID, args.Type, component);
+            if (!TryComp<EconomyBankTerminalComponent>(uid, out var economyBankTerminalComponent) || HasComp<EmaggedComponent>(uid) || (entry is not null && entry.Price == 0))
+            {
+                OnInventoryEjectMessage(uid, component, new VendingMachineEjectMessage(args.Type, args.ID) { Actor = args.Actor });
+                return;
+            }
+            if (economyBankTerminalComponent is not null && entry is not null)
+            {
+                economyBankTerminalComponent.Amount = entry.Price;
+                component.SelectedItemInventoryType = args.Type;
+                component.SelectedItemId = args.ID;
+
+                _popup.PopupEntity(Loc.GetString("economybanksystem-vending-insertcard"), uid);
+            }
         }
 
         private void OnComponentMapInit(EntityUid uid, VendingMachineComponent component, MapInitEvent args)
