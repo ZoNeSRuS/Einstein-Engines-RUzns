@@ -57,7 +57,7 @@
     1: Thaler
   canWithdraw: true
 
-- type: economyAccountIdPrototype
+- type: economyAccountId
   id: Nanotrasen
   descriptior: "-"
   prefix: "NT"

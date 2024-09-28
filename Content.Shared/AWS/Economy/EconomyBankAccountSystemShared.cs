@@ -24,7 +24,6 @@ namespace Content.Shared.AWS.Economy
         [Dependency] private readonly INetManager _netManager = default!;
         [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
         [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
-        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly IRobustRandom _robustRandom = default!;
         [Dependency] private readonly SharedUserInterfaceSystem _userInterfaceSystem = default!;
 
@@ -34,7 +33,6 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankTerminalComponent, ExaminedEvent>(OnBankTerminalExamine);
 
             SubscribeLocalEvent<EconomyMoneyHolderComponent, ExaminedEvent>(OnMoneyHolderExamine);
-            SubscribeLocalEvent<EconomyBankAccountComponent, ComponentInit>(OnAccountComponentInit);
 
             SubscribeLocalEvent<EconomyBankATMComponent, ComponentInit>(OnATMComponentInit);
             SubscribeLocalEvent<EconomyBankATMComponent, ComponentRemove>(OnATMComponentRemove);
@@ -64,28 +62,6 @@ namespace Content.Shared.AWS.Economy
             args.PushMarkup(Loc.GetString("moneyholder-component-on-examine-detailed-message",
                 ("moneyName", entity.Comp.AllowCurrency),
                 ("balance", entity.Comp.Balance)));
-        }
-        private void OnAccountComponentInit(EntityUid entity, EconomyBankAccountComponent component, ComponentInit eventArgs)
-        {
-            if (_prototypeManager.TryIndex(component.AccountIdByProto, out EconomyAccountIdPrototype? proto))
-            {
-                component.AccountId = proto.Prefix;
-
-                for (int strik = 0; strik < proto.Strik; strik++)
-                {
-                    string formedStrik = "";
-
-                    for (int num = 0; num < proto.NumbersPerStrik; num++)
-                    {
-                        formedStrik += _robustRandom.Next(0, 10);
-                    }
-
-                    component.AccountId = component.AccountId.Length == 0 ? formedStrik : component.AccountId + proto.Descriptior + formedStrik;
-                }
-            }
-
-            if (TryComp<IdCardComponent>(entity, out var idCardComponent))
-                component.AccountName = idCardComponent.FullName ?? component.AccountName;
         }
         private void OnATMComponentInit(EntityUid uid, EconomyBankATMComponent atm, ComponentInit args)
         {

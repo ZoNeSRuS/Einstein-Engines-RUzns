@@ -10,25 +10,60 @@ using Content.Shared.Emag.Systems;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Random;
+using Robust.Shared.Prototypes;
+using Content.Shared.Access.Components;
+using Content.Server.Access.Components;
 
 namespace Content.Server.AWS.Economy
 {
     public sealed class EconomyBankAccountSystem : EconomyBankAccountSystemShared
     {
+        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
         [Dependency] private readonly IRobustRandom _robustRandom = default!;
         [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
         [Dependency] private readonly VendingMachineSystem _vendingMachine = default!;
         [Dependency] private readonly INetManager _netManager = default!;
         [Dependency] private readonly PopupSystem _popupSystem = default!;
+
         public override void Initialize()
         {
             SubscribeLocalEvent<EconomyBankTerminalComponent, InteractUsingEvent>(OnTerminalInteracted);
 
-            SubscribeLocalEvent<EconomyBankATMComponent, GotEmaggedEvent>(OnEmagged);
+            SubscribeLocalEvent<EconomyBankATMComponent, GotEmaggedEvent>(OnATMEmagged);
             SubscribeLocalEvent<EconomyBankATMComponent, InteractUsingEvent>(OnATMInteracted);
+
+            SubscribeLocalEvent<EconomyBankAccountComponent, ComponentInit>(OnAccountComponentInit);
         }
 
-        private void OnEmagged(EntityUid uid, EconomyBankATMComponent component, ref GotEmaggedEvent args)
+        private void OnAccountComponentInit(EntityUid entity, EconomyBankAccountComponent component, ComponentInit eventArgs)
+        {
+            if (_prototypeManager.TryIndex(component.AccountIdByProto, out EconomyAccountIdPrototype? proto))
+            {
+                component.AccountId = proto.Prefix;
+
+                for (int strik = 0; strik < proto.Strik; strik++)
+                {
+                    string formedStrik = "";
+
+                    for (int num = 0; num < proto.NumbersPerStrik; num++)
+                    {
+                        formedStrik += _robustRandom.Next(0, 10);
+                    }
+
+                    component.AccountId = component.AccountId.Length == 0 ? formedStrik : component.AccountId + proto.Descriptior + formedStrik;
+                }
+            }
+
+            if (TryComp<IdCardComponent>(entity, out var idCardComponent))
+                component.AccountName = idCardComponent.FullName ?? component.AccountName;
+            if (TryComp<PresetIdCardComponent>(entity, out var presetIdCardComponent))
+                if (_prototypeManager.TryIndex<EconomySallariesPrototype>("NanotrasenDefaultSallaries", out var sallariesPrototype)
+                    && presetIdCardComponent.JobName is not null)
+                    if (sallariesPrototype.Jobs.TryGetValue(presetIdCardComponent.JobName.Value, out var entry))
+                        component.Balance = (ulong)(entry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
+        }
+
+        private void OnATMEmagged(EntityUid uid, EconomyBankATMComponent component, ref GotEmaggedEvent args)
         {
             if (HasComp<EmaggedComponent>(uid) || args.Handled)
                 return;
@@ -127,8 +162,9 @@ namespace Content.Server.AWS.Economy
                 return;
             }
 
-            if (_netManager.IsServer)
-                _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", FindAccountById(component.LinkedAccount)!.AllowCurrency)), uid, type: PopupType.Medium);
+            component.Amount = 0;
+
+            _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", FindAccountById(component.LinkedAccount)!.AllowCurrency)), uid, type: PopupType.Medium);
         }
     }
 }

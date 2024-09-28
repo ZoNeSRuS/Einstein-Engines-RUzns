@@ -2,7 +2,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Shared.AWS.Economy
 {
-    [Prototype("economyAccountIdPrototype")]
+    [Prototype("economyAccountId")]
     public sealed partial class EconomyAccountIdPrototype : IPrototype
     {
         [IdDataField]

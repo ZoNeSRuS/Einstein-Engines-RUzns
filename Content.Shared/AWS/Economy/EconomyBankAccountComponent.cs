@@ -34,6 +34,10 @@ namespace Content.Shared.AWS.Economy
         [AutoNetworkedField]
         public bool Blocked = false;
 
+        [ViewVariables(VVAccess.ReadWrite), DataField]
+        [AutoNetworkedField]
+        public bool CanReachPayDay = true;
+
         [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public List<EconomyBankAccountLogField> Logs = new();

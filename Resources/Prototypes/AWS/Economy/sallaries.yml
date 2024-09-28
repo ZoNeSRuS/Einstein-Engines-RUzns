@@ -1,0 +1,6 @@
+- type: economySallaries
+  id: NanotrasenDefaultSallaries
+  jobs:
+    Captain:
+      startMoney: 500
+      sallary: 1000
