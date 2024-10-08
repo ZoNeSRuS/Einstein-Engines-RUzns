@@ -83,3 +83,91 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 10000
+
+# - type: entity
+#   parent: IDCardStandard
+#   id: IDCardNT
+#   name: passenger ID card
+#   components:
+#   - type: EconomyBankAccount
+#     allowCurrency: Thaler
+#     accountIdByProto: Nanotrasen
+#     moneyHolderEntId: ThalerHolder
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Engineering
+  name: Платёжный счет "Инженерного отдела"
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Engineering
+    allowCurrency: Thaler
+    AccountName: Инженерный отдел
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 500
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Service
+  name: Платёжный счет "Сервисного отдела"
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Service
+    allowCurrency: Thaler
+    AccountName: Сервисный отдел
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 250
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Security
+  name: Платёжный счет "Службы безопасности"
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Security
+    allowCurrency: Thaler
+    AccountName: Служба безопасности
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 500
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Medical
+  name: Платёжный счет "Медицинского отдела"
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Medical
+    allowCurrency: Thaler
+    AccountName: Медицинский отдел
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 500
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Science
+  name: Платёжный счет "Научного отдела"
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Science
+    allowCurrency: Thaler
+    AccountName: Научный отдел
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 500
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Cargo
+  name: Платёжный счет "Отдела снабжения"
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Cargo
+    allowCurrency: Thaler
+    AccountName: Карго отдел
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 500
