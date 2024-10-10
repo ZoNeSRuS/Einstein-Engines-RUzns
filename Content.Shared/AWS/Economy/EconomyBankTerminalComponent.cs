@@ -13,9 +13,12 @@ namespace Content.Shared.AWS.Economy
         [AutoNetworkedField]
         public string LinkedAccount = "NO LINK TO ACCOUNT";
 
-        [ViewVariables(VVAccess.ReadWrite), DataField]
+        [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public ulong Amount = 0;
+
+        [ViewVariables(VVAccess.ReadWrite)]
+        public string Reason = string.Empty;
 
         [ViewVariables(VVAccess.ReadWrite), DataField]
         public bool AllowUiEdit = false;

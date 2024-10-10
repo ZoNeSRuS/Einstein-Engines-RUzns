@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.Access.Systems;
 using Content.Server.DetailExaminable;
 using Content.Server.Humanoid;
@@ -51,6 +51,9 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
     [Dependency] private readonly MetaDataSystem _metaSystem = default!;
     [Dependency] private readonly PdaSystem _pdaSystem = default!;
     [Dependency] private readonly SharedAccessSystem _accessSystem = default!;
+    // SS14RU
+    [Dependency] private readonly AWS.Economy.EconomyBankAccountSystem _bankAccountSystem = default!;
+    // SS14RU
 
     private bool _randomizeCharacters;
 
@@ -247,6 +250,11 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
 
         if (pdaComponent != null)
             _pdaSystem.SetOwner(idUid.Value, pdaComponent, entity, characterName);
+
+        // SS14RU
+        if (TryComp<Shared.AWS.Economy.EconomyBankAccountComponent>(cardId, out var economyBankAccount))
+            _bankAccountSystem.TryActivate((cardId, economyBankAccount));
+        // SS14RU
     }
 
 

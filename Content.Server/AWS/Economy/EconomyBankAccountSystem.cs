@@ -13,6 +13,7 @@ using Robust.Shared.Random;
 using Robust.Shared.Prototypes;
 using Content.Shared.Access.Components;
 using Content.Server.Access.Components;
+using JetBrains.Annotations;
 
 namespace Content.Server.AWS.Economy
 {
@@ -32,35 +33,50 @@ namespace Content.Server.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, GotEmaggedEvent>(OnATMEmagged);
             SubscribeLocalEvent<EconomyBankATMComponent, InteractUsingEvent>(OnATMInteracted);
 
-            SubscribeLocalEvent<EconomyBankAccountComponent, ComponentInit>(OnAccountComponentInit);
+            /*SubscribeLocalEvent<EconomyBankAccountComponent, ComponentStartup>(OnAccountComponentStartup);*/
         }
 
-        private void OnAccountComponentInit(EntityUid entity, EconomyBankAccountComponent component, ComponentInit eventArgs)
+        private string GenerateAccountId(string prefix, uint strik, uint numbersPerStrik, string? descriptor)
         {
-            if (_prototypeManager.TryIndex(component.AccountIdByProto, out EconomyAccountIdPrototype? proto))
+            var res = prefix;
+
+            for (int i = 0; i < strik; i++)
             {
-                component.AccountId = proto.Prefix;
+                string formedStrik = "";
 
-                for (int strik = 0; strik < proto.Strik; strik++)
+                for (int num = 0; num < numbersPerStrik; num++)
                 {
-                    string formedStrik = "";
-
-                    for (int num = 0; num < proto.NumbersPerStrik; num++)
-                    {
-                        formedStrik += _robustRandom.Next(0, 10);
-                    }
-
-                    component.AccountId = component.AccountId.Length == 0 ? formedStrik : component.AccountId + proto.Descriptior + formedStrik;
+                    formedStrik += _robustRandom.Next(0, 10);
                 }
+
+                res = res.Length == 0 ? formedStrik : res + descriptor + formedStrik;
             }
 
+            return res;
+        }
+
+        [PublicAPI]
+        public bool TryActivate(Entity<EconomyBankAccountComponent> entity)
+        {
+            if (!_prototypeManager.TryIndex(entity.Comp.AccountIdByProto, out EconomyAccountIdPrototype? proto))
+                return false;
+
+            entity.Comp.AccountId = GenerateAccountId(proto.Prefix, proto.Strik, proto.NumbersPerStrik, proto.Descriptior);
+
             if (TryComp<IdCardComponent>(entity, out var idCardComponent))
-                component.AccountName = idCardComponent.FullName ?? component.AccountName;
+                entity.Comp.AccountName = idCardComponent.FullName ?? entity.Comp.AccountName;
             if (TryComp<PresetIdCardComponent>(entity, out var presetIdCardComponent))
                 if (_prototypeManager.TryIndex<EconomySallariesPrototype>("NanotrasenDefaultSallaries", out var sallariesPrototype)
                     && presetIdCardComponent.JobName is not null)
                     if (sallariesPrototype.Jobs.TryGetValue(presetIdCardComponent.JobName.Value, out var entry))
-                        component.Balance = (ulong)(entry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
+                        entity.Comp.Balance = (ulong)(entry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
+            if (presetIdCardComponent is not null && idCardComponent is not null)
+            {
+                entity.Comp.Activated = true;
+                return true;
+            }
+
+            return false;
         }
 
         private void OnATMEmagged(EntityUid uid, EconomyBankATMComponent component, ref GotEmaggedEvent args)
@@ -100,7 +116,7 @@ namespace Content.Server.AWS.Economy
             var amount = economyMoneyHolderComponent.Balance;
             var insertedAccountComponent = GetATMInsertedAccount(component);
 
-            if (TrySendMoney(economyMoneyHolderComponent, GetATMInsertedAccount(component), amount, out var error))
+            if (TrySendMoney(economyMoneyHolderComponent, insertedAccountComponent, amount, out var error))
             {
                 if (_netManager.IsServer)
                     _popupSystem.PopupEntity(Loc.GetString("economybanksystem-atm-moneyentering"), uid, type: PopupType.Medium);

@@ -43,6 +43,10 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly SpeakOnUIClosedSystem _speakOnUIClosed = default!;
         [Dependency] private readonly SharedPopupSystem _popup = default!;
 
+        // SS14RU
+        [Dependency] private readonly AWS.Economy.EconomyBankAccountSystem _bankAccountSystem = default!;
+        // SS14RU
+
         private const float WallVendEjectDistanceFromWall = 1f;
 
         public override void Initialize()
@@ -85,11 +89,11 @@ namespace Content.Server.VendingMachines
             }
             if (economyBankTerminalComponent is not null && entry is not null)
             {
-                economyBankTerminalComponent.Amount = entry.Price;
+                _bankAccountSystem.UpdateTerminal((uid, economyBankTerminalComponent),
+                    entry.Price,
+                    Loc.GetString("economyBankTerminal-component-vending-reason", ("itemName", args.ID)));
                 component.SelectedItemInventoryType = args.Type;
                 component.SelectedItemId = args.ID;
-
-                _popup.PopupEntity(Loc.GetString("economybanksystem-vending-insertcard"), uid);
             }
         }
 

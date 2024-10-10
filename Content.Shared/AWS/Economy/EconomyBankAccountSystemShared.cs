@@ -53,9 +53,11 @@ namespace Content.Shared.AWS.Economy
                 args.PushMarkup(Loc.GetString("economyBankTerminal-component-on-examine-pay-for-ifmorethanzero",
                 ("amount", comp.Amount),
                 ("currencyName", comp.AllowCurrency)));
-                return;
             }
-            args.PushMarkup(Loc.GetString("economyBankTerminal-component-on-examine-pay-for-iflessthanzero"));
+            else args.PushMarkup(Loc.GetString("economyBankTerminal-component-on-examine-pay-for-iflessthanzero"));
+
+            if (comp.Reason != string.Empty)
+                args.PushMarkup(Loc.GetString("economyBankTerminal-component-on-examine-reason", ("reason", comp.Reason)));
         }
         private void OnMoneyHolderExamine(Entity<EconomyMoneyHolderComponent> entity, ref ExaminedEvent args)
         {
@@ -236,17 +238,49 @@ namespace Content.Shared.AWS.Economy
         }
 
         [PublicAPI]
-        public Dictionary<string, EconomyBankAccountComponent> GetAccounts()
+        public void UpdateTerminal(Entity<EconomyBankTerminalComponent> entity, ulong amount, string? reason)
+        {
+            if (amount != 0)
+                _popupSystem.PopupPredicted(Loc.GetString("economybanksystem-vending-insertcard"), entity, null);
+
+            entity.Comp.Amount = amount;
+            entity.Comp.Reason = reason is null ? string.Empty : reason;
+
+            _entManager.Dirty(entity);
+        }
+
+        [PublicAPI]
+        public Dictionary<string, EconomyBankAccountComponent> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.Activated)
         {
             Dictionary<string, EconomyBankAccountComponent> list = new();
 
             var accountsEnum = AllEntityQuery<EconomyBankAccountComponent>();
             while (accountsEnum.MoveNext(out var comp))
             {
-                list.Add(comp.AccountId, comp);
+                switch (flag)
+                {
+                    case EconomyBankAccountMask.Activated:
+                        if (comp.Activated)
+                            list.Add(comp.AccountId, comp);
+                        break;
+                    case EconomyBankAccountMask.ActivatedBlocked:
+                        if (comp.Activated && comp.Blocked)
+                            list.Add(comp.AccountId, comp);
+                        break;
+                    case EconomyBankAccountMask.ActivatedNotBlocked:
+                        if (comp.Activated && !comp.Blocked)
+                            list.Add(comp.AccountId, comp);
+                        break;
+                }
             }
 
             return list;
         }
+    }
+    public enum EconomyBankAccountMask
+    {
+        Activated,
+        ActivatedBlocked,
+        ActivatedNotBlocked,
     }
 }
