@@ -29,6 +29,7 @@
   parent: MoneyHolder
   id: ThalerHolder
   name: thaler holder
+  suffix: Economy
   components:
   - type: Sprite
     sprite: AWS/economy/moneyholder.rsi
@@ -41,6 +42,7 @@
   parent: MoneyHolder
   id: AdminThalerHolder
   name: admin thaler holder
+  suffix: Economy
   components:
   - type: Sprite
     sprite: AWS/economy/moneyholder.rsi
@@ -68,6 +70,7 @@
   parent: BaseItem
   id: BankAccountNanotrasen
   name: bank account
+  suffix: Economy
   components:
   - type: Sprite
     sprite: Objects/Misc/id_cards.rsi
@@ -94,10 +97,26 @@
 #     accountIdByProto: Nanotrasen
 #     moneyHolderEntId: ThalerHolder
 
+#Отделы
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Command
+  name: Платёжный счет "Станции"
+  suffix: Economy
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Command
+    allowCurrency: Thaler
+    AccountName: Станция
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 10000
+
 - type: entity
   parent: BankAccountNanotrasen
   id: IDCard-NT-Engineering
   name: Платёжный счет "Инженерного отдела"
+  suffix: Economy
   components:
   - type: EconomyBankAccount
     AccountId: NT-Engineering
@@ -105,12 +124,13 @@
     AccountName: Инженерный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 500
+    balance: 1000
 
 - type: entity
   parent: BankAccountNanotrasen
   id: IDCard-NT-Service
   name: Платёжный счет "Сервисного отдела"
+  suffix: Economy
   components:
   - type: EconomyBankAccount
     AccountId: NT-Service
@@ -118,12 +138,13 @@
     AccountName: Сервисный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 250
+    balance: 500
 
 - type: entity
   parent: BankAccountNanotrasen
   id: IDCard-NT-Security
   name: Платёжный счет "Службы безопасности"
+  suffix: Economy
   components:
   - type: EconomyBankAccount
     AccountId: NT-Security
@@ -131,12 +152,13 @@
     AccountName: Служба безопасности
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 500
+    balance: 1000
 
 - type: entity
   parent: BankAccountNanotrasen
   id: IDCard-NT-Medical
   name: Платёжный счет "Медицинского отдела"
+  suffix: Economy
   components:
   - type: EconomyBankAccount
     AccountId: NT-Medical
@@ -144,12 +166,13 @@
     AccountName: Медицинский отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 500
+    balance: 900
 
 - type: entity
   parent: BankAccountNanotrasen
   id: IDCard-NT-Science
   name: Платёжный счет "Научного отдела"
+  suffix: Economy
   components:
   - type: EconomyBankAccount
     AccountId: NT-Science
@@ -157,12 +180,13 @@
     AccountName: Научный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 500
+    balance: 1000
 
 - type: entity
   parent: BankAccountNanotrasen
   id: IDCard-NT-Cargo
   name: Платёжный счет "Отдела снабжения"
+  suffix: Economy
   components:
   - type: EconomyBankAccount
     AccountId: NT-Cargo
@@ -170,4 +194,125 @@
     AccountName: Карго отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 500
+    balance: 1000
+
+#Кассы
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Service-B
+  name: Касса Бара
+  description: Счет для оплаты напитков для клиентов.
+  suffix: Economy
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Service-B
+    allowCurrency: Thaler
+    AccountName: Касса Бара
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 250
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Service-K
+  name: Касса Кухни
+  description: Счет для оплаты продуктов для клиентов.
+  suffix: Economy
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Service-K
+    allowCurrency: Thaler
+    AccountName: Касса Кухни
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 125
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Service-H
+  name: Касса Гидропоники
+  description: Счет для оплаты семян.
+  suffix: Economy
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Service-H
+    allowCurrency: Thaler
+    AccountName: Касса Бара
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 125
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Medical-C
+  name: Касса Химии
+  description: Счет для оплаты химических реагентов.
+  suffix: Economy
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Service-C
+    allowCurrency: Thaler
+    AccountName: Касса Бара
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 100
+
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-Medical-M
+  name: Касса Меда
+  description: Счет для оплаты медицинских расходников.
+  suffix: Economy
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-Service-M
+    allowCurrency: Thaler
+    AccountName: Касса Бара
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 50
+
+#Сейфы
+- type: entity
+  parent: [GunSafe, BaseRestrictedContraband]
+  id: SafeMedical
+  name: Сейф кассы меда.
+  suffix: Economy
+  components:
+  - type: StorageFill
+    contents:
+    - id: IDCard-NT-Medical-C
+    - id: IDCard-NT-Medical-M
+  - type: AccessReader
+    access: [["Command"]]
+
+- type: entity
+  parent: [GunSafe, BaseRestrictedContraband]
+  id: SafeService
+  name: Сейф кассы Сервиса.
+  suffix: Economy
+  components:
+  - type: StorageFill
+    contents:
+    - id: IDCard-NT-Service-B
+    - id: IDCard-NT-Service-K
+    - id: IDCard-NT-Service-H
+  - type: AccessReader
+    access: [["Command"]]
+
+- type: entity
+  parent: [GunSafe, BaseRestrictedContraband]
+  id: SafeEconomy
+  name: Сейф счетов станции.
+  suffix: Economy
+  components:
+  - type: StorageFill
+    contents:
+    - id: IDCard-NT-Cargo
+    - id: IDCard-NT-Science
+    - id: IDCard-NT-Medical
+    - id: IDCard-NT-Security
+    - id: IDCard-NT-Service
+    - id: IDCard-NT-Engineering
+  - type: AccessReader
+    access: [["Command"]]
