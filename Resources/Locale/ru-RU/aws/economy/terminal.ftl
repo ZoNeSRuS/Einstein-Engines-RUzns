@@ -1,6 +1,8 @@
 economyBankTerminal-component-on-examine-connected-to = Подключен к счёту: {$accountId}
 economyBankTerminal-component-on-examine-pay-for-iflessthanzero = Оплата не выставлена
 economyBankTerminal-component-on-examine-pay-for-ifmorethanzero = Оплата на [color=#85bb65]{$amount}[/color] {$currencyName}
+economyBankTerminal-component-on-examine-reason = Оплата за: {$reason}
+economyBankTerminal-component-vending-reason = Покупка {$itemName}
 ent-BaseTerminal = терминал
     .desc = Ты теперь богатый, наверное.
 ent-ServiceTerminal = терминал сервисного отдела

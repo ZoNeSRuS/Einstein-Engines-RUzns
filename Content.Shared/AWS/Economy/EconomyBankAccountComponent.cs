@@ -30,11 +30,15 @@ namespace Content.Shared.AWS.Economy
         [AutoNetworkedField]
         public string AccountName = "UNEXPECTED USER";
 
-        [ViewVariables(VVAccess.ReadWrite), DataField]
+        [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public bool Blocked = false;
 
-        [ViewVariables(VVAccess.ReadWrite), DataField]
+        [ViewVariables(VVAccess.ReadWrite)]
+        [AutoNetworkedField]
+        public bool Activated = false;
+
+        [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public bool CanReachPayDay = true;
 
