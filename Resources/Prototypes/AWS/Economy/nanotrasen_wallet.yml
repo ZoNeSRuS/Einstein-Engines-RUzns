@@ -196,6 +196,21 @@
     moneyHolderEntId: ThalerHolder
     balance: 1000
 
+- type: entity
+  parent: BankAccountNanotrasen
+  id: IDCard-NT-CentCom
+  name: Платежный счет "Центального Командования"
+  description: ТВОЙ БОГ
+  suffix: Economy
+  components:
+  - type: EconomyBankAccount
+    AccountId: NT-CentCom
+    allowCurrency: Thaler
+    AccountName: Станция
+    accountIdByProto: Nanotrasen
+    moneyHolderEntId: ThalerHolder
+    balance: 999999999
+
 #Кассы
 - type: entity
   parent: BankAccountNanotrasen
@@ -316,3 +331,15 @@
     - id: IDCard-NT-Engineering
   - type: AccessReader
     access: [["Command"]]
+
+- type: entity
+  parent: [GunSafe, BaseRestrictedContraband]
+  id: SafeCentCom
+  name: Сейф счета ЦК.
+  suffix: Economy
+  components:
+  - type: StorageFill
+    contents:
+    - id: IDCard-NT-CentCom
+  - type: AccessReader
+    access: [["No"]]
