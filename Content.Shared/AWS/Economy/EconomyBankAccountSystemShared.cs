@@ -31,6 +31,7 @@ namespace Content.Shared.AWS.Economy
         {
             base.Initialize();
             SubscribeLocalEvent<EconomyBankTerminalComponent, ExaminedEvent>(OnBankTerminalExamine);
+            SubscribeLocalEvent<EconomyBankTerminalComponent, EconomyTerminalMessage>(OnTerminalMessage);
 
             SubscribeLocalEvent<EconomyMoneyHolderComponent, ExaminedEvent>(OnMoneyHolderExamine);
 
@@ -40,6 +41,11 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, EntRemovedFromContainerMessage>(OnATMItemSlotChanged);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMWithdrawMessage>(OnATMWithdrawMessage);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
+        }
+
+        private void OnTerminalMessage(EntityUid uid, EconomyBankTerminalComponent comp, EconomyTerminalMessage args)
+        {
+            UpdateTerminal((uid, comp), args.Amount, args.Reason);
         }
 
         private void OnBankTerminalExamine(Entity<EconomyBankTerminalComponent> entity, ref ExaminedEvent args)
@@ -176,6 +182,9 @@ namespace Content.Shared.AWS.Economy
             _entManager.Dirty((fromAccount as Component)!);
             _entManager.Dirty(toSend);
         }
+
+/*      TODO:
+        public void AddLog(EconomyBankAccountComponent comp, )*/
 
         [PublicAPI]
         public bool TrySendMoney(IEconomyMoneyHolder fromAccount, EconomyBankAccountComponent? recipientAccount, ulong amount, [NotNullWhen(false)] out string? errorMessage)

@@ -18,6 +18,7 @@ namespace Content.Shared.AWS.Economy
         public ulong Amount = 0;
 
         [ViewVariables(VVAccess.ReadWrite)]
+        [AutoNetworkedField]
         public string Reason = string.Empty;
 
         [ViewVariables(VVAccess.ReadWrite), DataField]

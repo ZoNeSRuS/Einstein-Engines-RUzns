@@ -178,7 +178,7 @@ namespace Content.Server.AWS.Economy
                 return;
             }
 
-            component.Amount = 0;
+            UpdateTerminal((uid, component), 0, string.Empty);
 
             _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", FindAccountById(component.LinkedAccount)!.AllowCurrency)), uid, type: PopupType.Medium);
         }
