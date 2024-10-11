@@ -73,6 +73,7 @@ namespace Content.Server.AWS.Economy
             if (presetIdCardComponent is not null && idCardComponent is not null)
             {
                 entity.Comp.Activated = true;
+                Dirty(entity);
                 return true;
             }
 
