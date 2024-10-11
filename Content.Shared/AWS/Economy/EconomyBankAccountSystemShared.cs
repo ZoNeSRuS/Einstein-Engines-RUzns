@@ -205,6 +205,11 @@ namespace Content.Shared.AWS.Economy
             {
                 if (recipientAccount is not null)
                 {
+                    if (fromAccount == recipientAccount)
+                    {
+                        errorMessage = "407";
+                        return false;
+                    }
                     SendMoney(fromAccount, recipientAccount, amount);
                     return true;
                 }
