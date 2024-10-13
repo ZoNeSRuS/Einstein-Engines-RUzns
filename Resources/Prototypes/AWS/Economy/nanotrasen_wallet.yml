@@ -105,9 +105,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Command
+    accountId: NT-Command
     allowCurrency: Thaler
-    AccountName: Станция
+    accountName: Станция
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 10000
@@ -119,9 +119,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Engineering
+    accountId: NT-Engineering
     allowCurrency: Thaler
-    AccountName: Инженерный отдел
+    accountName: Инженерный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
@@ -133,9 +133,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Service
+    accountId: NT-Service
     allowCurrency: Thaler
-    AccountName: Сервисный отдел
+    accountName: Сервисный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 500
@@ -147,9 +147,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Security
+    accountId: NT-Security
     allowCurrency: Thaler
-    AccountName: Служба безопасности
+    accountName: Служба безопасности
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
@@ -161,9 +161,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Medical
+    accountId: NT-Medical
     allowCurrency: Thaler
-    AccountName: Медицинский отдел
+    accountName: Медицинский отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 900
@@ -175,9 +175,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Science
+    accountId: NT-Science
     allowCurrency: Thaler
-    AccountName: Научный отдел
+    accountName: Научный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
@@ -189,9 +189,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Cargo
+    accountId: NT-Cargo
     allowCurrency: Thaler
-    AccountName: Карго отдел
+    accountName: Карго отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
@@ -204,9 +204,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-CentCom
+    accountId: NT-CentCom
     allowCurrency: Thaler
-    AccountName: Станция
+    accountName: Станция
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 999999999
@@ -220,9 +220,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Service-B
+    accountId: NT-Service-B
     allowCurrency: Thaler
-    AccountName: Касса Бара
+    accountName: Касса Бара
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 250
@@ -235,9 +235,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Service-K
+    accountId: NT-Service-K
     allowCurrency: Thaler
-    AccountName: Касса Кухни
+    accountName: Касса Кухни
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 125
@@ -250,9 +250,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Service-H
+    accountId: NT-Service-H
     allowCurrency: Thaler
-    AccountName: Касса Бара
+    accountName: Касса Бара
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 125
@@ -265,9 +265,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Service-C
+    accountId: NT-Service-C
     allowCurrency: Thaler
-    AccountName: Касса Бара
+    accountName: Касса Бара
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 100
@@ -280,9 +280,9 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    AccountId: NT-Service-M
+    accountId: NT-Service-M
     allowCurrency: Thaler
-    AccountName: Касса Бара
+    accountName: Касса Бара
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 50
