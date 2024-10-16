@@ -111,6 +111,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 10000
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -125,6 +126,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -139,6 +141,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 500
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -153,6 +156,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -167,6 +171,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 900
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -181,6 +186,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -195,6 +201,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 1000
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -210,6 +217,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 999999999
+    activated: true
 
 #Кассы
 - type: entity
@@ -226,6 +234,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 250
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -241,6 +250,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 125
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -256,6 +266,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 125
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -271,6 +282,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 100
+    activated: true
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -286,6 +298,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 50
+    activated: true
 
 #Сейфы
 - type: entity

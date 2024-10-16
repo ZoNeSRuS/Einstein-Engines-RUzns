@@ -79,7 +79,8 @@ namespace Content.IntegrationTests.Tests
             "Reach",
             "Train",
             "Oasis",
-            "Cog"
+            "Cog",
+            "SS14RUBox"
         };
 
         /// <summary>
