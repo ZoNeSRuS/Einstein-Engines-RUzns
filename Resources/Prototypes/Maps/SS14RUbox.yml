@@ -2,7 +2,7 @@
   id: SS14RUBox
   mapName: 'SS14RU Box Station'
   mapPath: /Maps/SS14RU/box-SS14RU.yml
-  minPlayers: 50
+  minPlayers: 0
   stations:
     Boxstation:
       stationProto: StandardNanotrasenStation
