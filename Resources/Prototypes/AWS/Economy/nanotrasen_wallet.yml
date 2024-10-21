@@ -261,7 +261,7 @@
   - type: EconomyBankAccount
     accountId: NT-Service-H
     allowCurrency: Thaler
-    accountName: Касса Бара
+    accountName: Касса Гидропоники
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 125
@@ -277,7 +277,7 @@
   - type: EconomyBankAccount
     accountId: NT-Medical-C
     allowCurrency: Thaler
-    accountName: Касса Бара
+    accountName: Касса Химии
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 100
@@ -293,7 +293,7 @@
   - type: EconomyBankAccount
     accountId: NT-Medical-M
     allowCurrency: Thaler
-    accountName: Касса Бара
+    accountName: Касса Меда
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 50
