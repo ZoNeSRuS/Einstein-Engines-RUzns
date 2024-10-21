@@ -33,6 +33,7 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankTerminalComponent, ExaminedEvent>(OnBankTerminalExamine);
             SubscribeLocalEvent<EconomyBankTerminalComponent, EconomyTerminalMessage>(OnTerminalMessage);
 
+            SubscribeLocalEvent<EconomyBankAccountComponent, ComponentInit>(OnBankAccountComponentInit);
             SubscribeLocalEvent<EconomyBankAccountComponent, ExaminedEvent>(OnBankAccountExamine);
             SubscribeLocalEvent<EconomyMoneyHolderComponent, ExaminedEvent>(OnMoneyHolderExamine);
 
@@ -42,6 +43,15 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, EntRemovedFromContainerMessage>(OnATMItemSlotChanged);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMWithdrawMessage>(OnATMWithdrawMessage);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
+        }
+
+        private void OnBankAccountComponentInit(EntityUid uid, EconomyBankAccountComponent comp, ComponentInit args)
+        {
+            if (comp.ActivateOnSpawn)
+            {
+                comp.Activated = true;
+                Dirty(uid, comp);
+            }
         }
 
         private void OnBankAccountExamine(Entity<EconomyBankAccountComponent> entity, ref ExaminedEvent args)

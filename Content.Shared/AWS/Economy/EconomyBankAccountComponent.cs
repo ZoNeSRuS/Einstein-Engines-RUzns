@@ -34,6 +34,9 @@ namespace Content.Shared.AWS.Economy
         [AutoNetworkedField]
         public bool Blocked = false;
 
+        [ViewVariables(VVAccess.ReadOnly), DataField]
+        public bool ActivateOnSpawn = false;
+
         [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public bool Activated = false;

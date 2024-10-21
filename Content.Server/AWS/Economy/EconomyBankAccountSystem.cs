@@ -58,6 +58,11 @@ namespace Content.Server.AWS.Economy
         [PublicAPI]
         public bool TryActivate(Entity<EconomyBankAccountComponent> entity)
         {
+            if (entity.Comp.ActivateOnSpawn)
+            {
+                entity.Comp.Activated = true;
+                return true;
+            }
             if (!_prototypeManager.TryIndex(entity.Comp.AccountIdByProto, out EconomyAccountIdPrototype? proto))
                 return false;
 
