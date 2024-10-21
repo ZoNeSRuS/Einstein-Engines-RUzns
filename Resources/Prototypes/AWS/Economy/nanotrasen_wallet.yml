@@ -234,6 +234,7 @@
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     balance: 250
+    activateOnSpawn: true
 
 - type: entity
   parent: BankAccountNanotrasen
