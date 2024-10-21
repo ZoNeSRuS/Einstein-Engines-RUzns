@@ -275,7 +275,7 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Service-C
+    accountId: NT-Medical-C
     allowCurrency: Thaler
     accountName: Касса Бара
     accountIdByProto: Nanotrasen
@@ -291,7 +291,7 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Service-M
+    accountId: NT-Medical-M
     allowCurrency: Thaler
     accountName: Касса Бара
     accountIdByProto: Nanotrasen
