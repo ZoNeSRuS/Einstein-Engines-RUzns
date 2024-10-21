@@ -213,10 +213,10 @@
   - type: EconomyBankAccount
     accountId: NT-CentCom
     allowCurrency: Thaler
-    accountName: Станция
+    accountName: Ценком
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 999999999
+    balance: 18446744073709524615
     activateOnSpawn: true
 
 #Кассы
@@ -355,4 +355,4 @@
     contents:
     - id: IDCard-NT-CentCom
   - type: AccessReader
-    access: [["No"]]
+    access: [["Command"]]
