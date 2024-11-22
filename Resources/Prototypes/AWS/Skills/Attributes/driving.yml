@@ -1,0 +1,5 @@
+- type: skill
+  id: driving
+  cost: 
+    - enum.SkillLevel.NonSkilled: 0
+    - enum.SkillLevel.Skilled: 2

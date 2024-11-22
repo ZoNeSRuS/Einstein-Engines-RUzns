@@ -1,0 +1,20 @@
+- type: skillCategory
+  id: organizing
+
+- type: skillCategory
+  id: common
+
+- type: skillCategory
+  id: engineering
+
+- type: skillCategory
+  id: medicine
+
+- type: skillCategory
+  id: research
+
+- type: skillCategory
+  id: security
+
+- type: skillCategory
+  id: service

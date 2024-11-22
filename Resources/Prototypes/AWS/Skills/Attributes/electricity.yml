@@ -1,0 +1,8 @@
+- type: skill
+  id: electricity
+  cost: 
+    - enum.SkillLevel.NonSkilled: 0
+    - enum.SkillLevel.Minimum: 1
+    - enum.SkillLevel.Basic: 2
+    - enum.SkillLevel.Skilled: 4
+    - enum.SkillLevel.Expert: 6
