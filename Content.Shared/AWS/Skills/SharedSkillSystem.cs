@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Content.Shared.AWS.Skills;
 
-public abstract class SharedSkillSystem : EntitySystem
+public sealed class SharedSkillSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
