@@ -251,6 +251,19 @@
     </BoxContainer>
     <!-- Right side -->
     <PanelContainer StyleClasses="PanelBackground"> <!-- WD EDIT -->
+        <ScrollContainer VerticalExpand="True">
+            <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
+        </ScrollContainer>
+        <BoxContainer Orientation="Vertical" Margin="10">
+            <!-- Skills -->
+            <ScrollContainer VerticalExpand="True">
+                <Label Name="LeftSkillPoints"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"/>
+                <BoxContainer Name="SkillsList" Orientation="Vertical" Margin="15"/>
+            </ScrollContainer>
+        </BoxContainer>
+        <!-- Right side -->
         <BoxContainer Orientation="Vertical" VerticalExpand="True" VerticalAlignment="Center">
             <SpriteView Name="SpriteView" Scale="8 8" SizeFlagsStretchRatio="1" />
             <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">

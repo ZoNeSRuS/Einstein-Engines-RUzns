@@ -3,12 +3,14 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Administration.UI;
 using Content.Client.Guidebook;
+using Content.Client.AWS.Skills;
 using Content.Client.Humanoid;
 using Content.Client.Message;
 using Content.Client.Players.PlayTimeTracking;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Shared._White.Humanoid.Prototypes;
+using Content.Shared.AWS.Skills;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing.Components;
 using Content.Shared.Clothing.Loadouts.Prototypes;
@@ -102,6 +104,10 @@ namespace Content.Client.Lobby.UI
 
         [ValidatePrototypeId<DatasetPrototype>]
         private const string CyborgNames = "names_borg";
+
+        //SS14RU
+        private SkillPointController? _skillPointController;
+        //SS14RU
 
         public HumanoidProfileEditor(
             IClientPreferencesManager preferencesManager,
@@ -527,6 +533,14 @@ namespace Content.Client.Lobby.UI
 
             #endregion Markings
 
+            #region SS14RU-SKILLS
+
+            TabContainer.SetTabTitle(5, Loc.GetString("Навыки"));
+
+            RefreshSkills();
+
+            #endregion SS14RU-SKILLS
+
             RefreshFlavorText();
 
             #region Dummy
@@ -815,7 +829,107 @@ namespace Content.Client.Lobby.UI
             }
         }
 
+        // SS14RU
+        public void UpdateLeftSkillPoints(uint left)
+        {
+            LeftSkillPoints.Text = Loc.GetString("skills-leftskillpoints", ("leftSkillPoints", left));
+        }
+        public void RefreshSkills()
+        {
+            _skillPointController = new(30, [], null, null);
+            _skillPointController.OnRecalculateSkill += (protoId) =>
+            {
+                UpdateLeftSkillPoints(_skillPointController.CurrentPoints);
+            };
+
+            SkillsList.DisposeAllChildren();
+            var firstCategory = true;
+
+            var skillSystem = _entManager.System<SkillSystem>();
+            var skills = skillSystem.GetSkills();
+
+            skills.Sort((x, y) => string.Compare(x.ID, y.ID, StringComparison.Ordinal));
+
+            var skillGroups = skills.GroupBy(skill => skill.Category)
+                .ToDictionary(group => group.Key, group => group.ToList());
+
+            foreach (var kvp in skillGroups)
+            {
+                var categoryId = kvp.Key;
+                var categorySkills = kvp.Value;
+
+                var categoryName = Loc.GetString($"skills-category-{categoryId}");
+
+                var categoryPanel = new BoxContainer
+                {
+                    Orientation = LayoutOrientation.Vertical,
+                    Name = categoryId,
+                    ToolTip = Loc.GetString("skill-category-tooltip", ("categoryName", categoryName))
+                };
+
+                if (firstCategory)
+                    firstCategory = false;
+                else
+                    categoryPanel.AddChild(new Control
+                    {
+                        MinSize = new Vector2(0, 23),
+                    });
+
+                categoryPanel.AddChild(new Label
+                {
+                    Text = categoryName,
+                    Margin = new Thickness(5f, 0, 0, 0)
+                });
+
+                SkillsList.AddChild(categoryPanel);
+
+                foreach (var skill in categorySkills)
+                {
+                    var skillContainer = new BoxContainer()
+                    {
+                        Orientation = LayoutOrientation.Horizontal,
+                    };
+
+                    var skillLabel = new Label
+                    {
+                        Text = Loc.GetString($"skills-skillname-{skill.ID}"),
+                        Margin = new Thickness(5f, 3f, 0f, 3f)
+                    };
+
+                    skillContainer.AddChild(skillLabel);
+
+                    foreach (SkillLevel level in Enum.GetValues(typeof(SkillLevel)))
+                    {
+                        if (!_skillPointController.CanHaveSkillLevel(skill.ID, level))
+                            continue;
+
+                        var levelButton = new Button
+                        {
+                            Text = Loc.GetString($"skills-level-{level}"),
+                            Margin = new Thickness(5f, 3f, 3f, 3f),
+                        };
+
+                        levelButton.OnPressed += args =>
+                        {
+                            _skillPointController.ProcessSkill(skill.ID, level);
+                        };
+
+                        skillContainer.AddChild(levelButton);
+                    }
+
+                    categoryPanel.AddChild(skillContainer);
+                }
+            }
+
+            UpdateLeftSkillPoints(_skillPointController.CurrentPoints);
+
+        }
+        // SS14RU
         /// Refreshes all job selectors
+
+        /// <summary>
+        /// Refreshes all job selectors.
+        /// </summary>
         public void RefreshJobs()
         {
             JobList.DisposeAllChildren();
