@@ -1,5 +1,8 @@
+using Robust.Shared.GameStates;
+
 namespace Content.Shared.AWS.Skills;
 
+[RegisterComponent, NetworkedComponent]
 public sealed partial class CharacterSkillComponent : Component
 {
     [ViewVariables(VVAccess.ReadWrite)]

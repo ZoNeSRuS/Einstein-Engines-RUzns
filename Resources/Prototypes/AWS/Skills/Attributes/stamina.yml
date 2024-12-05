@@ -1,8 +1,9 @@
 - type: skill
   id: stamina
+  category: common
   cost: 
-    - enum.SkillLevel.NonSkilled: 0
-    - enum.SkillLevel.Minimum: 1
-    - enum.SkillLevel.Basic: 2
-    - enum.SkillLevel.Skilled: 4
-    - enum.SkillLevel.Expert: 6
+    enum.SkillLevel.NonSkilled: 0
+    enum.SkillLevel.Basic: 1
+    enum.SkillLevel.Trained: 2
+    enum.SkillLevel.Experienced: 4
+    enum.SkillLevel.Master: 6

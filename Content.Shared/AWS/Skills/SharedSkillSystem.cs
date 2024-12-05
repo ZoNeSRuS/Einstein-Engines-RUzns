@@ -1,13 +1,14 @@
 using Content.Shared.Humanoid;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace Content.Shared.AWS.Skills;
 
-public sealed class SharedSkillSystem : EntitySystem
+public abstract class SharedSkillSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
@@ -32,30 +33,37 @@ public sealed class SharedSkillSystem : EntitySystem
 
         if (TryComp<CharacterSkillComponent>(ent, out var comp) && comp.Container is not null)
             if (comp.Container.Skills.TryGetValue(skillName, out var skillLevel))
-                return skillLevel;
+                return (SkillLevel)skillLevel;
 
         return SkillLevel.NonSkilled;
     }
 
     [PublicAPI]
-    public ReadOnlyDictionary<ProtoId<SkillPrototype>, SkillLevel> GetSkills(EntityUid ent)
+    public Dictionary<ProtoId<SkillPrototype>, SkillLevel> GetSkills(EntityUid ent)
     {
         if (TryComp<CharacterSkillComponent>(ent, out var comp) && comp.Container is not null)
-            return comp.Container.Skills.AsReadOnly();
+        {
+            Dictionary<ProtoId<SkillPrototype>, SkillLevel> skills = new(comp.Container.Skills.Count);
 
-        return new Dictionary<ProtoId<SkillPrototype>, SkillLevel>().AsReadOnly();
+            foreach (var (key, value) in comp.Container.Skills)
+                skills[key] = (SkillLevel)value;
+
+            return skills;
+        }
+
+        return new Dictionary<ProtoId<SkillPrototype>, SkillLevel>();
     }
 
     [PublicAPI]
-    public ReadOnlyCollection<SkillCategoryPrototype> GetCategories()
+    public ImmutableArray<SkillCategoryPrototype> GetCategories()
     {
-        return _prototypeManager.GetInstances<SkillCategoryPrototype>().Values.AsReadOnly();
+        return _prototypeManager.GetInstances<SkillCategoryPrototype>().Values;
     }
 
     [PublicAPI]
-    public ReadOnlyCollection<SkillPrototype> GetSkills()
+    public ImmutableArray<SkillPrototype> GetSkills()
     {
-        return _prototypeManager.GetInstances<SkillPrototype>().Values.AsReadOnly();
+        return _prototypeManager.GetInstances<SkillPrototype>().Values;
     }
 
     [PublicAPI]

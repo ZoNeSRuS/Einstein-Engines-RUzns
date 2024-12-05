@@ -144,6 +144,15 @@
                         <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
                     </ScrollContainer>
                 </BoxContainer>
+                <BoxContainer Orientation="Vertical" Margin="10">
+                    <!-- Skills -->
+                    <ScrollContainer VerticalExpand="True">
+                        <Label Name="LeftSkillPoints"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Top"/>
+                        <BoxContainer Name="SkillsList" Orientation="Vertical" Margin="15"/>
+                    </ScrollContainer>
+                </BoxContainer>
             </TabContainer>
         </BoxContainer>
         <!-- Right side -->
