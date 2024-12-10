@@ -6,7 +6,7 @@ namespace Content.Shared.AWS.Skills;
 [Serializable, NetSerializable, DataDefinition]
 public sealed partial class SkillContainer
 {
-    [ViewVariables(VVAccess.ReadWrite), DataField(required: true)]
+    [ViewVariables(VVAccess.ReadWrite), DataField]
     public Dictionary<ProtoId<SkillPrototype>, Enum> Skills = new();
 
     [ViewVariables(VVAccess.ReadWrite), DataField]
