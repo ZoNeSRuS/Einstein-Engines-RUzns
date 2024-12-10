@@ -1,0 +1,6 @@
+- type: history
+  isDefault: true
+  id: lifestyle-Ascetic
+  name: historical-name-lifestyle-Ascetic
+  description: historical-description-lifestyle-Ascetic
+  historyType: enum.HistoryType.Lifestyle

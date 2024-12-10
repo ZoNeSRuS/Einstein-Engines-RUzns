@@ -1,12 +1,13 @@
 using Robust.Shared.Prototypes;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Content.Shared.AWS.Skills;
 
 public class SkillPointController
 {
-    public uint MaxPoints { get; set; }
-    public uint CurrentPoints { get => SumEstablishedPoints(); }
+    public int MaxPoints { get; set; }
+    public int CurrentPoints { get => SumEstablishedPoints(); }
     public Action<ProtoId<SkillPrototype>, SkillLevel>? OnRecalculateSkill;
     private SkillContainer Container { get; }
     private readonly IPrototypeManager _prototypeManager;
@@ -36,44 +37,106 @@ public class SkillPointController
         return false;
     }
 
-    public uint GetPointsForSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
+    private SkillLevel GetAnyLessThan(ProtoId<SkillPrototype> protoId, SkillLevel currentSkillLevel)
+    {
+        if (!_prototypeManager.TryIndex(protoId, out var skillProto))
+            return SkillLevel.NonSkilled;
+
+        return GetAnyLessThan(skillProto, currentSkillLevel);
+    }
+
+    private SkillLevel GetAnyLessThan(SkillPrototype skillProto, SkillLevel currentSkillLevel)
+    {
+        var mostMatched = currentSkillLevel;
+
+        foreach (var (key, value) in skillProto.Cost)
+            if ((SkillLevel)key < currentSkillLevel)
+                mostMatched = (SkillLevel)key;
+
+        return mostMatched;
+    }
+
+    private SkillLevel GetAnyHigerThan(SkillPrototype skillProto, SkillLevel currentSkillLevel)
+    {
+        foreach (var (key, value) in skillProto.Cost)
+            if ((SkillLevel)key > currentSkillLevel)
+                return (SkillLevel)key;
+
+        return currentSkillLevel;
+    }
+
+    public SkillLevel MatchMoreExistenceLevel(ProtoId<SkillPrototype> protoId, SkillLevel currentSkillLevel, SkillLevel selectedSkillLevel)
+    {
+        if (!_prototypeManager.TryIndex(protoId, out var skillProto))
+            return SkillLevel.NonSkilled;
+
+        if (skillProto.Cost.Count == 1)
+            return (SkillLevel)skillProto.Cost.First().Key;
+
+        if (currentSkillLevel > selectedSkillLevel)
+            return GetAnyLessThan(skillProto, currentSkillLevel);
+
+        if (selectedSkillLevel > currentSkillLevel)
+            return GetAnyHigerThan(skillProto, currentSkillLevel);
+
+        return currentSkillLevel;
+    }
+
+    public int GetPointsForSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
     {
         if (!_prototypeManager.TryIndex(protoId, out var skillProto))
             return 0;
 
+        if (!skillProto.Cost.TryGetValue(level, out var selectedSkillCost))
+            return 0;
+
         var currentSkillLevel = GetCurrentSkillLevel(protoId);
-        var selectedSkillCost = skillProto!.Cost[level];
 
         if (currentSkillLevel == level)
-            return selectedSkillCost;
+            return ((int)selectedSkillCost);
 
-        var currentSkillCost = skillProto!.Cost[currentSkillLevel];
+        var currentSkillCost = skillProto.Cost[currentSkillLevel];
 
-        if (currentSkillCost > selectedSkillCost)
-            return currentSkillCost - selectedSkillCost;
+        return (int)(currentSkillCost - selectedSkillCost);
 
-        return selectedSkillCost - currentSkillCost;
+        /*if (currentSkillCost > selectedSkillCost)
+            return (int)(currentSkillCost - selectedSkillCost);
+
+        return (int)(selectedSkillCost - currentSkillCost);*/
     }
 
     public void ProcessSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
     {
-        var skillCost = GetPointsForSkill(protoId, level);
+        var currentSkillLevel = GetCurrentSkillLevel(protoId);
+        var moreExistenceLevel = MatchMoreExistenceLevel(protoId, currentSkillLevel, level);
+        var skillCost = GetPointsForSkill(protoId, moreExistenceLevel);
 
-        /*if (Container.UnblockedSkillLevels.)*/
+        if (currentSkillLevel == SkillLevel.NonSkilled && level == SkillLevel.NonSkilled)
+            return;
 
-        if (CurrentPoints >= skillCost)
+        var anyLess = GetAnyLessThan(protoId, currentSkillLevel);
+
+        if (currentSkillLevel == level && currentSkillLevel != anyLess)
         {
-            AddLevelToSkill(protoId, level);
+            currentSkillLevel = anyLess;
+            SetSkillLevel(protoId, currentSkillLevel);
+            OnRecalculateSkill?.Invoke(protoId, currentSkillLevel);
+            return;
+        }
+
+        if (CurrentPoints + skillCost >= 0)
+        {
+            SetSkillLevel(protoId, level);
             OnRecalculateSkill?.Invoke(protoId, level);
         }
     }
 
-    private void AddLevelToSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
+    private void SetSkillLevel(ProtoId<SkillPrototype> protoId, SkillLevel level)
         => Container.Skills[protoId] = level;
 
-    private uint SumEstablishedPoints()
+    private int SumEstablishedPoints()
     {
-        uint currentSkillsCost = 0;
+        int currentSkillsCost = 0;
 
         foreach (var (key, value) in Container.Skills)
             currentSkillsCost += GetPointsForSkill(key, (SkillLevel)value);
@@ -82,7 +145,7 @@ public class SkillPointController
     }
 
     [Obsolete("You should do this logic in your system")]
-    public static (bool, SkillContainer?) IsValid(uint maxPoints, Dictionary<ProtoId<SkillPrototype>, List<Enum>> unblockedSkills, SkillContainer clContainer)
+    public static (bool, SkillContainer?) IsValid(int maxPoints, Dictionary<ProtoId<SkillPrototype>, List<Enum>> unblockedSkills, SkillContainer clContainer)
     {
         var skillController = new SkillPointController(maxPoints, unblockedSkills, null, clContainer);
 
@@ -92,7 +155,7 @@ public class SkillPointController
         return (false, null);
     }
 
-    public SkillPointController(uint maxPoints, Dictionary<ProtoId<SkillPrototype>, List<Enum>> unblockedSkills, IPrototypeManager? protoManager, SkillContainer? container)
+    public SkillPointController(int maxPoints, Dictionary<ProtoId<SkillPrototype>, List<Enum>> unblockedSkills, IPrototypeManager? protoManager, SkillContainer? container)
     {
         Container = container ?? new();
         MaxPoints = maxPoints;

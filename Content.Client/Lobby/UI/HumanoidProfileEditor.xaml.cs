@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Administration.UI;
 using Content.Client.Guidebook;
+using Content.Client.AWS.Historical;
 using Content.Client.AWS.Skills;
 using Content.Client.Humanoid;
 using Content.Client.Message;
@@ -10,6 +11,7 @@ using Content.Client.Players.PlayTimeTracking;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Guidebook;
 using Content.Shared._White.Humanoid.Prototypes;
+using Content.Shared.AWS.Historical;
 using Content.Shared.AWS.Skills;
 using Content.Shared.CCVar;
 using Content.Shared.Clothing.Components;
@@ -106,6 +108,7 @@ namespace Content.Client.Lobby.UI
         private const string CyborgNames = "names_borg";
 
         //SS14RU
+        private HistoricalUiStorage? _historicalUiStorage;
         private SkillPointController? _skillPointController;
         //SS14RU
 
@@ -172,7 +175,7 @@ namespace Content.Client.Lobby.UI
             SexButton.OnItemSelected += args =>
             {
                 SexButton.SelectId(args.Id);
-                SetSex((Sex) args.Id);
+                SetSex((Sex)args.Id);
             };
 
             #endregion Sex
@@ -209,10 +212,10 @@ namespace Content.Client.Lobby.UI
 
             #region Gender
 
-            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-male-text"), (int) Gender.Male);
-            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-female-text"), (int) Gender.Female);
-            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-epicene-text"), (int) Gender.Epicene);
-            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-neuter-text"), (int) Gender.Neuter);
+            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-male-text"), (int)Gender.Male);
+            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-female-text"), (int)Gender.Female);
+            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-epicene-text"), (int)Gender.Epicene);
+            PronounsButton.AddItem(Loc.GetString("humanoid-profile-editor-pronouns-neuter-text"), (int)Gender.Neuter);
 
             PronounsButton.OnItemSelected += args =>
             {
@@ -373,7 +376,7 @@ namespace Content.Client.Lobby.UI
                 ReloadProfilePreview();
             };
 
-            HairStylePicker.OnSlotAdd += delegate()
+            HairStylePicker.OnSlotAdd += delegate ()
             {
                 if (Profile is null)
                     return;
@@ -394,7 +397,7 @@ namespace Content.Client.Lobby.UI
                 ReloadProfilePreview();
             };
 
-            FacialHairPicker.OnSlotAdd += delegate()
+            FacialHairPicker.OnSlotAdd += delegate ()
             {
                 if (Profile is null)
                     return;
@@ -425,7 +428,7 @@ namespace Content.Client.Lobby.UI
             SpawnPriorityButton.OnItemSelected += args =>
             {
                 SpawnPriorityButton.SelectId(args.Id);
-                SetSpawnPriority((SpawnPriorityPreference) args.Id);
+                SetSpawnPriority((SpawnPriorityPreference)args.Id);
             };
 
             #endregion SpawnPriority
@@ -538,6 +541,10 @@ namespace Content.Client.Lobby.UI
             TabContainer.SetTabTitle(5, Loc.GetString("Навыки"));
 
             RefreshSkills();
+
+            TabContainer.SetTabTitle(6, Loc.GetString("История"));
+
+            RefreshHistorical();
 
             #endregion SS14RU-SKILLS
 
@@ -742,7 +749,7 @@ namespace Content.Client.Lobby.UI
         public void ResetToDefault()
         {
             SetProfile(
-                (HumanoidCharacterProfile?) _preferencesManager.Preferences?.SelectedCharacter,
+                (HumanoidCharacterProfile?)_preferencesManager.Preferences?.SelectedCharacter,
                 _preferencesManager.Preferences?.SelectedCharacterIndex);
         }
 
@@ -830,16 +837,168 @@ namespace Content.Client.Lobby.UI
         }
 
         // SS14RU
-        public void UpdateLeftSkillPoints(uint left)
+        private void HistoricalCheckSelectedHistories()
+        {
+            var historicalSystem = _entManager.System<HistoricalSystem>();
+            var defaultHistories = historicalSystem.GetDefaultHistories();
+            foreach (var historyType in Enum.GetValues(typeof(HistoryType)))
+            {
+                if (!_historicalUiStorage!.SelectedHistories.TryGetValue((HistoryType)historyType, out var protoId))
+                {
+                    int? id = null;
+                    for (int i = 0; i < _historicalUiStorage!.HistoryByButtonId.Count; i++)
+                    {
+                        var searchingProto = _prototypeManager.Index(_historicalUiStorage!.HistoryByButtonId[i]);
+                        if ((HistoryType)searchingProto.HistoryType == (HistoryType)historyType)
+                        {
+                            id = i;
+                            break;
+                        }
+                    }
+
+                    if (id is not null)
+                    {
+                        _historicalUiStorage!.SelectedHistories[(HistoryType)historyType] = defaultHistories[(HistoryType)historyType];
+                        var optionButton = _historicalUiStorage!.OptionButtonsByType[(HistoryType)historyType];
+                        optionButton.SelectId(id.Value);
+                    }
+                }
+            }
+
+            RefreshHistoricalDescriptions();
+        }
+        private void HistoricalSelectHistoryByButtonId(int buttonId)
+        {
+            var protoId = _historicalUiStorage!.HistoryByButtonId[buttonId];
+            var proto = _prototypeManager.Index(protoId);
+            _historicalUiStorage!.SelectedHistories[(HistoryType)proto.HistoryType] = protoId;
+        }
+        private void RefreshHistoricalDescriptions()
+        {
+            foreach (var (key, value) in _historicalUiStorage!.SelectedHistories)
+            {
+                var proto = _prototypeManager.Index(value);
+                _historicalUiStorage.DescriptionFieldForTypes[key].TextRope = new Rope.Leaf(proto.Description);
+            }
+        }
+        public void RefreshHistorical()
+        {
+            HistoricalContainer.DisposeAllChildren();
+
+            var historyByButtonId = new List<ProtoId<HistoryPrototype>>();
+            var selectedHistories = new Dictionary<HistoryType, ProtoId<HistoryPrototype>>();
+            var optionButtonsByType = new Dictionary<HistoryType, OptionButton>();
+            var descriptionFieldForTypes = new Dictionary<HistoryType, TextEdit>();
+            var typeContainers = new Dictionary<HistoryType, BoxContainer>();
+            var historicalSystem = _entManager.System<HistoricalSystem>();
+            var histories = historicalSystem.GetHistories();
+
+            OptionButton? optionButton = null;
+
+            int lastButtonId = 0;
+
+            foreach (var (key, value) in histories)
+            {
+                if (!typeContainers.TryGetValue(key, out var typeContainer))
+                {
+                    typeContainer = new BoxContainer() { Orientation = LayoutOrientation.Vertical };
+                    typeContainers[key] = typeContainer;
+
+                    var infoDescContainer = new BoxContainer() { Align = AlignMode.Center, Orientation = LayoutOrientation.Horizontal };
+
+                    infoDescContainer.AddChild(new Label() { Text = key.ToString(), HorizontalAlignment = HAlignment.Left });
+                    infoDescContainer.AddChild(new Control() { HorizontalExpand = true });
+
+                    optionButton = new OptionButton() { HorizontalAlignment = HAlignment.Right };
+                    optionButton.OnItemSelected += (args) =>
+                    {
+                        HistoricalSelectHistoryByButtonId(args.Id);
+                        RefreshHistoricalDescriptions();
+                    };
+                    optionButtonsByType[key] = optionButton;
+                    infoDescContainer.AddChild(optionButton);
+
+                    typeContainer.AddChild(infoDescContainer);
+
+                    var scrollContainer = new ScrollContainer
+                    {
+                        HorizontalExpand = true,
+                        VerticalExpand = true,
+                        HScrollEnabled = false,
+                        VScrollEnabled = true,
+                        MinSize = new Vector2(0, 60)
+                    };
+
+                    var descriptionField = new TextEdit
+                    {
+                        Editable = false,
+                        HorizontalExpand = true,
+                        TextRope = new Rope.Leaf(string.Empty),
+                        HorizontalAlignment = HAlignment.Stretch,
+                    };
+
+                    descriptionFieldForTypes[key] = descriptionField;
+
+                    scrollContainer.AddChild(descriptionField);
+                    typeContainer.AddChild(scrollContainer);
+
+                    HistoricalContainer.AddChild(typeContainer);
+                }
+
+                foreach (var protoId in value)
+                {
+                    optionButton?.AddItem(protoId, lastButtonId++);
+                    historyByButtonId.Add(protoId);
+                }
+            }
+            _historicalUiStorage = new(
+                historyByButtonId,
+                selectedHistories,
+                descriptionFieldForTypes,
+                optionButtonsByType,
+                histories
+                );
+
+            RefreshHistoricalDescriptions();
+            HistoricalCheckSelectedHistories();
+        }
+
+        private void UpdateLeftSkillPoints(int left)
         {
             LeftSkillPoints.Text = Loc.GetString("skills-leftskillpoints", ("leftSkillPoints", left));
         }
+        private void RecalculateSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
+        {
+            foreach (var child in SkillsList.Children)
+                foreach (var cont in child.Children)
+                    foreach (var btn in cont.Children)
+                    {
+                        var data = btn.GetValue(SkillControlMeta.SkillMetaProperty);
+                        if (data is not null)
+                        {
+                            if (data.SkillId == protoId)
+                            {
+                                if (data.Level <= level)
+                                {
+                                    ((Button)btn).Pressed = true;
+                                    continue;
+                                }
+                                if (data.Level >= level)
+                                {
+                                    ((Button)btn).Pressed = false;
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+        }
         public void RefreshSkills()
         {
-            _skillPointController = new(30, [], null, null);
-            _skillPointController.OnRecalculateSkill += (protoId) =>
+            _skillPointController = new(15, [], null, null);
+            _skillPointController.OnRecalculateSkill += (protoId, level) =>
             {
                 UpdateLeftSkillPoints(_skillPointController.CurrentPoints);
+                RecalculateSkill(protoId, level);
             };
 
             SkillsList.DisposeAllChildren();
@@ -853,11 +1012,8 @@ namespace Content.Client.Lobby.UI
             var skillGroups = skills.GroupBy(skill => skill.Category)
                 .ToDictionary(group => group.Key, group => group.ToList());
 
-            foreach (var kvp in skillGroups)
+            foreach (var (categoryId, categorySkills) in skillGroups)
             {
-                var categoryId = kvp.Key;
-                var categorySkills = kvp.Value;
-
                 var categoryName = Loc.GetString($"skills-category-{categoryId}");
 
                 var categoryPanel = new BoxContainer
@@ -908,6 +1064,11 @@ namespace Content.Client.Lobby.UI
                             Text = Loc.GetString($"skills-level-{level}"),
                             Margin = new Thickness(5f, 3f, 3f, 3f),
                         };
+
+                        if (level == SkillLevel.NonSkilled)
+                            levelButton.Pressed = true;
+
+                        levelButton.SetValue(SkillControlMeta.SkillMetaProperty, new SkillControlMeta(skill.ID, level));
 
                         levelButton.OnPressed += args =>
                         {
@@ -1255,38 +1416,47 @@ namespace Content.Client.Lobby.UI
             switch (skin)
             {
                 case HumanoidSkinColor.HumanToned:
-                {
-                    if (!Skin.Visible)
                     {
-                        Skin.Visible = true;
-                        RgbSkinColorContainer.Visible = false;
+                        if (!Skin.Visible)
+                        {
+                            Skin.Visible = true;
+                            RgbSkinColorContainer.Visible = false;
+                        }
+
+                        var color = SkinColor.HumanSkinTone((int)Skin.Value);
+
+                        Markings.CurrentSkinColor = color;
+                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));//
+                        break;
                     }
-
-                    var color = SkinColor.HumanSkinTone((int) Skin.Value);
-
-                    Markings.CurrentSkinColor = color;
-                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));//
-                    break;
-                }
                 case HumanoidSkinColor.Hues:
-                {
-                    if (!RgbSkinColorContainer.Visible)
                     {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
-                    }
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
 
-                    Markings.CurrentSkinColor = _rgbSkinColorSelector.Color;
-                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(_rgbSkinColorSelector.Color));
-                    break;
-                }
+                        Markings.CurrentSkinColor = _rgbSkinColorSelector.Color;
+                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(_rgbSkinColorSelector.Color));
+                        break;
+                    }
                 case HumanoidSkinColor.TintedHues:
                 case HumanoidSkinColor.TintedHuesSkin: // DeltaV - Tone blending
                 {
                     if (!RgbSkinColorContainer.Visible)
                     {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
+
+                        var color = SkinColor.TintedHues(_rgbSkinColorSelector.Color);
+
+                        Markings.CurrentSkinColor = color;
+                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                        break;
                     }
 
                     var color = skin switch // DeltaV - Tone blending
@@ -1301,11 +1471,18 @@ namespace Content.Client.Lobby.UI
                     break;
                 }
                 case HumanoidSkinColor.VoxFeathers:
-                {
-                    if (!RgbSkinColorContainer.Visible)
                     {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
+
+                        var color = SkinColor.ClosestVoxColor(_rgbSkinColorSelector.Color);
+
+                        Markings.CurrentSkinColor = color;
+                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                        break;
                     }
 
                     var color = SkinColor.ClosestVoxColor(_rgbSkinColorSelector.Color);
@@ -1552,7 +1729,7 @@ namespace Content.Client.Lobby.UI
             foreach (var (jobId, prioritySelector) in _jobPriorities)
             {
                 var priority = Profile?.JobPriorities.GetValueOrDefault(jobId, JobPriority.Never) ?? JobPriority.Never;
-                prioritySelector.Select((int) priority);
+                prioritySelector.Select((int)priority);
             }
         }
 
@@ -1579,9 +1756,9 @@ namespace Content.Client.Lobby.UI
                 SexButton.AddItem(Loc.GetString($"humanoid-profile-editor-sex-{sex.ToString().ToLower()}-text"), (int) sex);
 
             if (sexes.Contains(Profile.Sex))
-                SexButton.SelectId((int) Profile.Sex);
+                SexButton.SelectId((int)Profile.Sex);
             else
-                SexButton.SelectId((int) sexes[0]);
+                SexButton.SelectId((int)sexes[0]);
         }
 
         private void UpdateSkinColor()
@@ -1594,46 +1771,56 @@ namespace Content.Client.Lobby.UI
             switch (skin)
             {
                 case HumanoidSkinColor.HumanToned:
-                {
-                    if (!Skin.Visible)
                     {
-                        Skin.Visible = true;
-                        RgbSkinColorContainer.Visible = false;
+                        if (!Skin.Visible)
+                        {
+                            Skin.Visible = true;
+                            RgbSkinColorContainer.Visible = false;
+                        }
+
+                        Skin.Value = SkinColor.HumanSkinToneFromColor(Profile.Appearance.SkinColor);
+
+                        break;
                     }
 
                     Skin.Value = SkinColor.HumanSkinToneFromColor(Profile.Appearance.SkinColor);
                     break;
                 }
                 case HumanoidSkinColor.Hues:
-                {
-                    if (!RgbSkinColorContainer.Visible)
                     {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
-                    }
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
 
                     // Set the RGB values to the direct values otherwise
                     _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
                     break;
                 }
                 case HumanoidSkinColor.TintedHues:
-                {
-                    if (!RgbSkinColorContainer.Visible)
                     {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
-                    }
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
 
                     // Set the RGB values to the direct values otherwise
                     _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
                     break;
                 }
                 case HumanoidSkinColor.VoxFeathers:
-                {
-                    if (!RgbSkinColorContainer.Visible)
                     {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
+
+                        _rgbSkinColorSelector.Color = SkinColor.ClosestVoxColor(Profile.Appearance.SkinColor);
+
+                        break;
                     }
 
                     _rgbSkinColorSelector.Color = SkinColor.ClosestVoxColor(Profile.Appearance.SkinColor);
@@ -1683,7 +1870,7 @@ namespace Content.Client.Lobby.UI
             if (Profile == null)
                 return;
 
-            PronounsButton.SelectId((int) Profile.Gender);
+            PronounsButton.SelectId((int)Profile.Gender);
         }
 
         private void UpdateDisplayPronounsControls()
@@ -1735,7 +1922,7 @@ namespace Content.Client.Lobby.UI
             if (Profile == null)
                 return;
 
-            SpawnPriorityButton.SelectId((int) Profile.SpawnPriority);
+            SpawnPriorityButton.SelectId((int)Profile.SpawnPriority);
         }
 
         private void UpdateHeightWidthSliders()
@@ -1887,7 +2074,7 @@ namespace Content.Client.Lobby.UI
 
             // Facial hair color
             Color? facialHairColor = null;
-            if ( Profile.Appearance.FacialHairStyleId != HairStyles.DefaultFacialHairStyle &&
+            if (Profile.Appearance.FacialHairStyleId != HairStyles.DefaultFacialHairStyle &&
                 _markingManager.Markings.TryGetValue(Profile.Appearance.FacialHairStyleId, out var facialHairProto))
             {
                 if (_markingManager.CanBeApplied(Profile.Species, Profile.Sex, facialHairProto, _prototypeManager))

@@ -3,15 +3,21 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared.AWS.Skills;
 
-[Serializable, NetSerializable]
-public sealed class SkillContainer
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class SkillContainer
 {
     [ViewVariables(VVAccess.ReadWrite), DataField(required: true)]
-    public Dictionary<ProtoId<SkillPrototype>, Enum> Skills = new();                        // Enum = SkillLevel
+    public Dictionary<ProtoId<SkillPrototype>, Enum> Skills = new();
 
     [ViewVariables(VVAccess.ReadWrite), DataField]
-    public Dictionary<ProtoId<SkillPrototype>, List<Enum>> UnblockedSkillLevels = new();    // Enum = SkillLevel
+    public Dictionary<ProtoId<SkillPrototype>, List<Enum>> UnblockedSkillLevels = new();
 
     [ViewVariables(VVAccess.ReadWrite), DataField]
-    public uint AdditionalSkillPoints = 0;
+    public Dictionary<ProtoId<SkillPrototype>, List<Enum>> BlockedSkillLevels = new();
+
+    [ViewVariables(VVAccess.ReadWrite), DataField]
+    public Dictionary<ProtoId<SkillPrototype>, Enum> DefaultSkillLevels = new();
+
+    [ViewVariables(VVAccess.ReadWrite), DataField]
+    public int AdditionalSkillPoints { get; set; } = 0;
 }

@@ -1,6 +1,7 @@
 - type: skill
   id: electricity
   category: engineering
+  color: '#FFFF00'
   cost: 
     enum.SkillLevel.NonSkilled: 0
     enum.SkillLevel.Basic: 1

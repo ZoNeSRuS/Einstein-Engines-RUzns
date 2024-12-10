@@ -262,6 +262,12 @@
                        VerticalAlignment="Top"/>
                 <BoxContainer Name="SkillsList" Orientation="Vertical" Margin="15"/>
             </ScrollContainer>
+            <BoxContainer Orientation="Vertical" Margin="10">
+                     <!-- Historical -->
+                     <ScrollContainer VerticalExpand="True">
+                         <BoxContainer Name="HistoricalContainer" Orientation="Vertical" Margin="15"/>
+                     </ScrollContainer>
+            </BoxContainer>
         </BoxContainer>
         <!-- Right side -->
         <BoxContainer Orientation="Vertical" VerticalExpand="True" VerticalAlignment="Center">
