@@ -1,6 +1,9 @@
+using Robust.Shared.Serialization;
+
 namespace Content.Shared.AWS.Skills;
 
-public enum SkillLevel
+[Serializable, NetSerializable]
+public enum SkillLevel : int
 {
     NonSkilled,
     Basic,

@@ -49,6 +49,11 @@
     drawRate: 1.2 #Calculated for 5 minutes on a small cell
   - type: ToggleCellDraw
   - type: ActivatableUIRequiresPowerCell
+  - type: RequiredSkill
+    container:
+      skills:
+        electricity: enum.SkillLevel.Trained
+
 
 - type: entity
   id: HandheldHealthAnalyzerEmpty

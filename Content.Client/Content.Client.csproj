@@ -13,6 +13,11 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="AWS\Skills - Копировать\**" />
+    <EmbeddedResource Remove="AWS\Skills - Копировать\**" />
+    <None Remove="AWS\Skills - Копировать\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Nett" />
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
   </ItemGroup>
@@ -27,4 +32,7 @@
   </ItemGroup>
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
   <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />
+  <ItemGroup>
+    <AdditionalFiles Remove="AWS\Skills - Копировать\**" />
+  </ItemGroup>
 </Project>

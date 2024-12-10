@@ -1,0 +1,6 @@
+- type: history
+  isDefault: true
+  id: faction-Nanotrasen
+  name: historical-name-faction-Nanotrasen
+  description: historical-description-faction-Nanotrasen
+  historyType: enum.HistoryType.Faction

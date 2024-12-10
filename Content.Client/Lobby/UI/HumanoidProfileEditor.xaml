@@ -153,6 +153,12 @@
                         <BoxContainer Name="SkillsList" Orientation="Vertical" Margin="15"/>
                     </ScrollContainer>
                 </BoxContainer>
+                <BoxContainer Orientation="Vertical" Margin="10">
+                    <!-- Historical -->
+                    <ScrollContainer VerticalExpand="True">
+                        <BoxContainer Name="HistoricalContainer" Orientation="Vertical" Margin="15"/>
+                    </ScrollContainer>
+                </BoxContainer>
             </TabContainer>
         </BoxContainer>
         <!-- Right side -->

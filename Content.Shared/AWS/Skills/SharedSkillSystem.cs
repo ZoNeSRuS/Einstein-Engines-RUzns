@@ -1,3 +1,4 @@
+using Content.Shared.Examine;
 using Content.Shared.Humanoid;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
@@ -17,6 +18,22 @@ public abstract class SharedSkillSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        SubscribeLocalEvent<RequiredSkillComponent, ExaminedEvent>(HandleRequiredSkillExamined);
+    }
+
+    private void HandleRequiredSkillExamined(EntityUid uid, RequiredSkillComponent component, ExaminedEvent args)
+    {
+        foreach(var (key, value) in component.Container.Skills)
+        {
+            if (value is not null && (SkillLevel)value != SkillLevel.NonSkilled)
+            {
+                var proto = _prototypeManager.Index(key);
+                args.PushMarkup(Loc.GetString("skills-examie-minimal",
+                    ("skillColor", proto.Color), ("levelColor", "#00FFFF"),
+                    ("skillName", key), ("skillLevel", value)));
+            }
+        }
     }
 
     [PublicAPI]

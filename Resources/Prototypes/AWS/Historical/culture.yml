@@ -1,0 +1,6 @@
+- type: history
+  isDefault: true
+  id: culture-Earthman
+  name: historical-name-culture-Earthman
+  description: historical-description-culture-Earthman
+  historyType: enum.HistoryType.Culture
