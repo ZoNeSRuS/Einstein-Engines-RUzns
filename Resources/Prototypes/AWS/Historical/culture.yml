@@ -4,3 +4,20 @@
   name: historical-name-culture-Earthman
   description: historical-description-culture-Earthman
   historyType: enum.HistoryType.Culture
+
+- type: history
+  id: culture-Marsman
+  name: historical-name-culture-Marsman
+  description: historical-description-culture-Marsman
+  historyType: enum.HistoryType.Culture
+  container:
+    blockedSkillLevels:
+      driving: [enum.SkillLevel.Experienced]
+
+- type: history
+  id: culture-Lunaman
+  name: historical-name-culture-Lunaman
+  description: historical-description-culture-Lunaman
+  historyType: enum.HistoryType.Culture
+  container:
+    additionalSkillPoints: 5
