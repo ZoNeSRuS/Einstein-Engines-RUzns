@@ -1,14 +1,14 @@
 - type: history
   isDefault: true
   id: culture-Earthman
-  name: historical-name-culture-Earthman
-  description: historical-description-culture-Earthman
+  name: historical-name-Culture-Earthman
+  description: historical-description-Culture-Earthman
   historyType: enum.HistoryType.Culture
 
 - type: history
   id: culture-Marsman
-  name: historical-name-culture-Marsman
-  description: historical-description-culture-Marsman
+  name: historical-name-Culture-Marsman
+  description: historical-description-Culture-Marsman
   historyType: enum.HistoryType.Culture
   container:
     blockedSkillLevels:
@@ -16,8 +16,8 @@
 
 - type: history
   id: culture-Lunaman
-  name: historical-name-culture-Lunaman
-  description: historical-description-culture-Lunaman
+  name: historical-name-Culture-Lunaman
+  description: historical-description-Culture-Lunaman
   historyType: enum.HistoryType.Culture
   container:
     additionalSkillPoints: 5
