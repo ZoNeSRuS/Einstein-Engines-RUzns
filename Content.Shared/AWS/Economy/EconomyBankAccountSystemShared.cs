@@ -41,8 +41,8 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, ComponentRemove>(OnATMComponentRemove);
             SubscribeLocalEvent<EconomyBankATMComponent, EntInsertedIntoContainerMessage>(OnATMItemSlotChanged);
             SubscribeLocalEvent<EconomyBankATMComponent, EntRemovedFromContainerMessage>(OnATMItemSlotChanged);
-            SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMWithdrawMessage>(OnATMWithdrawMessage);
-            SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
+            //SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMWithdrawMessage>(OnATMWithdrawMessage);
+            //SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
         }
 
         private void OnBankAccountComponentInit(EntityUid uid, EconomyBankAccountComponent comp, ComponentInit args)
@@ -110,143 +110,6 @@ namespace Content.Shared.AWS.Economy
             UpdateATMUserInterface((uid, atm));
         }
 
-        private void OnATMWithdrawMessage(EntityUid uid, EconomyBankATMComponent atm, EconomyBankATMWithdrawMessage args)
-        {
-            var bankAccount = GetATMInsertedAccount(atm);
-            if (bankAccount is null)
-                return;
-
-            string? error;
-
-            TryWithdraw(bankAccount, atm, args.Amount, out error);
-            UpdateATMUserInterface((uid, atm), error);
-        }
-
-        private void OnATMTransferMessage(EntityUid uid, EconomyBankATMComponent atm, EconomyBankATMTransferMessage args)
-        {
-            var bankAccount = GetATMInsertedAccount(atm);
-            if (bankAccount is null)
-                return;
-
-            string? error;
-
-            TrySendMoney(bankAccount, args.RecipientAccountId, args.Amount, out error);
-            UpdateATMUserInterface((uid, atm), error);
-        }
-
-        [PublicAPI]
-        public EconomyBankAccountComponent? FindAccountById(string id)
-        {
-            var accounts = GetAccounts();
-            if (accounts.TryGetValue(id, out var comp))
-                return comp;
-
-            return null;
-        }
-
-        private void Withdraw(EconomyBankAccountComponent component, EconomyBankATMComponent atm, ulong sum)
-        {
-            component.Balance -= sum;
-            var pos = Comp<TransformComponent>(atm.Owner).MapPosition;
-            DropMoneyHandler(component.MoneyHolderEntId, sum, pos);
-
-            component.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-withdraw",
-                ("amount", sum), ("currencyName", component.AllowCurrency))));
-
-            _entManager.Dirty(component);
-        }
-
-        [PublicAPI]
-        public bool TryWithdraw(EconomyBankAccountComponent component, EconomyBankATMComponent atm, ulong sum, [NotNullWhen(false)] out string? errorMessage)
-        {
-            errorMessage = "";
-            if (sum > 0 && component.Balance >= sum)
-            {
-                Withdraw(component, atm, sum);
-                return true;
-            }
-            errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
-            return false;
-        }
-
-        [PublicAPI]
-        public Entity<EconomyMoneyHolderComponent> DropMoneyHandler(EntProtoId<EconomyMoneyHolderComponent> entId, ulong amount, MapCoordinates pos)
-        {
-            var ent = Spawn(entId, pos);
-
-            var moneyHolderComp = Comp<EconomyMoneyHolderComponent>(ent);
-            moneyHolderComp.Balance = amount;
-
-            _entManager.Dirty(moneyHolderComp);
-
-            return (ent, moneyHolderComp);
-        }
-
-        private void SendMoney(IEconomyMoneyHolder fromAccount, EconomyBankAccountComponent toSend, ulong amount)
-        {
-            fromAccount.Balance -= amount;
-            toSend.Balance += amount;
-
-            string senderAccoutId = "UNEXPECTED";
-            if (fromAccount is EconomyBankAccountComponent)
-            {
-                var fromAccountComponent = (fromAccount as EconomyBankAccountComponent)!;
-                fromAccountComponent.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-send-to",
-                    ("amount", amount), ("currencyName", toSend.AllowCurrency), ("accountId", toSend.AccountId))));
-
-                senderAccoutId = fromAccountComponent.AccountId;
-            }
-            toSend.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-send-from",
-                    ("amount", amount), ("currencyName", toSend.AllowCurrency), ("accountId", senderAccoutId))));
-
-            _entManager.Dirty((fromAccount as Component)!);
-            _entManager.Dirty(toSend);
-        }
-
-/*      TODO:
-        public void AddLog(EconomyBankAccountComponent comp, )*/
-
-        [PublicAPI]
-        public bool TrySendMoney(IEconomyMoneyHolder fromAccount, EconomyBankAccountComponent? recipientAccount, ulong amount, [NotNullWhen(false)] out string? errorMessage)
-        {
-            errorMessage = null;
-
-            if (fromAccount.Balance >= amount)
-            {
-                if (recipientAccount is not null)
-                {
-                    if (fromAccount == recipientAccount)
-                    {
-                        errorMessage = "407";
-                        return false;
-                    }
-                    SendMoney(fromAccount, recipientAccount, amount);
-                    return true;
-                }
-
-                errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout");
-                return false;
-            }
-
-            errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
-            return false;
-        }
-
-        [PublicAPI]
-        public bool TrySendMoney(IEconomyMoneyHolder fromAccount, string recipientAccountId, ulong amount, [NotNullWhen(false)] out string? errorMessage)
-        {
-            errorMessage = null;
-
-            var recipientAccount = FindAccountById(recipientAccountId);
-            if (recipientAccount is null)
-            {
-                errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout", ("accountId", recipientAccountId));
-                return false;
-            }
-
-            return TrySendMoney(fromAccount, recipientAccount, amount, out errorMessage);
-        }
-
         [PublicAPI]
         public void UpdateATMUserInterface(Entity<EconomyBankATMComponent> entity, string? error = null)
         {
@@ -281,34 +144,6 @@ namespace Content.Shared.AWS.Economy
             entity.Comp.Reason = reason is null ? string.Empty : reason;
 
             _entManager.Dirty(entity);
-        }
-
-        [PublicAPI]
-        public Dictionary<string, EconomyBankAccountComponent> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.Activated)
-        {
-            Dictionary<string, EconomyBankAccountComponent> list = new();
-
-            var accountsEnum = AllEntityQuery<EconomyBankAccountComponent>();
-            while (accountsEnum.MoveNext(out var comp))
-            {
-                switch (flag)
-                {
-                    case EconomyBankAccountMask.Activated:
-                        if (comp.Activated)
-                            list.Add(comp.AccountId, comp);
-                        break;
-                    case EconomyBankAccountMask.ActivatedBlocked:
-                        if (comp.Activated && comp.Blocked)
-                            list.Add(comp.AccountId, comp);
-                        break;
-                    case EconomyBankAccountMask.ActivatedNotBlocked:
-                        if (comp.Activated && !comp.Blocked)
-                            list.Add(comp.AccountId, comp);
-                        break;
-                }
-            }
-
-            return list;
         }
     }
     public enum EconomyBankAccountMask

@@ -11,13 +11,14 @@ using Content.Shared.Mind;
 using Content.Shared.Roles;
 using Content.Shared.Mind.Components;
 using Content.Shared.Roles.Jobs;
+using Content.Server.AWS.Economy;
 
 namespace Content.Server.StationEvents.Events;
 
 public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComponent>
 {
     [Dependency] private readonly IEntityManager _entMan = default!;
-    [Dependency] private readonly EconomyBankAccountSystemShared _bankAccountSystem = default!;
+    [Dependency] private readonly EconomyBankAccountSystem _bankAccountSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     protected override void Started(EntityUid uid, EconomyPayDayRuleComponent ruleComponent, GameRuleComponent gameRule, GameRuleStartedEvent args)

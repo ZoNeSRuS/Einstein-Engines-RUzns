@@ -63,8 +63,8 @@
   id: Nanotrasen
   descriptior: "-"
   prefix: "NT"
-  strik: 1
-  numbersPerStrik: 6
+  streak: 1
+  numbersPerStreak: 6
 
 - type: entity
   parent: BaseItem

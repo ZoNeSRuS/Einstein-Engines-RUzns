@@ -13,9 +13,9 @@ namespace Content.Shared.AWS.Economy
         [DataField(required: false)]
         public string? Descriptior;
         [DataField(required: false)]
-        public uint Strik = 4;
+        public uint Streak = 4;
         [DataField(required: false)]
-        public uint NumbersPerStrik = 4;
+        public uint NumbersPerStreak = 4;
 
         [DataField(required: false)]
         public uint[] MinMaxSallary = {0,0};

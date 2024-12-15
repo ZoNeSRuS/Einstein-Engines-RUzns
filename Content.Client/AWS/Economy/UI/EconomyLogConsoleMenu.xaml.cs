@@ -13,17 +13,19 @@ public sealed partial class EconomyLogConsoleMenu : FancyWindow
 {
     [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
     private EconomyLogConsoleBoundUserInterface Owner { get; set; }
-    private Dictionary<string, EconomyBankAccountComponent> _accounts;
+    private Dictionary<string, EconomyBankAccountComponent> _accounts = new();
     public EconomyLogConsoleMenu(EconomyLogConsoleBoundUserInterface owner)
     {
         IoCManager.InjectDependencies(this);
         RobustXamlLoader.Load(this);
-        var economyBankAccount = _entitySystem.GetEntitySystem<EconomyBankAccountSystemShared>();
+        var economyBankAccount = _entitySystem.GetEntitySystem<EconomyBankAccountSystemClient>();
 
         LogDetails.SelectMode = ItemList.ItemListSelectMode.None;
 
         Owner = owner;
-        _accounts = economyBankAccount.GetAccounts();
+        // TODO: MAKE THIS WORK!!!!
+        //economyBankAccount.RequestBankAccounts();
+        //_accounts = economyBankAccount.CachedAccounts;
 
         FillList();
 
