@@ -82,10 +82,12 @@
     heldPrefix: default
     storedRotation: -90
   - type: EconomyBankAccount
-    allowCurrency: Thaler
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 10000
+    accountSetup:
+      generateAccountID: true
+      allowedCurrency: Thaler
+      balance: 10000
 
 # - type: entity
 #   parent: IDCardStandard
@@ -105,13 +107,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Command
-    allowCurrency: Thaler
-    accountName: Станция
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 10000
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Command
+      accountName: Станция
+      allowedCurrency: Thaler
+      balance: 10000
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -120,13 +122,14 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Engineering
-    allowCurrency: Thaler
-    accountName: Инженерный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 1000
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Engineering
+      accountName: Инженерный отдел
+      allowedCurrency: Thaler
+      balance: 1000
+    
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -135,13 +138,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Service
-    allowCurrency: Thaler
-    accountName: Сервисный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 500
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Service
+      accountName: Сервисный отдел
+      allowedCurrency: Thaler
+      balance: 500
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -165,13 +168,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Medical
-    allowCurrency: Thaler
-    accountName: Медицинский отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 900
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Medical
+      accountName: Медицинский отдел
+      allowedCurrency: Thaler
+      balance: 900
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -180,13 +183,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Science
-    allowCurrency: Thaler
-    accountName: Научный отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 1000
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Science
+      accountName: Научный отдел
+      allowedCurrency: Thaler
+      balance: 1000
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -195,13 +198,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Cargo
-    allowCurrency: Thaler
-    accountName: Карго отдел
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 1000
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Cargo
+      accountName: Карго отдел
+      allowedCurrency: Thaler
+      balance: 1000
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -211,13 +214,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-CentCom
-    allowCurrency: Thaler
-    accountName: Ценком
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 18446744073709524615
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-CentCom
+      accountName: Центком
+      allowedCurrency: Thaler
+      balance: 18446744073709524615
 
 #Кассы
 - type: entity
@@ -228,13 +231,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Service-B
-    allowCurrency: Thaler
-    accountName: Касса Бара
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 250
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Service-B
+      accountName: Касса Бара
+      allowedCurrency: Thaler
+      balance: 250
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -244,13 +247,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Service-K
-    allowCurrency: Thaler
-    accountName: Касса Кухни
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 125
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Service-K
+      accountName: Касса Кухни
+      allowedCurrency: Thaler
+      balance: 125
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -260,13 +263,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Service-H
-    allowCurrency: Thaler
-    accountName: Касса Гидропоники
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 125
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Service-H
+      accountName: Касса Гидропоники
+      allowedCurrency: Thaler
+      balance: 125
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -276,13 +279,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Medical-C
-    allowCurrency: Thaler
-    accountName: Касса Химии
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 100
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Medical-C
+      accountName: Касса Химии
+      allowedCurrency: Thaler
+      balance: 100
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -292,13 +295,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Medical-M
-    allowCurrency: Thaler
-    accountName: Касса Меда
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 50
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Medical-M
+      accountName: Касса Меда
+      allowedCurrency: Thaler
+      balance: 50
 
 #Сейфы
 - type: entity

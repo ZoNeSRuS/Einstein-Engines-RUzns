@@ -51,6 +51,7 @@ namespace Content.Shared.AWS.Economy
 
         /// <summary>
         /// Use this in prototypes for defining the account, which this card will be using (the account will be initialized on spawn).
+        /// Also, parameters beyond AccountName can be used with IDCards (if you want to setup other currency, for example).
         /// </summary>
         [ViewVariables(VVAccess.ReadOnly), DataField]
         public BankAccountSetup? AccountSetup;

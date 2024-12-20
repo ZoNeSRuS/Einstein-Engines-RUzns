@@ -23,19 +23,19 @@ public sealed class EconomyBankAccount
 
     public List<EconomyBankAccountLogField> Logs { get; set; }
 
-    public EconomyBankAccount(string accountID, string accountName = "UNEXPECTED USER",
-                              string allowedCurrency = "Thaler",
-                              ulong balance = 0, ulong penalty = 0,
-                              bool blocked = false, bool canReachPayday = true,
+    public EconomyBankAccount(string accountID, string? accountName,
+                              string? allowedCurrency,
+                              ulong? balance, ulong? penalty,
+                              bool? blocked, bool? canReachPayday,
                               List<EconomyBankAccountLogField>? logs = default)
     {
         AccountID = accountID;
-        AccountName = accountName;
-        AllowedCurrency = allowedCurrency;
-        Balance = balance;
-        Penalty = penalty;
-        Blocked = blocked;
-        CanReachPayDay = canReachPayday;
+        AccountName = accountName ?? "UNEXPECTED USER";
+        AllowedCurrency = allowedCurrency ?? "Thaler";
+        Balance = balance ?? 0;
+        Penalty = penalty ?? 0;
+        Blocked = blocked ?? false;
+        CanReachPayDay = canReachPayday ?? true;
         Logs = logs ?? [];
     }
 }

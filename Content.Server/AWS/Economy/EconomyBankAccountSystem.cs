@@ -66,7 +66,7 @@ namespace Content.Server.AWS.Economy
         }
 
         /// <summary>
-        /// Enables a card for usage.
+        /// Enables a card or a bank account for usage.
         /// </summary>
         [PublicAPI]
         public bool TryActivate(Entity<EconomyBankAccountComponent> entity)
@@ -76,25 +76,6 @@ namespace Content.Server.AWS.Economy
             //     entity.Comp.Activated = true;
             //     return true;
             // }
-
-            if (entity.Comp.AccountSetup is not null)
-            {
-                var setup = new EconomyBankAccount(entity.Comp.AccountSetup.AccountID,
-                                                   entity.Comp.AccountSetup.AccountName,
-                                                   entity.Comp.AccountSetup.AllowedCurrency,
-                                                   entity.Comp.AccountSetup.Balance,
-                                                   entity.Comp.AccountSetup.Penalty,
-                                                   entity.Comp.AccountSetup.Blocked,
-                                                   entity.Comp.AccountSetup.CanReachPayDay);
-
-                if (!_economyManager.TryAddAccount(setup))
-                    return false;
-
-                entity.Comp.AccountID = setup.AccountID;
-                entity.Comp.AccountName = setup.AccountName;
-                Dirty(entity);
-                return true;
-            }
 
             if (!_prototypeManager.TryIndex(entity.Comp.AccountIdByProto, out EconomyAccountIdPrototype? proto))
                 return false;
@@ -111,9 +92,39 @@ namespace Content.Server.AWS.Economy
                     && presetIdCardComponent.JobName is not null)
                     if (sallariesPrototype.Jobs.TryGetValue(presetIdCardComponent.JobName.Value, out var entry))
                         balance = (ulong)(entry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
+
+            if (entity.Comp.AccountSetup is { } setup && presetIdCardComponent is null && idCardComponent is null)
+            {
+                var setupID = setup.GenerateAccountID ? accountID :
+                                                        setup.AccountID;
+
+                if (setupID is null)
+                    return false;
+
+                var setupAccount = new EconomyBankAccount(setupID,
+                                                   setup.AccountName,
+                                                   setup.AllowedCurrency,
+                                                   setup.Balance,
+                                                   setup.Penalty,
+                                                   setup.Blocked,
+                                                   setup.CanReachPayDay);
+
+                if (!_economyManager.TryAddAccount(setupAccount))
+                    return false;
+
+                entity.Comp.AccountID = setupAccount.AccountID;
+                entity.Comp.AccountName = setupAccount.AccountName;
+                Dirty(entity);
+                return true;
+            }
+
             if (presetIdCardComponent is not null && idCardComponent is not null)
             {
-                var account = new EconomyBankAccount(accountID, accountName, "Thaler", balance);
+                var accountSetup = entity.Comp.AccountSetup;
+                balance = accountSetup?.Balance ?? balance;
+                var account = new EconomyBankAccount(accountID, accountName, accountSetup?.AllowedCurrency, balance,
+                                                     accountSetup?.Penalty, accountSetup?.Blocked, accountSetup?.CanReachPayDay);
+
                 if (!_economyManager.TryAddAccount(account))
                     return false;
 

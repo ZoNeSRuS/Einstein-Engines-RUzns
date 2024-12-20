@@ -6,24 +6,27 @@ namespace Content.Shared.AWS.Economy;
 [DataDefinition]
 public sealed partial class BankAccountSetup
 {
-    [DataField("accountID", required: true)]
-    public string AccountID = "NO VALUE";
+    [DataField("accountID")]
+    public string? AccountID;
+
+    [DataField("generateAccountID")]
+    public bool GenerateAccountID = false;
 
     [DataField("accountName")]
-    public string AccountName = "UNEXPECTED USER";
+    public string? AccountName;
 
     [DataField("allowedCurrency")]
-    public ProtoId<CurrencyPrototype> AllowedCurrency = "Thaler";
+    public ProtoId<CurrencyPrototype>? AllowedCurrency;
 
     [DataField("balance")]
-    public ulong Balance = 0;
+    public ulong? Balance;
 
     [DataField("penalty")]
-    public ulong Penalty = 0;
+    public ulong? Penalty;
 
     [DataField("blocked")]
-    public bool Blocked = false;
+    public bool? Blocked;
 
     [DataField("canReachPayDay")]
-    public bool CanReachPayDay = true;
+    public bool? CanReachPayDay;
 }
