@@ -416,6 +416,12 @@ namespace Content.Server.AWS.Economy
 
             if (TrySendMoney(economyMoneyHolderComponent, insertedAccountComponent, amount, out var error))
             {
+                if (insertedAccountComponent is not null && _economyManager.TryGetAccount(insertedAccountComponent.AccountID, out var account))
+                    _economyManager.AddLog(account.AccountID,
+                                           new EconomyBankAccountLogField(_gameTiming.CurTime,
+                                           Loc.GetString("economybanksystem-log-insert",
+                                           ("amount", amount), ("currencyName", account.AllowedCurrency))));
+
                 if (_netManager.IsServer)
                     _popupSystem.PopupEntity(Loc.GetString("economybanksystem-atm-moneyentering"), uid, type: PopupType.Medium);
 

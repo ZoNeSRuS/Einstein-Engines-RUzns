@@ -11,7 +11,6 @@ namespace Content.Client.AWS.Economy.UI;
 [GenerateTypedNameReferences]
 public sealed partial class EconomyLogConsoleMenu : FancyWindow
 {
-    [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
     [Dependency] private readonly IClientEconomyManager _economyManager = default!;
 
     private EconomyLogConsoleBoundUserInterface Owner { get; set; }

@@ -9,6 +9,8 @@ public sealed class ClientEconomyManager : IClientEconomyManager
 {
     [Dependency] private readonly IClientNetManager _netManager = default!;
 
+    public event EventHandler? AccountUpdateReceived;
+
     /// <summary>
     /// List of all cached accounts on this client.
     /// </summary>
@@ -71,5 +73,6 @@ public sealed class ClientEconomyManager : IClientEconomyManager
     private void AccountsUpdateMessage(MsgEconomyAccountList message)
     {
         _cachedAccounts = message.Accounts.ToFrozenDictionary();
+        AccountUpdateReceived?.Invoke(this, EventArgs.Empty);
     }
 }
