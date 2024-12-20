@@ -1,5 +1,4 @@
 using Robust.Shared.Prototypes;
-using Content.Shared.Store;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 
@@ -8,46 +7,25 @@ namespace Content.Shared.AWS.Economy
     [RegisterComponent, NetworkedComponent, AutoGenerateComponentState(true)]
     public sealed partial class EconomyBankAccountComponent : Component
     {
-        // [ViewVariables(VVAccess.ReadWrite), DataField(required: true)]
-        // public ProtoId<CurrencyPrototype> AllowCurrency = "Thaler";
         [ViewVariables(VVAccess.ReadWrite), DataField(required: true)]
         public ProtoId<EconomyAccountIdPrototype> AccountIdByProto = "Nanotrasen";
+
         [ViewVariables(VVAccess.ReadWrite), DataField(required: true)]
         public EntProtoId<EconomyMoneyHolderComponent> MoneyHolderEntId = "ThalerHolder";
 
-        // [ViewVariables(VVAccess.ReadWrite), DataField]
-        // [AutoNetworkedField]
-        // public ulong Balance { get; set; } = 0;
-        // [ViewVariables(VVAccess.ReadWrite), DataField]
-        // [AutoNetworkedField]
-        // public ulong Penalty = 0;
-
+        /// <summary>
+        /// Set this up in <cref>EconomyBankAccountSetup</cref> to define the account, which this card will be using (referring to).
+        /// </summary>
         [ViewVariables(VVAccess.ReadWrite), DataField]
         [AutoNetworkedField]
         public string AccountID = "NO VALUE";
 
+        /// <summary>
+        /// Set this up in <cref>EconomyBankAccountSetup</cref> to define the name, which this card will be using.
+        /// </summary>
         [ViewVariables(VVAccess.ReadWrite), DataField]
         [AutoNetworkedField]
         public string AccountName = "UNEXPECTED USER";
-
-        // [ViewVariables(VVAccess.ReadWrite)]
-        // [AutoNetworkedField]
-        // public bool Blocked = false;
-
-        // [ViewVariables(VVAccess.ReadOnly), DataField]
-        // public bool ActivateOnSpawn = false;
-
-        // [ViewVariables(VVAccess.ReadWrite)]
-        // [AutoNetworkedField]
-        // public bool Activated = false;
-
-        // [ViewVariables(VVAccess.ReadWrite)]
-        // [AutoNetworkedField]
-        // public bool CanReachPayDay = true;
-
-        // [ViewVariables(VVAccess.ReadWrite)]
-        // [AutoNetworkedField]
-        // public List<EconomyBankAccountLogField> Logs = new();
 
         /// <summary>
         /// Use this in prototypes for defining the account, which this card will be using (the account will be initialized on spawn).

@@ -1,5 +1,4 @@
 using System.Collections.Frozen;
-using System.Collections.ObjectModel;
 using Lidgren.Network;
 using Robust.Shared.Network;
 using Robust.Shared.Serialization;

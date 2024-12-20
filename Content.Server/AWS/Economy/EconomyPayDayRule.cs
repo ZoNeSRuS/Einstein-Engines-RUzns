@@ -1,9 +1,4 @@
-using System.Linq;
-using Content.Shared.Dataset;
-using Content.Server.Ghost.Roles.Components;
-using Content.Server.StationEvents.Components;
 using Content.Shared.GameTicking.Components;
-using Content.Shared.Random.Helpers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Shared.AWS.Economy;
@@ -22,6 +17,7 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
     [Dependency] private readonly IEconomyManager _economyManager = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+
     protected override void Started(EntityUid uid, EconomyPayDayRuleComponent ruleComponent, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         var accounts = _economyManager.GetAccounts();

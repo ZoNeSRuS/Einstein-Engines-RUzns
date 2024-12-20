@@ -9,5 +9,8 @@ public interface IClientEconomyManager : ISharedEconomyManager
     /// </summary>
     event EventHandler AccountUpdateReceived;
 
+    /// <summary>
+    /// Requests the server to send the account list.
+    /// </summary>
     void AccountUpdateRequest();
 }

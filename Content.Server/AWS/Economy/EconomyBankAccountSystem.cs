@@ -7,7 +7,6 @@ using Content.Shared.AWS.Economy;
 using Content.Server.Popups;
 using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Random;
 using Robust.Shared.Prototypes;
@@ -43,7 +42,6 @@ namespace Content.Server.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, InteractUsingEvent>(OnATMInteracted);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMWithdrawMessage>(OnATMWithdrawMessage);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
-            /*SubscribeLocalEvent<EconomyBankAccountComponent, ComponentStartup>(OnAccountComponentStartup);*/
         }
 
         private string GenerateAccountId(string prefix, uint strik, uint numbersPerStrik, string? descriptor)
@@ -71,19 +69,12 @@ namespace Content.Server.AWS.Economy
         [PublicAPI]
         public bool TryActivate(Entity<EconomyBankAccountComponent> entity)
         {
-            // if (entity.Comp.ActivateOnSpawn)
-            // {
-            //     entity.Comp.Activated = true;
-            //     return true;
-            // }
-
             if (!_prototypeManager.TryIndex(entity.Comp.AccountIdByProto, out EconomyAccountIdPrototype? proto))
                 return false;
 
             var accountID = GenerateAccountId(proto.Prefix, proto.Streak, proto.NumbersPerStreak, proto.Descriptior);
             var accountName = entity.Comp.AccountName;
             var balance = (ulong)0;
-            //entity.Comp.AccountId = GenerateAccountId(proto.Prefix, proto.Streak, proto.NumbersPerStreak, proto.Descriptior);
 
             if (TryComp<IdCardComponent>(entity, out var idCardComponent))
                 accountName = idCardComponent.FullName ?? entity.Comp.AccountName;
@@ -137,16 +128,6 @@ namespace Content.Server.AWS.Economy
             return false;
         }
 
-        // [PublicAPI]
-        // public EconomyBankAccountComponent? FindAccountById(string id)
-        // {
-        //     var accounts = GetAccounts();
-        //     if (accounts.TryGetValue(id, out var comp))
-        //         return comp;
-
-        //     return null;
-        // }
-
         private void Withdraw(EconomyBankAccountComponent component, EconomyBankATMComponent atm, ulong sum)
         {
             if (!_economyManager.TryChangeAccountBalance(component.AccountID, sum, false))
@@ -194,30 +175,6 @@ namespace Content.Server.AWS.Economy
             return (ent, moneyHolderComp);
         }
 
-        // private void SendMoney(IEconomyMoneyHolder fromAccount, EconomyBankAccountComponent toSend, ulong amount)
-        // {
-        //     fromAccount.Balance -= amount;
-        //     toSend.Balance += amount;
-
-        //     string senderAccoutId = "UNEXPECTED";
-        //     if (fromAccount is EconomyBankAccountComponent)
-        //     {
-        //         var fromAccountComponent = (fromAccount as EconomyBankAccountComponent)!;
-        //         fromAccountComponent.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-send-to",
-        //             ("amount", amount), ("currencyName", toSend.AllowCurrency), ("accountId", toSend.AccountID))));
-
-        //         senderAccoutId = fromAccountComponent.AccountID;
-        //     }
-        //     toSend.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-send-from",
-        //             ("amount", amount), ("currencyName", toSend.AllowCurrency), ("accountId", senderAccoutId))));
-
-        //     _entManager.Dirty((fromAccount as Component)!);
-        //     _entManager.Dirty(toSend);
-        // }
-
-/*      TODO:
-        public void AddLog(EconomyBankAccountComponent comp, )*/
-
         [PublicAPI]
         public bool TrySendMoney(IEconomyMoneyHolder fromAccount, EconomyBankAccountComponent? recipientAccount, ulong amount, [NotNullWhen(false)] out string? errorMessage)
         {
@@ -227,12 +184,6 @@ namespace Content.Server.AWS.Economy
             {
                 if (recipientAccount is not null)
                 {
-                    // if (fromAccount == recipientAccount)
-                    // {
-                    //     errorMessage = "407";
-                    //     return false;
-                    // }
-                    // SendMoney(fromAccount, recipientAccount, amount);
                     return _economyManager.TryChangeAccountBalance(recipientAccount.AccountID, amount);
                 }
 
@@ -315,34 +266,6 @@ namespace Content.Server.AWS.Economy
 
             return _economyManager.TryTransferMoney(fromAccountId, recipientAccountId, amount);
         }
-
-        // [PublicAPI]
-        // public Dictionary<string, EconomyBankAccountComponent> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
-        // {
-        //     Dictionary<string, EconomyBankAccountComponent> list = new();
-
-        //     var accountsEnum = AllEntityQuery<EconomyBankAccountComponent>();
-        //     while (accountsEnum.MoveNext(out var comp))
-        //     {
-        //         switch (flag)
-        //         {
-        //             case EconomyBankAccountMask.Activated:
-        //                 if (comp.Activated)
-        //                     list.Add(comp.AccountId, comp);
-        //                 break;
-        //             case EconomyBankAccountMask.ActivatedBlocked:
-        //                 if (comp.Activated && comp.Blocked)
-        //                     list.Add(comp.AccountId, comp);
-        //                 break;
-        //             case EconomyBankAccountMask.ActivatedNotBlocked:
-        //                 if (comp.Activated && !comp.Blocked)
-        //                     list.Add(comp.AccountId, comp);
-        //                 break;
-        //         }
-        //     }
-
-        //     return list;
-        // }
 
         private void OnAccountComponentInit(Entity<EconomyBankAccountComponent> entity, ref ComponentInit args)
         {
