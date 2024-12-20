@@ -150,13 +150,13 @@
   suffix: Economy
   components:
   - type: EconomyBankAccount
-    accountId: NT-Security
-    allowCurrency: Thaler
-    accountName: Служба безопасности
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
-    balance: 1000
-    activateOnSpawn: true
+    accountSetup:
+      accountID: NT-Security
+      allowedCurrency: Thaler
+      accountName: Служба безопасности
+      balance: 1000
 
 - type: entity
   parent: BankAccountNanotrasen

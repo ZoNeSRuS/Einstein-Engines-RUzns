@@ -28,6 +28,7 @@ using Content.Server.Voting.Managers;
 using Content.Server.Worldgen.Tools;
 using Content.Shared.Administration.Logs;
 using Content.Shared.Administration.Managers;
+using Content.Shared.AWS.Economy;
 using Content.Shared.Kitchen;
 using Content.Shared.Players.PlayTimeTracking;
 
@@ -72,6 +73,7 @@ namespace Content.Server.IoC
             IoCManager.Register<JobWhitelistManager>();
             IoCManager.Register<PlayerRateLimitManager>();
             IoCManager.Register<MappingManager>();
+            IoCManager.Register<ISharedEconomyManager, EconomyManager>(); //AWS-economy
             IoCManager.Register<IEconomyManager, EconomyManager>(); //AWS-economy
         }
     }

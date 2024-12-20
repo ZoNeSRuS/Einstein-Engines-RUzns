@@ -19,12 +19,13 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
 {
     [Dependency] private readonly IEntityManager _entMan = default!;
     [Dependency] private readonly EconomyBankAccountSystem _bankAccountSystem = default!;
+    [Dependency] private readonly IEconomyManager _economyManager = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     protected override void Started(EntityUid uid, EconomyPayDayRuleComponent ruleComponent, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
-        var accounts = _bankAccountSystem.GetAccounts();
-        if (!accounts.TryGetValue(ruleComponent.PayerAccountId, out var payerComp))
+        var accounts = _economyManager.GetAccounts();
+        if (!_economyManager.TryGetAccount(ruleComponent.PayerAccountId, out var payerAccount))
             return;
 
         if (!_prototype.TryIndex(ruleComponent.SallaryProto, out var sallariesProto))
@@ -42,17 +43,17 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
                 manifest.Add(mindComponent.CharacterName, jobComponent.Prototype.Value);
             }
         }
-        List<EconomyBankAccountComponent> blockedAccounts = new();
+        List<EconomyBankAccount> blockedAccounts = new();
 
-        foreach (var (id, comp) in accounts)
+        foreach (var (id, account) in accounts)
         {
-            if (comp.Blocked || !comp.CanReachPayDay)
+            if (account.Blocked || !account.CanReachPayDay)
                 continue;
 
-            if (comp.Blocked)
+            if (account.Blocked)
                 continue;
 
-            if (!manifest.TryGetValue(comp.AccountName, out var job))
+            if (!manifest.TryGetValue(account.AccountName, out var job))
                 continue;
 
             EconomySallariesJobEntry? entry = null;
@@ -72,13 +73,13 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
             switch (ruleComponent.PayType)
             {
                 case EconomyPayDayRuleType.Adding:
-                    _bankAccountSystem.TrySendMoney(payerComp, comp, sallary, out err);
+                    _bankAccountSystem.TrySendMoney(payerAccount.AccountID, account.AccountID, sallary, out err);
                     break;
                 case EconomyPayDayRuleType.Decrementing:
-                    if (!_bankAccountSystem.TrySendMoney(comp, payerComp, sallary, out err))
+                    if (!_bankAccountSystem.TrySendMoney(account.AccountID, payerAccount.AccountID, sallary, out err))
                     {
-                        comp.Blocked = true;
-                        blockedAccounts.Add(comp);
+                        account.Blocked = true;
+                        blockedAccounts.Add(account);
                     }
                     break;
                 default:

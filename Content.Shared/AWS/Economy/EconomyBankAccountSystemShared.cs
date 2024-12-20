@@ -26,6 +26,7 @@ namespace Content.Shared.AWS.Economy
         [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
         [Dependency] private readonly IRobustRandom _robustRandom = default!;
         [Dependency] private readonly SharedUserInterfaceSystem _userInterfaceSystem = default!;
+        [Dependency] private readonly ISharedEconomyManager _economyManager = default!;
 
         public override void Initialize()
         {
@@ -33,7 +34,7 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankTerminalComponent, ExaminedEvent>(OnBankTerminalExamine);
             SubscribeLocalEvent<EconomyBankTerminalComponent, EconomyTerminalMessage>(OnTerminalMessage);
 
-            SubscribeLocalEvent<EconomyBankAccountComponent, ComponentInit>(OnBankAccountComponentInit);
+            //SubscribeLocalEvent<EconomyBankAccountComponent, ComponentInit>(OnBankAccountComponentInit);
             SubscribeLocalEvent<EconomyBankAccountComponent, ExaminedEvent>(OnBankAccountExamine);
             SubscribeLocalEvent<EconomyMoneyHolderComponent, ExaminedEvent>(OnMoneyHolderExamine);
 
@@ -45,22 +46,25 @@ namespace Content.Shared.AWS.Economy
             //SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
         }
 
-        private void OnBankAccountComponentInit(EntityUid uid, EconomyBankAccountComponent comp, ComponentInit args)
-        {
-            if (comp.ActivateOnSpawn)
-            {
-                comp.Activated = true;
-                Dirty(uid, comp);
-            }
-        }
+        // private void OnBankAccountComponentInit(EntityUid uid, EconomyBankAccountComponent comp, ComponentInit args)
+        // {
+        //     if (comp.ActivateOnSpawn)
+        //     {
+        //         comp.Activated = true;
+        //         Dirty(uid, comp);
+        //     }
+        // }
 
         private void OnBankAccountExamine(Entity<EconomyBankAccountComponent> entity, ref ExaminedEvent args)
         {
+            if (!_economyManager.TryGetAccount(entity.Comp.AccountID, out var account))
+                return;
+
             args.PushMarkup(Loc.GetString("bankaccount-component-on-examine-detailed-message",
-                ("id", entity.Comp.AccountId)));
+                ("id", account.AccountID)));
             args.PushMarkup(Loc.GetString("moneyholder-component-on-examine-detailed-message",
-                ("moneyName", entity.Comp.AllowCurrency),
-                ("balance", entity.Comp.Balance)));
+                ("moneyName", account.AllowedCurrency),
+                ("balance", account.Balance)));
         }
 
         private void OnTerminalMessage(EntityUid uid, EconomyBankTerminalComponent comp, EconomyTerminalMessage args)
@@ -113,13 +117,17 @@ namespace Content.Shared.AWS.Economy
         [PublicAPI]
         public void UpdateATMUserInterface(Entity<EconomyBankATMComponent> entity, string? error = null)
         {
-            var bankAccount = GetATMInsertedAccount(entity.Comp);
+            var card = GetATMInsertedAccount(entity.Comp);
+            EconomyBankAccount? bankAccount = null;
+            if (card is not null && _economyManager.TryGetAccount(card.AccountID, out var account))
+                bankAccount = account;
+
             _userInterfaceSystem.SetUiState(entity.Owner, EconomyBankATMUiKey.Key, new EconomyBankATMUserInterfaceState()
             {
                 BankAccount = bankAccount is null ? null :
                 new() {
                     Balance = bankAccount.Balance,
-                    AccountId = bankAccount.AccountId,
+                    AccountId = bankAccount.AccountID,
                     AccountName = bankAccount.AccountName,
                     Blocked = bankAccount.Blocked,
                 },
@@ -148,8 +156,8 @@ namespace Content.Shared.AWS.Economy
     }
     public enum EconomyBankAccountMask
     {
-        Activated,
-        ActivatedBlocked,
-        ActivatedNotBlocked,
+        All,
+        NotBlocked,
+        Blocked,
     }
 }

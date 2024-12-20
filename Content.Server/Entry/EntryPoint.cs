@@ -3,7 +3,6 @@ using Content.Server.Administration;
 using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Afk;
-using Content.Server.AWS.Economy;
 using Content.Server.Chat.Managers;
 using Content.Server.Connection;
 using Content.Server.Corvax.GuideGenerator;
@@ -26,6 +25,7 @@ using Content.Server.Preferences.Managers;
 using Content.Server.ServerInfo;
 using Content.Server.ServerUpdates;
 using Content.Server.Voting.Managers;
+using Content.Shared.AWS.Economy;
 using Content.Shared.CCVar;
 using Content.Shared.Kitchen;
 using Content.Shared.Localizations;
@@ -116,7 +116,7 @@ namespace Content.Server.Entry
                 _playTimeTracking.Initialize();
                 IoCManager.Resolve<JobWhitelistManager>().Initialize();
                 IoCManager.Resolve<PlayerRateLimitManager>().Initialize();
-                IoCManager.Resolve<IEconomyManager>().Initialize(); //AWS-economy
+                IoCManager.Resolve<ISharedEconomyManager>().Initialize(); //AWS-economy
             }
         }
 

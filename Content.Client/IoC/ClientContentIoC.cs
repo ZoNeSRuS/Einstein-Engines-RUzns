@@ -21,6 +21,8 @@ using Content.Shared.Administration.Logs;
 using Content.Client.Lobby;
 using Content.Shared.Administration.Managers;
 using Content.Shared.Players.PlayTimeTracking;
+using Content.Shared.AWS.Economy;
+using Content.Client.AWS.Economy;
 
 namespace Content.Client.IoC
 {
@@ -52,6 +54,8 @@ namespace Content.Client.IoC
             collection.Register<ISharedPlaytimeManager, JobRequirementsManager>();
             collection.Register<MappingManager>();
             collection.Register<DebugMonitorManager>();
+            collection.Register<ISharedEconomyManager, ClientEconomyManager>(); //AWS-economy
+            collection.Register<IClientEconomyManager, ClientEconomyManager>(); //AWS-economy
         }
     }
 }
