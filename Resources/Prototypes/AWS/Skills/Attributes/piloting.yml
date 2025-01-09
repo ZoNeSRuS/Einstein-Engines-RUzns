@@ -1,6 +1,6 @@
 - type: skill
-  id: driving
+  id: piloting
   category: common
-  cost: 
+  cost:
     enum.SkillLevel.NonSkilled: 0
     enum.SkillLevel.Experienced: 2
