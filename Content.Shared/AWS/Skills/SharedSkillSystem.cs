@@ -1,5 +1,6 @@
 using Content.Shared.Examine;
 using Content.Shared.Humanoid;
+using Content.Shared.Roles;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 using System.Collections.Immutable;
@@ -24,7 +25,7 @@ public abstract class SharedSkillSystem : EntitySystem
 
     private void HandleRequiredSkillExamined(EntityUid uid, RequiredSkillComponent component, ExaminedEvent args)
     {
-        foreach(var (key, value) in component.Container.Skills)
+        foreach (var (key, value) in component.Container.Skills)
         {
             if (value is not null && (SkillLevel)value != SkillLevel.NonSkilled)
             {
@@ -105,6 +106,23 @@ public abstract class SharedSkillSystem : EntitySystem
             return false;
 
         SetSkillLevel((ent, comp), skillName, skillLevel);
+        return true;
+    }
+
+    [PublicAPI]
+    public bool CanUseJob(ProtoId<JobPrototype> jobId, SkillContainer cont,
+        [NotNullWhen(false)] out string? error)
+    {
+        error = null;
+        if (_prototypeManager.TryIndex(jobId, out var jobProto))
+        {
+            if (true) // соответственно после добавления свойства должна быть логика на проверку заблокированных джобок
+                return true;
+
+            error = "insufficient skills";
+            return false;
+        }
+
         return true;
     }
 

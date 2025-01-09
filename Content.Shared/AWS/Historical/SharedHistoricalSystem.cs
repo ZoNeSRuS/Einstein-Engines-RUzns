@@ -1,4 +1,5 @@
 using Content.Shared.Humanoid;
+using Content.Shared.Roles;
 using JetBrains.Annotations;
 using Robust.Shared.Prototypes;
 using System.Collections.Immutable;
@@ -15,6 +16,8 @@ public abstract class SharedHistoricalSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+
+        /*SubscribeLocalEvent<IsJobAllowedEvent>(OnIsJobAllowed);*/
     }
 
     [PublicAPI]
@@ -55,4 +58,22 @@ public abstract class SharedHistoricalSystem : EntitySystem
 
         return histories;
     }
+
+    [PublicAPI]
+    public bool CanUseJob(ProtoId<JobPrototype> jobId, ProtoId<HistoryPrototype> historyId,
+        [NotNullWhen(false)] out string? error)
+    {
+        error = null;
+        if (_prototypeManager.TryIndex(historyId, out var proto) && !proto.BlockingJobs.Contains(jobId))
+            return true;
+
+        error = "incorrect history";
+        return false;
+    }
+
+/*    private void OnIsJobAllowed(ref IsJobAllowedEvent ev)
+    {
+        if (!_manager.IsAllowed(ev.Player, ev.JobId))
+            ev.Cancelled = true;
+    }*/
 }

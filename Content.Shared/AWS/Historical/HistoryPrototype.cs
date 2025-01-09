@@ -1,5 +1,6 @@
 using Robust.Shared.Prototypes;
 using Content.Shared.AWS.Skills;
+using Content.Shared.Roles;
 
 namespace Content.Shared.AWS.Historical;
 
@@ -25,6 +26,9 @@ public sealed partial class HistoryPrototype : IPrototype
 
     [ViewVariables(VVAccess.ReadWrite), DataField]
     public List<ProtoId<HistoryPrototype>> BlockingHistories = new();
+
+    [ViewVariables(VVAccess.ReadWrite), DataField]
+    public List<ProtoId<JobPrototype>> BlockingJobs = new();
 
     [ViewVariables(VVAccess.ReadWrite), DataField]
     public SkillContainer Container = new();

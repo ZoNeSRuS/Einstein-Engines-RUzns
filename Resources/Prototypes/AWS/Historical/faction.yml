@@ -20,6 +20,6 @@
   historyType: enum.HistoryType.Faction
   container:
     defaultSkillLevels:
-      economy: [enum.SkillLevel.Basic]
+      economy: enum.SkillLevel.Basic
     unblockedSkillLevels:
       economy: [enum.SkillLevel.Master]
