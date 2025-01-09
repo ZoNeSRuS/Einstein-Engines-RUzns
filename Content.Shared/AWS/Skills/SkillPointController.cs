@@ -155,6 +155,27 @@ public class SkillPointController
         return (false, null);
     }
 
+    public int CalculateAges(int age)
+    {
+        if (age >= _minAge)
+        {
+            if (age >= _ageSecondStep)
+            {
+
+            }
+
+        }
+
+        return 0;
+    }
+
+    public SkillPointController(int age, ProtoId<Historical.HistoryPrototype> historyId, IPrototypeManager? protoManager)
+    {
+        MaxPoints = CalculateAges(age);
+
+        _prototypeManager = protoManager ?? IoCManager.Resolve<IPrototypeManager>();
+    }
+
     public SkillPointController(int maxPoints, Dictionary<ProtoId<SkillPrototype>, List<Enum>> unblockedSkills, IPrototypeManager? protoManager, SkillContainer? container)
     {
         Container = container ?? new();

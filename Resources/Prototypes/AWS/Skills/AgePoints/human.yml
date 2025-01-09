@@ -1,0 +1,8 @@
+- type: ageSkillPoints
+  id: humanSkillPoints
+  specie: human
+  minAge: 18
+  pointsForAges:
+    20: 0.5
+    35: 0.3
+    50: 0.1
