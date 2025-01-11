@@ -3,6 +3,9 @@ using Content.Shared.Examine;
 using Robust.Shared.Containers;
 using Content.Shared.Popups;
 using JetBrains.Annotations;
+using Robust.Shared.Prototypes;
+using Content.Shared.Store;
+using Robust.Shared.Map;
 
 namespace Content.Shared.AWS.Economy
 {
@@ -20,7 +23,7 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankTerminalComponent, ExaminedEvent>(OnBankTerminalExamine);
             SubscribeLocalEvent<EconomyBankTerminalComponent, EconomyTerminalMessage>(OnTerminalMessage);
 
-            SubscribeLocalEvent<EconomyBankAccountComponent, ExaminedEvent>(OnBankAccountExamine);
+            SubscribeLocalEvent<EconomyAccountHolderComponent, ExaminedEvent>(OnBankAccountExamine);
             SubscribeLocalEvent<EconomyMoneyHolderComponent, ExaminedEvent>(OnMoneyHolderExamine);
 
             SubscribeLocalEvent<EconomyBankATMComponent, ComponentInit>(OnATMComponentInit);
@@ -29,11 +32,38 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, EntRemovedFromContainerMessage>(OnATMItemSlotChanged);
         }
 
-        private void OnBankAccountExamine(Entity<EconomyBankAccountComponent> entity, ref ExaminedEvent args)
+        public IReadOnlyList<Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
         {
-            if (!_economyManager.TryGetAccount(entity.Comp.AccountID, out var account))
+            var accountsEnum = _entManager.EntityQueryEnumerator<EconomyBankAccountComponent>();
+            var list = new List<Entity<EconomyBankAccountComponent>>();
+
+            while (accountsEnum.MoveNext(out var ent, out var comp))
+            {
+                switch (flag)
+                {
+                    case EconomyBankAccountMask.All:
+                        list.Add((ent, comp));
+                        break;
+                    case EconomyBankAccountMask.NotBlocked:
+                        if (!comp.Blocked)
+                            list.Add((ent, comp));
+                        break;
+                    case EconomyBankAccountMask.Blocked:
+                        if (comp.Blocked)
+                            list.Add((ent, comp));
+                        break;
+                }
+            }
+
+            return list;
+        }
+
+        private void OnBankAccountExamine(Entity<EconomyAccountHolderComponent> entity, ref ExaminedEvent args)
+        {
+            if (!_economyManager.TryGetAccount(entity.Comp.AccountID, out var accountEntity))
                 return;
 
+            var account = accountEntity.Value.Comp;
             args.PushMarkup(Loc.GetString("bankaccount-component-on-examine-detailed-message",
                 ("id", account.AccountID)));
             args.PushMarkup(Loc.GetString("moneyholder-component-on-examine-detailed-message",
@@ -92,7 +122,7 @@ namespace Content.Shared.AWS.Economy
         public void UpdateATMUserInterface(Entity<EconomyBankATMComponent> entity, string? error = null)
         {
             var card = GetATMInsertedAccount(entity.Comp);
-            EconomyBankAccount? bankAccount = null;
+            EconomyBankAccountComponent? bankAccount = null;
             if (card is not null && _economyManager.TryGetAccount(card.AccountID, out var account))
                 bankAccount = account;
 
@@ -110,9 +140,9 @@ namespace Content.Shared.AWS.Economy
         }
 
         [PublicAPI]
-        public EconomyBankAccountComponent? GetATMInsertedAccount(EconomyBankATMComponent atm)
+        public EconomyAccountHolderComponent? GetATMInsertedAccount(EconomyBankATMComponent atm)
         {
-            TryComp(atm.CardSlot.Item, out EconomyBankAccountComponent? bankAccount);
+            TryComp(atm.CardSlot.Item, out EconomyAccountHolderComponent? bankAccount);
             return bankAccount;
         }
 

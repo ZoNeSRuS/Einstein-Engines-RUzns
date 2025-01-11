@@ -1,62 +1,53 @@
 using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Content.Shared.AWS.Economy;
+using Content.Shared.Store;
 using Robust.Shared.Network;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client.AWS.Economy;
 
 public sealed class ClientEconomyManager : IClientEconomyManager
 {
-    [Dependency] private readonly IClientNetManager _netManager = default!;
-
-    public event EventHandler? AccountUpdateReceived;
-
-    /// <summary>
-    /// List of all cached accounts on this client.
-    /// </summary>
-    private FrozenDictionary<string, EconomyBankAccount> _cachedAccounts = default!;
+    [Dependency] private readonly IEntityManager _entityManager = default!;
 
     public void Initialize()
     {
-        _netManager.RegisterNetMessage<MsgEconomyAccountListRequest>();
-
-        _netManager.RegisterNetMessage<MsgEconomyAccountList>(AccountsUpdateMessage);
     }
 
-    public bool IsValidAccount(string accountID)
-    {
-        AccountUpdateRequest();
-        return _cachedAccounts.ContainsKey(accountID);
-    }
+    public bool IsValidAccount(string accountID) => TryGetAccount(accountID, out _);
 
-    public bool TryGetAccount(string accountID, [NotNullWhen(true)] out EconomyBankAccount? account)
+    public bool TryGetAccount(string accountID, [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? account)
     {
-        AccountUpdateRequest();
-        return _cachedAccounts.TryGetValue(accountID, out account);
+        var accounts = GetAccounts(EconomyBankAccountMask.All);
+        account = accounts.Where(x => x.Comp.AccountID == accountID).FirstOrDefault();
+
+        return account != null && account.Value.Owner.Id != 0;
     }
 
     /// <summary>
     /// Returns list of all cached accounts on this client. Use <see cref="AccountUpdateRequest"/> before using for fresh data.
     /// </summary>
-    public IReadOnlyDictionary<string, EconomyBankAccount> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
+    public IReadOnlyList<Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
     {
-        if (flag == EconomyBankAccountMask.All)
-            return _cachedAccounts;
+        var accountsEnum = _entityManager.EntityQueryEnumerator<EconomyBankAccountComponent>();
+        var list = new List<Entity<EconomyBankAccountComponent>>();
 
-        Dictionary<string, EconomyBankAccount> list = new();
-        var accountsEnum = _cachedAccounts.GetEnumerator();
-        while (accountsEnum.MoveNext())
+        while (accountsEnum.MoveNext(out var ent, out var comp))
         {
-            var account = accountsEnum.Current.Value;
             switch (flag)
             {
+                case EconomyBankAccountMask.All:
+                    list.Add((ent, comp));
+                    break;
                 case EconomyBankAccountMask.NotBlocked:
-                    if (!account.Blocked)
-                        list.Add(account.AccountID, account);
+                    if (!comp.Blocked)
+                        list.Add((ent, comp));
                     break;
                 case EconomyBankAccountMask.Blocked:
-                    if (account.Blocked)
-                        list.Add(account.AccountID, account);
+                    if (comp.Blocked)
+                        list.Add((ent, comp));
                     break;
             }
         }
@@ -64,15 +55,32 @@ public sealed class ClientEconomyManager : IClientEconomyManager
         return list;
     }
 
-    public void AccountUpdateRequest()
+    #region Unused methods (clientside)
+    // No client shall be able to create accounts, change balance, transfer money or add logs. EVER.
+    public bool TryCreateAccount(string accountID,
+                                 string accountName,
+                                 ProtoId<CurrencyPrototype> allowedCurrency,
+                                 ulong balance = 0,
+                                 ulong penalty = 0,
+                                 bool blocked = false,
+                                 bool canReachPayDay = true)
     {
-        var msg = new MsgEconomyAccountListRequest();
-        _netManager.ClientSendMessage(msg);
+        return false;
     }
 
-    private void AccountsUpdateMessage(MsgEconomyAccountList message)
+    public bool TryChangeAccountBalance(string accountID, ulong amount, bool addition = true)
     {
-        _cachedAccounts = message.Accounts.ToFrozenDictionary();
-        AccountUpdateReceived?.Invoke(this, EventArgs.Empty);
+        return false;
     }
+
+    public bool TryTransferMoney(string senderID, string receiverID, ulong amount)
+    {
+        return false;
+    }
+
+    public void AddLog(string accountID, EconomyBankAccountLogField log)
+    {
+        return;
+    }
+    #endregion
 }

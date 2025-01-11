@@ -81,7 +81,7 @@
     size: Small
     heldPrefix: default
     storedRotation: -90
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -94,7 +94,7 @@
 #   id: IDCardNT
 #   name: passenger ID card
 #   components:
-#   - type: EconomyBankAccount
+#   - type: EconomyAccountHolder
 #     allowCurrency: Thaler
 #     accountIdByProto: Nanotrasen
 #     moneyHolderEntId: ThalerHolder
@@ -106,7 +106,7 @@
   name: Платёжный счет "Станции"
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -121,7 +121,7 @@
   name: Платёжный счет "Инженерного отдела"
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -137,7 +137,7 @@
   name: Платёжный счет "Сервисного отдела"
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -152,7 +152,7 @@
   name: Платёжный счет "Службы безопасности"
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -167,7 +167,7 @@
   name: Платёжный счет "Медицинского отдела"
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -182,7 +182,7 @@
   name: Платёжный счет "Научного отдела"
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -197,7 +197,7 @@
   name: Платёжный счет "Отдела снабжения"
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -213,7 +213,7 @@
   description: ТВОЙ БОГ
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -230,7 +230,7 @@
   description: Счет для оплаты напитков для клиентов.
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -246,7 +246,7 @@
   description: Счет для оплаты продуктов для клиентов.
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -262,7 +262,7 @@
   description: Счет для оплаты семян.
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -278,7 +278,7 @@
   description: Счет для оплаты химических реагентов.
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:
@@ -294,7 +294,7 @@
   description: Счет для оплаты медицинских расходников.
   suffix: Economy
   components:
-  - type: EconomyBankAccount
+  - type: EconomyAccountHolder
     accountIdByProto: Nanotrasen
     moneyHolderEntId: ThalerHolder
     accountSetup:

@@ -252,8 +252,8 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
             _pdaSystem.SetOwner(idUid.Value, pdaComponent, entity, characterName);
 
         // SS14RU
-        if (TryComp<Shared.AWS.Economy.EconomyBankAccountComponent>(cardId, out var economyBankAccount))
-            _bankAccountSystem.TryActivate((cardId, economyBankAccount));
+        if (TryComp<Shared.AWS.Economy.EconomyAccountHolderComponent>(cardId, out var economyAccountHolder))
+            _bankAccountSystem.TryActivate((cardId, economyAccountHolder));
         // SS14RU
     }
 

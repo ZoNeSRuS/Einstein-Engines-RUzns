@@ -34,7 +34,7 @@ namespace Content.Server.AWS.Economy
 
         public override void Initialize()
         {
-            SubscribeLocalEvent<EconomyBankAccountComponent, ComponentInit>(OnAccountComponentInit);
+            SubscribeLocalEvent<EconomyAccountHolderComponent, ComponentInit>(OnAccountComponentInit);
 
             SubscribeLocalEvent<EconomyBankTerminalComponent, InteractUsingEvent>(OnTerminalInteracted);
 
@@ -64,10 +64,10 @@ namespace Content.Server.AWS.Economy
         }
 
         /// <summary>
-        /// Enables a card or a bank account for usage.
+        /// Enables a card or a bank account (described in setup) for usage.
         /// </summary>
         [PublicAPI]
-        public bool TryActivate(Entity<EconomyBankAccountComponent> entity)
+        public bool TryActivate(Entity<EconomyAccountHolderComponent> entity)
         {
             if (!_prototypeManager.TryIndex(entity.Comp.AccountIdByProto, out EconomyAccountIdPrototype? proto))
                 return false;
@@ -92,19 +92,17 @@ namespace Content.Server.AWS.Economy
                 if (setupID is null)
                     return false;
 
-                var setupAccount = new EconomyBankAccount(setupID,
-                                                   setup.AccountName,
-                                                   setup.AllowedCurrency,
-                                                   setup.Balance,
-                                                   setup.Penalty,
-                                                   setup.Blocked,
-                                                   setup.CanReachPayDay);
-
-                if (!_economyManager.TryAddAccount(setupAccount))
+                if (!_economyManager.TryCreateAccount(setupID,
+                                                      setup.AccountName ?? "UNEXPECTED USER",
+                                                      setup.AllowedCurrency ?? "Thaler",
+                                                      setup.Balance ?? balance,
+                                                      setup.Penalty ?? 0,
+                                                      setup.Blocked ?? false,
+                                                      setup.CanReachPayDay ?? true))
                     return false;
 
-                entity.Comp.AccountID = setupAccount.AccountID;
-                entity.Comp.AccountName = setupAccount.AccountName;
+                entity.Comp.AccountID = setupID;
+                entity.Comp.AccountName = setup.AccountName ?? "UNEXPECTED USER";
                 Dirty(entity);
                 return true;
             }
@@ -113,10 +111,14 @@ namespace Content.Server.AWS.Economy
             {
                 var accountSetup = entity.Comp.AccountSetup;
                 balance = accountSetup?.Balance ?? balance;
-                var account = new EconomyBankAccount(accountID, accountName, accountSetup?.AllowedCurrency, balance,
-                                                     accountSetup?.Penalty, accountSetup?.Blocked, accountSetup?.CanReachPayDay);
 
-                if (!_economyManager.TryAddAccount(account))
+                if (!_economyManager.TryCreateAccount(accountID,
+                                                      accountName,
+                                                      accountSetup?.AllowedCurrency ?? "Thaler",
+                                                      balance,
+                                                      accountSetup?.Penalty ?? 0,
+                                                      accountSetup?.Blocked ?? false,
+                                                      accountSetup?.CanReachPayDay ?? true))
                     return false;
 
                 entity.Comp.AccountID = accountID;
@@ -128,7 +130,7 @@ namespace Content.Server.AWS.Economy
             return false;
         }
 
-        private void Withdraw(EconomyBankAccountComponent component, EconomyBankATMComponent atm, ulong sum)
+        private void Withdraw(EconomyAccountHolderComponent component, EconomyBankATMComponent atm, ulong sum)
         {
             if (!_economyManager.TryChangeAccountBalance(component.AccountID, sum, false))
                 return;
@@ -139,7 +141,7 @@ namespace Content.Server.AWS.Economy
             if (_economyManager.TryGetAccount(component.AccountID, out var account))
             {
                 var log = new EconomyBankAccountLogField(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-withdraw",
-                ("amount", sum), ("currencyName", account.AllowedCurrency)));
+                ("amount", sum), ("currencyName", account.Value.Comp.AllowedCurrency)));
                 _economyManager.AddLog(component.AccountID, log);
             }
 
@@ -147,13 +149,13 @@ namespace Content.Server.AWS.Economy
         }
 
         [PublicAPI]
-        public bool TryWithdraw(EconomyBankAccountComponent component, EconomyBankATMComponent atm, ulong sum, [NotNullWhen(false)] out string? errorMessage)
+        public bool TryWithdraw(EconomyAccountHolderComponent component, EconomyBankATMComponent atm, ulong sum, [NotNullWhen(false)] out string? errorMessage)
         {
             errorMessage = "";
             if (!_economyManager.TryGetAccount(component.AccountID, out var account))
                 return false;
 
-            if (sum > 0 && account.Balance >= sum)
+            if (sum > 0 && account.Value.Comp.Balance >= sum)
             {
                 Withdraw(component, atm, sum);
                 return true;
@@ -176,7 +178,7 @@ namespace Content.Server.AWS.Economy
         }
 
         [PublicAPI]
-        public bool TrySendMoney(IEconomyMoneyHolder fromAccount, EconomyBankAccountComponent? recipientAccount, ulong amount, [NotNullWhen(false)] out string? errorMessage)
+        public bool TrySendMoney(IEconomyMoneyHolder fromAccount, EconomyAccountHolderComponent? recipientAccount, ulong amount, [NotNullWhen(false)] out string? errorMessage)
         {
             errorMessage = null;
 
@@ -216,7 +218,7 @@ namespace Content.Server.AWS.Economy
         }
 
         [PublicAPI]
-        public bool TrySendMoney(EconomyBankAccountComponent fromAccount, string recipientAccountId, ulong amount, [NotNullWhen(false)] out string? errorMessage)
+        public bool TrySendMoney(EconomyAccountHolderComponent fromAccount, string recipientAccountId, ulong amount, [NotNullWhen(false)] out string? errorMessage)
         {
             errorMessage = null;
 
@@ -232,13 +234,13 @@ namespace Content.Server.AWS.Economy
                 return false;
             }
 
-            if (fromBankAccount.Balance < amount)
+            if (fromBankAccount.Value.Comp.Balance < amount)
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
                 return false;
             }
 
-            return _economyManager.TryTransferMoney(fromBankAccount.AccountID, recipientAccountId, amount);
+            return _economyManager.TryTransferMoney(fromBankAccount.Value.Comp.AccountID, recipientAccountId, amount);
         }
 
         [PublicAPI]
@@ -258,7 +260,7 @@ namespace Content.Server.AWS.Economy
                 return false;
             }
 
-            if (fromBankAccount.Balance < amount)
+            if (fromBankAccount.Value.Comp.Balance < amount)
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
                 return false;
@@ -267,9 +269,9 @@ namespace Content.Server.AWS.Economy
             return _economyManager.TryTransferMoney(fromAccountId, recipientAccountId, amount);
         }
 
-        private void OnAccountComponentInit(Entity<EconomyBankAccountComponent> entity, ref ComponentInit args)
+        private void OnAccountComponentInit(Entity<EconomyAccountHolderComponent> entity, ref ComponentInit args)
         {
-            // if has id card comp, then it will be initialized in other place
+            // if has id card comp, then it will be initialized in the other place.
             if (entity.Comp.AccountSetup is null || HasComp<IdCardComponent>(entity))
                 return;
 
@@ -340,10 +342,10 @@ namespace Content.Server.AWS.Economy
             if (TrySendMoney(economyMoneyHolderComponent, insertedAccountComponent, amount, out var error))
             {
                 if (insertedAccountComponent is not null && _economyManager.TryGetAccount(insertedAccountComponent.AccountID, out var account))
-                    _economyManager.AddLog(account.AccountID,
+                    _economyManager.AddLog(account.Value.Comp.AccountID,
                                            new EconomyBankAccountLogField(_gameTiming.CurTime,
                                            Loc.GetString("economybanksystem-log-insert",
-                                           ("amount", amount), ("currencyName", account.AllowedCurrency))));
+                                           ("amount", amount), ("currencyName", account.Value.Comp.AllowedCurrency))));
 
                 if (_netManager.IsServer)
                     _popupSystem.PopupEntity(Loc.GetString("economybanksystem-atm-moneyentering"), uid, type: PopupType.Medium);
@@ -365,7 +367,7 @@ namespace Content.Server.AWS.Economy
                 return;
 
             if (!TryComp<EconomyMoneyHolderComponent>(usedEnt, out var economyMoneyHolderComponent) &
-                !TryComp<EconomyBankAccountComponent>(usedEnt, out var economyBankAccountComponent))
+                !TryComp<EconomyAccountHolderComponent>(usedEnt, out var economyBankAccountComponent))
                 return;
 
             if (TryComp<VendingMachineComponent>(uid, out var vendingMachineComponent))
@@ -418,7 +420,7 @@ namespace Content.Server.AWS.Economy
 
             UpdateTerminal((uid, component), 0, string.Empty);
 
-            _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", receiverAccount.AllowedCurrency)), uid, type: PopupType.Medium);
+            _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", receiverAccount.Value.Comp.AllowedCurrency)), uid, type: PopupType.Medium);
         }
     }
 }
