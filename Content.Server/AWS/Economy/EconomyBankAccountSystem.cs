@@ -17,6 +17,9 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 using System.Diagnostics.CodeAnalysis;
+using Content.Server.Station.Systems;
+using Robust.Server.GameStates;
+using Content.Shared.Store;
 
 namespace Content.Server.AWS.Economy
 {
@@ -31,6 +34,9 @@ namespace Content.Server.AWS.Economy
         [Dependency] private readonly TransformSystem _transformSystem = default!;
         [Dependency] private readonly IGameTiming _gameTiming = default!;
         [Dependency] private readonly IEconomyManager _economyManager = default!;
+        [Dependency] private readonly StationSystem _stationSystem = default!;
+        [Dependency] private readonly PvsOverrideSystem _pvsOverrideSystem = default!;
+        [Dependency] private readonly MetaDataSystem _metaDataSystem = default!;
 
         public override void Initialize()
         {
@@ -42,6 +48,50 @@ namespace Content.Server.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, InteractUsingEvent>(OnATMInteracted);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMWithdrawMessage>(OnATMWithdrawMessage);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
+        }
+
+        /// <summary>
+        /// Creates a new bank account entity.
+        /// </summary>
+        /// <param name="accountID"></param>
+        /// <param name="accountName"></param>
+        /// <param name="allowedCurrency"></param>
+        /// <param name="balance"></param>
+        /// <param name="penalty"></param>
+        /// <param name="blocked"></param>
+        /// <param name="canReachPayDay"></param>
+        /// <param name="cords"></param>
+        /// <returns>Whether the account was successfully created.</returns>
+        [PublicAPI]
+        public bool TryCreateAccount(string accountID,
+                             string accountName,
+                             ProtoId<CurrencyPrototype> allowedCurrency,
+                             ulong balance = 0,
+                             ulong penalty = 0,
+                             bool blocked = false,
+                             bool canReachPayDay = true,
+                             MapCoordinates? cords = null)
+        {
+            // Return if account with this id already exists.
+            if (_economyManager.IsValidAccount(accountID))
+                return false;
+
+            var spawnCords = cords ?? MapCoordinates.Nullspace;
+            var accountEntity = Spawn(null, spawnCords);
+            _metaDataSystem.SetEntityName(accountEntity, accountID);
+            var accountComp = EnsureComp<EconomyBankAccountComponent>(accountEntity);
+
+            accountComp.AccountID = accountID;
+            accountComp.AccountName = accountName;
+            accountComp.AllowedCurrency = allowedCurrency;
+            accountComp.Balance = balance;
+            accountComp.Penalty = penalty;
+            accountComp.Blocked = blocked;
+            accountComp.CanReachPayDay = canReachPayDay;
+
+            _pvsOverrideSystem.AddGlobalOverride(accountEntity);
+            Dirty(accountEntity, accountComp);
+            return true;
         }
 
         private string GenerateAccountId(string prefix, uint strik, uint numbersPerStrik, string? descriptor)
@@ -84,6 +134,8 @@ namespace Content.Server.AWS.Economy
                     if (sallariesPrototype.Jobs.TryGetValue(presetIdCardComponent.JobName.Value, out var entry))
                         balance = (ulong)(entry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
 
+            var station = _stationSystem.GetOwningStation(entity);
+            var cords = station != null ? _transformSystem.GetMapCoordinates(station.Value) : MapCoordinates.Nullspace;
             if (entity.Comp.AccountSetup is { } setup && presetIdCardComponent is null && idCardComponent is null)
             {
                 var setupID = setup.GenerateAccountID ? accountID :
@@ -98,7 +150,8 @@ namespace Content.Server.AWS.Economy
                                                       setup.Balance ?? balance,
                                                       setup.Penalty ?? 0,
                                                       setup.Blocked ?? false,
-                                                      setup.CanReachPayDay ?? true))
+                                                      setup.CanReachPayDay ?? true,
+                                                      cords))
                     return false;
 
                 entity.Comp.AccountID = setupID;
@@ -118,7 +171,8 @@ namespace Content.Server.AWS.Economy
                                                       balance,
                                                       accountSetup?.Penalty ?? 0,
                                                       accountSetup?.Blocked ?? false,
-                                                      accountSetup?.CanReachPayDay ?? true))
+                                                      accountSetup?.CanReachPayDay ?? true,
+                                                      cords))
                     return false;
 
                 entity.Comp.AccountID = accountID;
@@ -141,7 +195,7 @@ namespace Content.Server.AWS.Economy
             if (_economyManager.TryGetAccount(component.AccountID, out var account))
             {
                 var log = new EconomyBankAccountLogField(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-withdraw",
-                ("amount", sum), ("currencyName", account.Value.Comp.AllowedCurrency)));
+                ("amount", sum), ("currencyName", account.Comp.AllowedCurrency)));
                 _economyManager.AddLog(component.AccountID, log);
             }
 
@@ -155,7 +209,7 @@ namespace Content.Server.AWS.Economy
             if (!_economyManager.TryGetAccount(component.AccountID, out var account))
                 return false;
 
-            if (sum > 0 && account.Value.Comp.Balance >= sum)
+            if (sum > 0 && account.Comp.Balance >= sum)
             {
                 Withdraw(component, atm, sum);
                 return true;
@@ -234,13 +288,13 @@ namespace Content.Server.AWS.Economy
                 return false;
             }
 
-            if (fromBankAccount.Value.Comp.Balance < amount)
+            if (fromBankAccount.Comp.Balance < amount)
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
                 return false;
             }
 
-            return _economyManager.TryTransferMoney(fromBankAccount.Value.Comp.AccountID, recipientAccountId, amount);
+            return _economyManager.TryTransferMoney(fromBankAccount.Comp.AccountID, recipientAccountId, amount);
         }
 
         [PublicAPI]
@@ -260,7 +314,7 @@ namespace Content.Server.AWS.Economy
                 return false;
             }
 
-            if (fromBankAccount.Value.Comp.Balance < amount)
+            if (fromBankAccount.Comp.Balance < amount)
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
                 return false;
@@ -342,10 +396,10 @@ namespace Content.Server.AWS.Economy
             if (TrySendMoney(economyMoneyHolderComponent, insertedAccountComponent, amount, out var error))
             {
                 if (insertedAccountComponent is not null && _economyManager.TryGetAccount(insertedAccountComponent.AccountID, out var account))
-                    _economyManager.AddLog(account.Value.Comp.AccountID,
+                    _economyManager.AddLog(account.Comp.AccountID,
                                            new EconomyBankAccountLogField(_gameTiming.CurTime,
                                            Loc.GetString("economybanksystem-log-insert",
-                                           ("amount", amount), ("currencyName", account.Value.Comp.AllowedCurrency))));
+                                           ("amount", amount), ("currencyName", account.Comp.AllowedCurrency))));
 
                 if (_netManager.IsServer)
                     _popupSystem.PopupEntity(Loc.GetString("economybanksystem-atm-moneyentering"), uid, type: PopupType.Medium);
@@ -367,7 +421,7 @@ namespace Content.Server.AWS.Economy
                 return;
 
             if (!TryComp<EconomyMoneyHolderComponent>(usedEnt, out var economyMoneyHolderComponent) &
-                !TryComp<EconomyAccountHolderComponent>(usedEnt, out var economyBankAccountComponent))
+                !TryComp<EconomyAccountHolderComponent>(usedEnt, out var economyBankAccountHolderComponent))
                 return;
 
             if (TryComp<VendingMachineComponent>(uid, out var vendingMachineComponent))
@@ -408,9 +462,9 @@ namespace Content.Server.AWS.Economy
                     return;
                 }
             }
-            else if (economyBankAccountComponent is not null)
+            else if (economyBankAccountHolderComponent is not null)
             {
-                if (!TrySendMoney(economyBankAccountComponent, component.LinkedAccount, amount, out var err))
+                if (!TrySendMoney(economyBankAccountHolderComponent, component.LinkedAccount, amount, out var err))
                 {
                     if (_netManager.IsServer)
                         _popupSystem.PopupEntity(err, uid, type: PopupType.MediumCaution);
@@ -420,7 +474,7 @@ namespace Content.Server.AWS.Economy
 
             UpdateTerminal((uid, component), 0, string.Empty);
 
-            _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", receiverAccount.Value.Comp.AllowedCurrency)), uid, type: PopupType.Medium);
+            _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", receiverAccount.Comp.AllowedCurrency)), uid, type: PopupType.Medium);
         }
     }
 }

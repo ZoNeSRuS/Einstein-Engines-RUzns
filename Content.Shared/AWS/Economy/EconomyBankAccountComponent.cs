@@ -6,21 +6,15 @@ using Content.Shared.Store;
 namespace Content.Shared.AWS.Economy
 {
     /// <summary>
-    /// This component is used to define the account. This component should not be created manually. Work with it through <cref>ISharedEconomyManager</cref>.
+    /// This component is used to define the account. This component should not be created manually. Work with it through <see cref="ISharedEconomyManager"></cref>.
     /// </summary>
     [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
     public sealed partial class EconomyBankAccountComponent : Component
     {
-        /// <summary>
-        /// Set this up in <cref>EconomyBankAccountSetup</cref> to define the account, which this card will be using (referring to).
-        /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public string AccountID = "NO VALUE";
 
-        /// <summary>
-        /// Set this up in <cref>EconomyBankAccountSetup</cref> to define the name, which this card will be using.
-        /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public string AccountName = "UNEXPECTED USER";

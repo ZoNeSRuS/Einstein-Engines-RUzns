@@ -41,7 +41,7 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
         }
         List<Entity<EconomyBankAccountComponent>> blockedAccounts = new();
 
-        foreach (var accountEntity in accounts)
+        foreach (var (_, accountEntity) in accounts)
         {
             var account = accountEntity.Comp;
 
@@ -71,10 +71,10 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
             switch (ruleComponent.PayType)
             {
                 case EconomyPayDayRuleType.Adding:
-                    _bankAccountSystem.TrySendMoney(payerAccount.Value.Comp.AccountID, account.AccountID, sallary, out err);
+                    _bankAccountSystem.TrySendMoney(payerAccount.Comp.AccountID, account.AccountID, sallary, out err);
                     break;
                 case EconomyPayDayRuleType.Decrementing:
-                    if (!_bankAccountSystem.TrySendMoney(account.AccountID, payerAccount.Value.Comp.AccountID, sallary, out err))
+                    if (!_bankAccountSystem.TrySendMoney(account.AccountID, payerAccount.Comp.AccountID, sallary, out err))
                     {
                         account.Blocked = true;
                         blockedAccounts.Add(accountEntity);

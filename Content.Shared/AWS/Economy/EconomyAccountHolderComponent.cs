@@ -1,6 +1,5 @@
 using Robust.Shared.Prototypes;
 using Robust.Shared.GameStates;
-using Robust.Shared.Serialization;
 
 namespace Content.Shared.AWS.Economy;
 
@@ -14,14 +13,14 @@ public sealed partial class EconomyAccountHolderComponent : Component
     public EntProtoId<EconomyMoneyHolderComponent> MoneyHolderEntId = "ThalerHolder";
 
     /// <summary>
-    /// Set this up in <cref>EconomyBankAccountSetup</cref> to define the account, which this card will be using (referring to).
+    /// Set this up in <see cref="EconomyBankAccountSetup"></cref> to define the account, which this card will be using (referring to).
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [AutoNetworkedField]
     public string AccountID = "NO VALUE";
 
     /// <summary>
-    /// Set this up in <cref>EconomyBankAccountSetup</cref> to define the name, which this card will be using.
+    /// Set this up in <see cref="EconomyBankAccountSetup"></cref> to define the name, which this card will be using.
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [AutoNetworkedField]

@@ -1,9 +1,6 @@
-using System.Collections.Frozen;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Content.Shared.AWS.Economy;
 using Content.Shared.Store;
-using Robust.Shared.Network;
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.AWS.Economy;
@@ -16,43 +13,45 @@ public sealed class ClientEconomyManager : IClientEconomyManager
     {
     }
 
-    public bool IsValidAccount(string accountID) => TryGetAccount(accountID, out _);
-
-    public bool TryGetAccount(string accountID, [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? account)
+    public bool IsValidAccount(string accountID)
     {
         var accounts = GetAccounts(EconomyBankAccountMask.All);
-        account = accounts.Where(x => x.Comp.AccountID == accountID).FirstOrDefault();
+        return accounts.ContainsKey(accountID);
+    }
 
-        return account != null && account.Value.Owner.Id != 0;
+    public bool TryGetAccount(string accountID, out Entity<EconomyBankAccountComponent> account)
+    {
+        var accounts = GetAccounts(EconomyBankAccountMask.All);
+        return accounts.TryGetValue(accountID, out account);
     }
 
     /// <summary>
-    /// Returns list of all cached accounts on this client. Use <see cref="AccountUpdateRequest"/> before using for fresh data.
+    /// Returns list of all cached accounts on this client.
     /// </summary>
-    public IReadOnlyList<Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
+    public IReadOnlyDictionary<string, Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
     {
         var accountsEnum = _entityManager.EntityQueryEnumerator<EconomyBankAccountComponent>();
-        var list = new List<Entity<EconomyBankAccountComponent>>();
+        var result = new Dictionary<string, Entity<EconomyBankAccountComponent>>();
 
         while (accountsEnum.MoveNext(out var ent, out var comp))
         {
             switch (flag)
             {
                 case EconomyBankAccountMask.All:
-                    list.Add((ent, comp));
+                    result.Add(comp.AccountID, (ent, comp));
                     break;
                 case EconomyBankAccountMask.NotBlocked:
                     if (!comp.Blocked)
-                        list.Add((ent, comp));
+                        result.Add(comp.AccountID, (ent, comp));
                     break;
                 case EconomyBankAccountMask.Blocked:
                     if (comp.Blocked)
-                        list.Add((ent, comp));
+                        result.Add(comp.AccountID, (ent, comp));
                     break;
             }
         }
 
-        return list;
+        return result;
     }
 
     #region Unused methods (clientside)
@@ -63,7 +62,8 @@ public sealed class ClientEconomyManager : IClientEconomyManager
                                  ulong balance = 0,
                                  ulong penalty = 0,
                                  bool blocked = false,
-                                 bool canReachPayDay = true)
+                                 bool canReachPayDay = true,
+                                 MapCoordinates? cords = null)
     {
         return false;
     }

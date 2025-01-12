@@ -10,8 +10,7 @@ namespace Content.Client.AWS.Economy.UI;
 [GenerateTypedNameReferences]
 public sealed partial class EconomyLogConsoleMenu : FancyWindow
 {
-    [Dependency] private readonly ISharedEconomyManager _economyManager = default!;
-    [Dependency] private readonly EntityManager _entityManager = default!;
+    [Dependency] private readonly IClientEconomyManager _economyManager = default!;
 
     private EconomyLogConsoleBoundUserInterface Owner { get; set; }
     private IReadOnlyList<Entity<EconomyBankAccountComponent>> _accounts = default!;
@@ -25,7 +24,7 @@ public sealed partial class EconomyLogConsoleMenu : FancyWindow
 
         Owner = owner;
 
-        _accounts = _economyManager.GetAccounts();
+        _accounts = _economyManager.GetAccounts().Values.ToList();
 
         FillList();
 

@@ -3,9 +3,6 @@ using Content.Shared.Examine;
 using Robust.Shared.Containers;
 using Content.Shared.Popups;
 using JetBrains.Annotations;
-using Robust.Shared.Prototypes;
-using Content.Shared.Store;
-using Robust.Shared.Map;
 
 namespace Content.Shared.AWS.Economy
 {
@@ -32,38 +29,12 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, EntRemovedFromContainerMessage>(OnATMItemSlotChanged);
         }
 
-        public IReadOnlyList<Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
-        {
-            var accountsEnum = _entManager.EntityQueryEnumerator<EconomyBankAccountComponent>();
-            var list = new List<Entity<EconomyBankAccountComponent>>();
-
-            while (accountsEnum.MoveNext(out var ent, out var comp))
-            {
-                switch (flag)
-                {
-                    case EconomyBankAccountMask.All:
-                        list.Add((ent, comp));
-                        break;
-                    case EconomyBankAccountMask.NotBlocked:
-                        if (!comp.Blocked)
-                            list.Add((ent, comp));
-                        break;
-                    case EconomyBankAccountMask.Blocked:
-                        if (comp.Blocked)
-                            list.Add((ent, comp));
-                        break;
-                }
-            }
-
-            return list;
-        }
-
         private void OnBankAccountExamine(Entity<EconomyAccountHolderComponent> entity, ref ExaminedEvent args)
         {
             if (!_economyManager.TryGetAccount(entity.Comp.AccountID, out var accountEntity))
                 return;
 
-            var account = accountEntity.Value.Comp;
+            var account = accountEntity.Comp;
             args.PushMarkup(Loc.GetString("bankaccount-component-on-examine-detailed-message",
                 ("id", account.AccountID)));
             args.PushMarkup(Loc.GetString("moneyholder-component-on-examine-detailed-message",

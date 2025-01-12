@@ -1,14 +1,6 @@
-using System.Collections.Frozen;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Content.Shared.AWS.Economy;
 using Content.Shared.Store;
-using Robust.Server.Player;
-using Robust.Shared.Enums;
 using Robust.Shared.Map;
-using Robust.Shared.Network;
-using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -29,27 +21,11 @@ public sealed class EconomyManager : IEconomyManager
                                  ulong balance = 0,
                                  ulong penalty = 0,
                                  bool blocked = false,
-                                 bool canReachPayDay = true)
+                                 bool canReachPayDay = true,
+                                 MapCoordinates? cords = null)
     {
-        // Check if account already exists.
-        if (IsValidAccount(accountID))
-            return false;
-
-        var accountEntity = _entityManager.Spawn(null, MapCoordinates.Nullspace);
-        var metaData = _entityManager.System<MetaDataSystem>();
-        metaData.SetEntityName(accountEntity, accountID);
-        var accountComp = _entityManager.EnsureComponent<EconomyBankAccountComponent>(accountEntity);
-
-        accountComp.AccountID = accountID;
-        accountComp.AccountName = accountName;
-        accountComp.AllowedCurrency = allowedCurrency;
-        accountComp.Balance = balance;
-        accountComp.Penalty = penalty;
-        accountComp.Blocked = blocked;
-        accountComp.CanReachPayDay = canReachPayDay;
-
-        _entityManager.Dirty(accountEntity, accountComp);
-        return true;
+        var sharedSys = _entityManager.System<EconomyBankAccountSystem>();
+        return sharedSys.TryCreateAccount(accountID, accountName, allowedCurrency, balance, penalty, blocked, canReachPayDay, cords);
     }
 
     public bool TryChangeAccountBalance(string accountID, ulong amount, bool addition = true)
@@ -57,7 +33,7 @@ public sealed class EconomyManager : IEconomyManager
         if (!TryGetAccount(accountID, out var entity))
             return false;
 
-        var account = entity.Value.Comp;
+        var account = entity.Comp;
         if (!addition)
         {
             if (account.Balance - amount < 0)
@@ -69,7 +45,7 @@ public sealed class EconomyManager : IEconomyManager
 
         account.Balance += amount;
 
-        _entityManager.Dirty(entity.Value);
+        _entityManager.Dirty(entity);
         return true;
     }
 
@@ -80,8 +56,8 @@ public sealed class EconomyManager : IEconomyManager
             !TryGetAccount(receiverID, out var receiverEntity))
             return false;
 
-        var sender = senderEntity.Value.Comp;
-        var receiver = receiverEntity.Value.Comp;
+        var sender = senderEntity.Comp;
+        var receiver = receiverEntity.Comp;
         if (sender.Balance < amount)
             return false;
 
@@ -92,19 +68,21 @@ public sealed class EconomyManager : IEconomyManager
         receiver.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-send-from",
                     ("amount", amount), ("currencyName", receiver.AllowedCurrency), ("accountId", sender.AccountID))));
 
-        _entityManager.Dirty(senderEntity.Value);
-        _entityManager.Dirty(receiverEntity.Value);
+        _entityManager.Dirty(senderEntity);
+        _entityManager.Dirty(receiverEntity);
         return true;
     }
 
-    public bool IsValidAccount(string accountID) => TryGetAccount(accountID, out _);
-
-    public bool TryGetAccount(string accountID, [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? account)
+    public bool IsValidAccount(string accountID)
     {
         var accounts = GetAccounts(EconomyBankAccountMask.All);
-        account = accounts.FirstOrDefault(x => x.Comp.AccountID == accountID);
+        return accounts.ContainsKey(accountID);
+    }
 
-        return account != null && account.Value.Owner.Id != 0;
+    public bool TryGetAccount(string accountID, out Entity<EconomyBankAccountComponent> account)
+    {
+        var accounts = GetAccounts(EconomyBankAccountMask.All);
+        return accounts.TryGetValue(accountID, out account);
     }
 
     public void AddLog(string accountID, EconomyBankAccountLogField log)
@@ -112,33 +90,33 @@ public sealed class EconomyManager : IEconomyManager
         if (!TryGetAccount(accountID, out var account))
             return;
 
-        account.Value.Comp.Logs.Add(log);
-        _entityManager.Dirty(account.Value);
+        account.Comp.Logs.Add(log);
+        _entityManager.Dirty(account);
     }
 
-    public IReadOnlyList<Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
+    public IReadOnlyDictionary<string, Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
     {
         var accountsEnum = _entityManager.EntityQueryEnumerator<EconomyBankAccountComponent>();
-        var list = new List<Entity<EconomyBankAccountComponent>>();
+        var result = new Dictionary<string, Entity<EconomyBankAccountComponent>>();
 
         while (accountsEnum.MoveNext(out var ent, out var comp))
         {
             switch (flag)
             {
                 case EconomyBankAccountMask.All:
-                    list.Add((ent, comp));
+                    result.Add(comp.AccountID, (ent, comp));
                     break;
                 case EconomyBankAccountMask.NotBlocked:
                     if (!comp.Blocked)
-                        list.Add((ent, comp));
+                        result.Add(comp.AccountID, (ent, comp));
                     break;
                 case EconomyBankAccountMask.Blocked:
                     if (comp.Blocked)
-                        list.Add((ent, comp));
+                        result.Add(comp.AccountID, (ent, comp));
                     break;
             }
         }
 
-        return list;
+        return result;
     }
 }
