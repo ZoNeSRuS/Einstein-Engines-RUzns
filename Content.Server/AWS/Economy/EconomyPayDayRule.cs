@@ -14,14 +14,13 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
 {
     [Dependency] private readonly IEntityManager _entMan = default!;
     [Dependency] private readonly EconomyBankAccountSystem _bankAccountSystem = default!;
-    [Dependency] private readonly IEconomyManager _economyManager = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     protected override void Started(EntityUid uid, EconomyPayDayRuleComponent ruleComponent, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
-        var accounts = _economyManager.GetAccounts();
-        if (!_economyManager.TryGetAccount(ruleComponent.PayerAccountId, out var payerAccount))
+        var accounts = _bankAccountSystem.GetAccounts();
+        if (!_bankAccountSystem.TryGetAccount(ruleComponent.PayerAccountId, out var payerAccount))
             return;
 
         if (!_prototype.TryIndex(ruleComponent.SallaryProto, out var sallariesProto))
@@ -76,8 +75,8 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
                 case EconomyPayDayRuleType.Decrementing:
                     if (!_bankAccountSystem.TrySendMoney(account.AccountID, payerAccount.Comp.AccountID, sallary, out err))
                     {
-                        account.Blocked = true;
-                        blockedAccounts.Add(accountEntity);
+                        if (_bankAccountSystem.TrySetAccountParameter(account.AccountID, EconomyBankAccountSystem.EconomyBankAccountParam.Blocked, true))
+                            blockedAccounts.Add(accountEntity);
                     }
                     break;
                 default:

@@ -12,7 +12,6 @@ namespace Content.Shared.AWS.Economy
         [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
         [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
         [Dependency] private readonly SharedUserInterfaceSystem _userInterfaceSystem = default!;
-        [Dependency] private readonly ISharedEconomyManager _economyManager = default!;
 
         public override void Initialize()
         {
@@ -29,9 +28,62 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, EntRemovedFromContainerMessage>(OnATMItemSlotChanged);
         }
 
+        /// <summary>
+        /// Checks if the account exists (valid).
+        /// </summary>
+        /// <returns>True if the account exists, false otherwise.</returns>
+        [PublicAPI]
+        public bool IsValidAccount(string accountID)
+        {
+            var accounts = GetAccounts(EconomyBankAccountMask.All);
+            return accounts.ContainsKey(accountID);
+        }
+
+        /// <summary>
+        /// Tries to fetch the account with the given ID.
+        /// </summary>
+        /// <returns>True if the fetching was successful, false otherwise.</returns>
+        [PublicAPI]
+        public bool TryGetAccount(string accountID, out Entity<EconomyBankAccountComponent> account)
+        {
+            var accounts = GetAccounts(EconomyBankAccountMask.All);
+            return accounts.TryGetValue(accountID, out account);
+        }
+
+        /// <summary>
+        /// Returns all currently existing accounts.
+        /// </summary>
+        /// <param name="flag">Filter mask to fetch accounts.</param>
+        [PublicAPI]
+        public IReadOnlyDictionary<string, Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
+        {
+            var accountsEnum = _entManager.EntityQueryEnumerator<EconomyBankAccountComponent>();
+            var result = new Dictionary<string, Entity<EconomyBankAccountComponent>>();
+
+            while (accountsEnum.MoveNext(out var ent, out var comp))
+            {
+                switch (flag)
+                {
+                    case EconomyBankAccountMask.All:
+                        result.Add(comp.AccountID, (ent, comp));
+                        break;
+                    case EconomyBankAccountMask.NotBlocked:
+                        if (!comp.Blocked)
+                            result.Add(comp.AccountID, (ent, comp));
+                        break;
+                    case EconomyBankAccountMask.Blocked:
+                        if (comp.Blocked)
+                            result.Add(comp.AccountID, (ent, comp));
+                        break;
+                }
+            }
+
+            return result;
+        }
+
         private void OnBankAccountExamine(Entity<EconomyAccountHolderComponent> entity, ref ExaminedEvent args)
         {
-            if (!_economyManager.TryGetAccount(entity.Comp.AccountID, out var accountEntity))
+            if (!TryGetAccount(entity.Comp.AccountID, out var accountEntity))
                 return;
 
             var account = accountEntity.Comp;
@@ -94,7 +146,7 @@ namespace Content.Shared.AWS.Economy
         {
             var card = GetATMInsertedAccount(entity.Comp);
             EconomyBankAccountComponent? bankAccount = null;
-            if (card is not null && _economyManager.TryGetAccount(card.AccountID, out var account))
+            if (card is not null && TryGetAccount(card.AccountID, out var account))
                 bankAccount = account;
 
             _userInterfaceSystem.SetUiState(entity.Owner, EconomyBankATMUiKey.Key, new EconomyBankATMUserInterfaceState()

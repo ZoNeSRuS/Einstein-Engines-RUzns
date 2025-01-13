@@ -33,7 +33,6 @@ namespace Content.Server.AWS.Economy
         [Dependency] private readonly PopupSystem _popupSystem = default!;
         [Dependency] private readonly TransformSystem _transformSystem = default!;
         [Dependency] private readonly IGameTiming _gameTiming = default!;
-        [Dependency] private readonly IEconomyManager _economyManager = default!;
         [Dependency] private readonly StationSystem _stationSystem = default!;
         [Dependency] private readonly PvsOverrideSystem _pvsOverrideSystem = default!;
         [Dependency] private readonly MetaDataSystem _metaDataSystem = default!;
@@ -50,30 +49,23 @@ namespace Content.Server.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
         }
 
+        #region Account management
         /// <summary>
         /// Creates a new bank account entity.
         /// </summary>
-        /// <param name="accountID"></param>
-        /// <param name="accountName"></param>
-        /// <param name="allowedCurrency"></param>
-        /// <param name="balance"></param>
-        /// <param name="penalty"></param>
-        /// <param name="blocked"></param>
-        /// <param name="canReachPayDay"></param>
-        /// <param name="cords"></param>
         /// <returns>Whether the account was successfully created.</returns>
         [PublicAPI]
         public bool TryCreateAccount(string accountID,
-                             string accountName,
-                             ProtoId<CurrencyPrototype> allowedCurrency,
-                             ulong balance = 0,
-                             ulong penalty = 0,
-                             bool blocked = false,
-                             bool canReachPayDay = true,
-                             MapCoordinates? cords = null)
+                                     string accountName,
+                                     ProtoId<CurrencyPrototype> allowedCurrency,
+                                     ulong balance = 0,
+                                     ulong penalty = 0,
+                                     bool blocked = false,
+                                     bool canReachPayDay = true,
+                                     MapCoordinates? cords = null)
         {
             // Return if account with this id already exists.
-            if (_economyManager.IsValidAccount(accountID))
+            if (IsValidAccount(accountID))
                 return false;
 
             var spawnCords = cords ?? MapCoordinates.Nullspace;
@@ -92,25 +84,6 @@ namespace Content.Server.AWS.Economy
             _pvsOverrideSystem.AddGlobalOverride(accountEntity);
             Dirty(accountEntity, accountComp);
             return true;
-        }
-
-        private string GenerateAccountId(string prefix, uint strik, uint numbersPerStrik, string? descriptor)
-        {
-            var res = prefix;
-
-            for (int i = 0; i < strik; i++)
-            {
-                string formedStrik = "";
-
-                for (int num = 0; num < numbersPerStrik; num++)
-                {
-                    formedStrik += _robustRandom.Next(0, 10);
-                }
-
-                res = res.Length == 0 ? formedStrik : res + descriptor + formedStrik;
-            }
-
-            return res;
         }
 
         /// <summary>
@@ -144,14 +117,14 @@ namespace Content.Server.AWS.Economy
                 if (setupID is null)
                     return false;
 
-                if (!_economyManager.TryCreateAccount(setupID,
-                                                      setup.AccountName ?? "UNEXPECTED USER",
-                                                      setup.AllowedCurrency ?? "Thaler",
-                                                      setup.Balance ?? balance,
-                                                      setup.Penalty ?? 0,
-                                                      setup.Blocked ?? false,
-                                                      setup.CanReachPayDay ?? true,
-                                                      cords))
+                if (!TryCreateAccount(setupID,
+                                      setup.AccountName ?? "UNEXPECTED USER",
+                                      setup.AllowedCurrency ?? "Thaler",
+                                      setup.Balance ?? balance,
+                                      setup.Penalty ?? 0,
+                                      setup.Blocked ?? false,
+                                      setup.CanReachPayDay ?? true,
+                                      cords))
                     return false;
 
                 entity.Comp.AccountID = setupID;
@@ -165,14 +138,14 @@ namespace Content.Server.AWS.Economy
                 var accountSetup = entity.Comp.AccountSetup;
                 balance = accountSetup?.Balance ?? balance;
 
-                if (!_economyManager.TryCreateAccount(accountID,
-                                                      accountName,
-                                                      accountSetup?.AllowedCurrency ?? "Thaler",
-                                                      balance,
-                                                      accountSetup?.Penalty ?? 0,
-                                                      accountSetup?.Blocked ?? false,
-                                                      accountSetup?.CanReachPayDay ?? true,
-                                                      cords))
+                if (!TryCreateAccount(accountID,
+                                      accountName,
+                                      accountSetup?.AllowedCurrency ?? "Thaler",
+                                      balance,
+                                      accountSetup?.Penalty ?? 0,
+                                      accountSetup?.Blocked ?? false,
+                                      accountSetup?.CanReachPayDay ?? true,
+                                      cords))
                     return false;
 
                 entity.Comp.AccountID = accountID;
@@ -184,30 +157,65 @@ namespace Content.Server.AWS.Economy
             return false;
         }
 
-        private void Withdraw(EconomyAccountHolderComponent component, EconomyBankATMComponent atm, ulong sum)
+        /// <summary>
+        /// Tries to set the parameter chosen in arguments to a given value.
+        /// </summary>
+        /// <param name="param">Parameter to be changed.</param>
+        /// <param name="value">New value of the parameter, must be of the same type as a changed value.</param>
+        [PublicAPI]
+        public bool TrySetAccountParameter(string accountID, EconomyBankAccountParam param, object value)
         {
-            if (!_economyManager.TryChangeAccountBalance(component.AccountID, sum, false))
-                return;
+            if (!TryGetAccount(accountID, out var entity))
+                return false;
 
-            var pos = _transformSystem.GetMapCoordinates(atm.Owner);
-            DropMoneyHandler(component.MoneyHolderEntId, sum, pos);
-
-            if (_economyManager.TryGetAccount(component.AccountID, out var account))
+            var account = entity.Comp;
+            switch (param)
             {
-                var log = new EconomyBankAccountLogField(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-withdraw",
-                ("amount", sum), ("currencyName", account.Comp.AllowedCurrency)));
-                _economyManager.AddLog(component.AccountID, log);
+                case EconomyBankAccountParam.AccountName:
+                    if (value is not string name)
+                        return false;
+                    account.AccountName = name;
+                    break;
+                case EconomyBankAccountParam.Blocked:
+                    if (value is not bool blocked)
+                        return false;
+                    account.Blocked = blocked;
+                    break;
+                case EconomyBankAccountParam.CanReachPayDay:
+                    if (value is not bool canReachPayDay)
+                        return false;
+                    account.CanReachPayDay = canReachPayDay;
+                    break;
+                default:
+                    return false;
             }
 
-            _entManager.Dirty(component);
+            Dirty(entity);
+            return true;
+        }
+
+        public enum EconomyBankAccountParam
+        {
+            AccountName,
+            Blocked,
+            CanReachPayDay,
         }
 
         [PublicAPI]
         public bool TryWithdraw(EconomyAccountHolderComponent component, EconomyBankATMComponent atm, ulong sum, [NotNullWhen(false)] out string? errorMessage)
         {
-            errorMessage = "";
-            if (!_economyManager.TryGetAccount(component.AccountID, out var account))
+            errorMessage = null;
+            if (!TryGetAccount(component.AccountID, out var account))
+            {
+                errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout");
                 return false;
+            }
+
+            if (account.Comp.Blocked)
+            {
+                errorMessage = Loc.GetString("economybanksystem-transaction-error-account-blocked", ("accountId", account.Comp.AccountID));
+                return false;
+            }
 
             if (sum > 0 && account.Comp.Balance >= sum)
             {
@@ -236,19 +244,25 @@ namespace Content.Server.AWS.Economy
         {
             errorMessage = null;
 
-            if (fromAccount.Balance >= amount)
+            if (fromAccount.Balance < amount)
             {
-                if (recipientAccount is not null)
-                {
-                    return _economyManager.TryChangeAccountBalance(recipientAccount.AccountID, amount);
-                }
+                errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
+                return false;
+            }
 
+            if (recipientAccount is null || !TryGetAccount(recipientAccount.AccountID, out var account))
+            {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout");
                 return false;
             }
 
-            errorMessage = Loc.GetString("economybanksystem-transaction-error-notenoughmoney");
-            return false;
+            if (account.Comp.Blocked)
+            {
+                errorMessage = Loc.GetString("economybanksystem-transaction-error-account-blocked", ("accountId", account.Comp.AccountID));
+                return false;
+            }
+
+            return TryChangeAccountBalance(recipientAccount.AccountID, amount);
         }
 
         [PublicAPI]
@@ -256,9 +270,15 @@ namespace Content.Server.AWS.Economy
         {
             errorMessage = null;
 
-            if (!_economyManager.IsValidAccount(recipientAccountId))
+            if (!TryGetAccount(recipientAccountId, out var account))
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout", ("accountId", recipientAccountId));
+                return false;
+            }
+
+            if (account.Comp.Blocked)
+            {
+                errorMessage = Loc.GetString("economybanksystem-transaction-error-account-blocked", ("accountId", account.Comp.AccountID));
                 return false;
             }
 
@@ -268,7 +288,7 @@ namespace Content.Server.AWS.Economy
                 return false;
             }
 
-            return _economyManager.TryChangeAccountBalance(recipientAccountId, amount);
+            return TryChangeAccountBalance(recipientAccountId, amount);
         }
 
         [PublicAPI]
@@ -276,15 +296,22 @@ namespace Content.Server.AWS.Economy
         {
             errorMessage = null;
 
-            if (!_economyManager.TryGetAccount(fromAccount.AccountID, out var fromBankAccount))
+            if (!TryGetAccount(fromAccount.AccountID, out var fromBankAccount))
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout", ("accountId", fromAccount.AccountID));
                 return false;
             }
 
-            if (!_economyManager.IsValidAccount(recipientAccountId))
+            if (!TryGetAccount(recipientAccountId, out var recipientAccount))
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout", ("accountId", recipientAccountId));
+                return false;
+            }
+
+            if (fromBankAccount.Comp.Blocked || recipientAccount.Comp.Blocked)
+            {
+                var blockedAccountID = fromBankAccount.Comp.Blocked ? fromBankAccount.Comp.AccountID : recipientAccount.Comp.AccountID;
+                errorMessage = Loc.GetString("economybanksystem-transaction-error-account-blocked", ("accountId", blockedAccountID));
                 return false;
             }
 
@@ -294,7 +321,7 @@ namespace Content.Server.AWS.Economy
                 return false;
             }
 
-            return _economyManager.TryTransferMoney(fromBankAccount.Comp.AccountID, recipientAccountId, amount);
+            return TryTransferMoney(fromBankAccount.Comp.AccountID, recipientAccountId, amount);
         }
 
         [PublicAPI]
@@ -302,15 +329,22 @@ namespace Content.Server.AWS.Economy
         {
             errorMessage = null;
 
-            if (!_economyManager.TryGetAccount(fromAccountId, out var fromBankAccount))
+            if (!TryGetAccount(fromAccountId, out var fromBankAccount))
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout", ("accountId", fromAccountId));
                 return false;
             }
 
-            if (!_economyManager.IsValidAccount(recipientAccountId))
+            if (!TryGetAccount(recipientAccountId, out var recipientAccount))
             {
                 errorMessage = Loc.GetString("economybanksystem-transaction-error-notfoundaccout", ("accountId", recipientAccountId));
+                return false;
+            }
+
+            if (fromBankAccount.Comp.Blocked || recipientAccount.Comp.Blocked)
+            {
+                var blockedAccountID = fromBankAccount.Comp.Blocked ? fromAccountId : recipientAccountId;
+                errorMessage = Loc.GetString("economybanksystem-transaction-error-account-blocked", ("accountId", blockedAccountID));
                 return false;
             }
 
@@ -320,7 +354,110 @@ namespace Content.Server.AWS.Economy
                 return false;
             }
 
-            return _economyManager.TryTransferMoney(fromAccountId, recipientAccountId, amount);
+            return TryTransferMoney(fromAccountId, recipientAccountId, amount);
+        }
+
+        /// <summary>
+        /// Changes the balance of the account.
+        /// </summary>
+        /// <param name="addition">Whether to add or substract the given amount.</param>
+        private bool TryChangeAccountBalance(string accountID, ulong amount, bool addition = true)
+        {
+            if (!TryGetAccount(accountID, out var entity))
+                return false;
+
+            var account = entity.Comp;
+            if (!addition)
+            {
+                if (account.Balance - amount < 0)
+                    return false;
+
+                account.Balance -= amount;
+                return true;
+            }
+
+            account.Balance += amount;
+
+            Dirty(entity);
+            return true;
+        }
+
+        /// <summary>
+        /// Transfer money from one account to another (with logs).
+        /// </summary>
+        /// <returns>True if the transfer was successful, false otherwise.</returns>
+        private bool TryTransferMoney(string senderID, string receiverID, ulong amount)
+        {
+            if (amount <= 0 ||
+                !TryGetAccount(senderID, out var senderEntity) ||
+                !TryGetAccount(receiverID, out var receiverEntity))
+                return false;
+
+            var sender = senderEntity.Comp;
+            var receiver = receiverEntity.Comp;
+            if (sender.Balance < amount)
+                return false;
+
+            sender.Balance -= amount;
+            sender.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-send-to",
+                        ("amount", amount), ("currencyName", receiver.AllowedCurrency), ("accountId", receiver.AccountID))));
+            receiver.Balance += amount;
+            receiver.Logs.Add(new(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-send-from",
+                        ("amount", amount), ("currencyName", receiver.AllowedCurrency), ("accountId", sender.AccountID))));
+
+            Dirty(senderEntity);
+            Dirty(receiverEntity);
+            return true;
+        }
+
+        /// <summary>
+        /// Adds a new log to the account.
+        /// </summary>
+        private void AddLog(string accountID, EconomyBankAccountLogField log)
+        {
+            if (!TryGetAccount(accountID, out var account))
+                return;
+
+            account.Comp.Logs.Add(log);
+            Dirty(account);
+        }
+
+        private void Withdraw(EconomyAccountHolderComponent component, EconomyBankATMComponent atm, ulong sum)
+        {
+            if (!TryChangeAccountBalance(component.AccountID, sum, false))
+                return;
+
+            var pos = _transformSystem.GetMapCoordinates(atm.Owner);
+            DropMoneyHandler(component.MoneyHolderEntId, sum, pos);
+
+            if (TryGetAccount(component.AccountID, out var account))
+            {
+                var log = new EconomyBankAccountLogField(_gameTiming.CurTime, Loc.GetString("economybanksystem-log-withdraw",
+                ("amount", sum), ("currencyName", account.Comp.AllowedCurrency)));
+                AddLog(component.AccountID, log);
+            }
+
+            _entManager.Dirty(component);
+        }
+        #endregion
+
+        private string GenerateAccountId(string prefix, uint strik, uint numbersPerStrik, string? descriptor)
+        {
+            var res = prefix;
+
+            for (int i = 0; i < strik; i++)
+            {
+                string formedStrik = "";
+
+                for (int num = 0; num < numbersPerStrik; num++)
+                {
+                    formedStrik += _robustRandom.Next(0, 10);
+                }
+
+                res = res.Length == 0 ? formedStrik : res + descriptor + formedStrik;
+            }
+
+            return res;
         }
 
         private void OnAccountComponentInit(Entity<EconomyAccountHolderComponent> entity, ref ComponentInit args)
@@ -383,6 +520,7 @@ namespace Content.Server.AWS.Economy
             _audioSystem.PlayPvs(component.EmagSound, uid);
             args.Handled = true;
         }
+
         private void OnATMInteracted(EntityUid uid, EconomyBankATMComponent component, InteractUsingEvent args)
         {
             var usedEnt = args.Used;
@@ -395,11 +533,11 @@ namespace Content.Server.AWS.Economy
 
             if (TrySendMoney(economyMoneyHolderComponent, insertedAccountComponent, amount, out var error))
             {
-                if (insertedAccountComponent is not null && _economyManager.TryGetAccount(insertedAccountComponent.AccountID, out var account))
-                    _economyManager.AddLog(account.Comp.AccountID,
-                                           new EconomyBankAccountLogField(_gameTiming.CurTime,
-                                           Loc.GetString("economybanksystem-log-insert",
-                                           ("amount", amount), ("currencyName", account.Comp.AllowedCurrency))));
+                if (insertedAccountComponent is not null && TryGetAccount(insertedAccountComponent.AccountID, out var account))
+                    AddLog(account.Comp.AccountID,
+                           new EconomyBankAccountLogField(_gameTiming.CurTime,
+                           Loc.GetString("economybanksystem-log-insert",
+                           ("amount", amount), ("currencyName", account.Comp.AllowedCurrency))));
 
                 if (_netManager.IsServer)
                     _popupSystem.PopupEntity(Loc.GetString("economybanksystem-atm-moneyentering"), uid, type: PopupType.Medium);
@@ -411,6 +549,7 @@ namespace Content.Server.AWS.Economy
 
             UpdateATMUserInterface((uid, component), error);
         }
+
         private void OnTerminalInteracted(EntityUid uid, EconomyBankTerminalComponent component, InteractUsingEvent args)
         {
             var amount = component.Amount;
@@ -450,7 +589,7 @@ namespace Content.Server.AWS.Economy
 
             }
 
-            if (!_economyManager.TryGetAccount(component.LinkedAccount, out var receiverAccount))
+            if (!TryGetAccount(component.LinkedAccount, out var receiverAccount))
                 return;
 
             if (economyMoneyHolderComponent is not null)

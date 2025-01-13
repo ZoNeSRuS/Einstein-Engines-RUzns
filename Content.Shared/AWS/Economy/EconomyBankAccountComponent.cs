@@ -6,9 +6,9 @@ using Content.Shared.Store;
 namespace Content.Shared.AWS.Economy
 {
     /// <summary>
-    /// This component is used to define the account. This component should not be created manually. Work with it through <see cref="ISharedEconomyManager"></cref>.
+    /// This component is used to define the account. This component should not be created manually. Work with it through <see cref="EconomyBankAccountSystemShared"></cref> or the server system.
     /// </summary>
-    [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+    [RegisterComponent, NetworkedComponent, AutoGenerateComponentState, Access(typeof(EconomyBankAccountSystemShared))]
     public sealed partial class EconomyBankAccountComponent : Component
     {
         [ViewVariables(VVAccess.ReadWrite)]
