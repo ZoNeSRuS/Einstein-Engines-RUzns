@@ -29,4 +29,7 @@ public sealed partial class BankAccountSetup
 
     [DataField("canReachPayDay")]
     public bool? CanReachPayDay;
+
+    [DataField("accountTags")]
+    public List<BankAccountTag>? AccountTags;
 }

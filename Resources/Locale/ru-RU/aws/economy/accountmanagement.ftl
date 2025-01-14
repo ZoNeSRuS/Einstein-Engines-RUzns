@@ -1,0 +1,9 @@
+economybanksystem-management-console-accounts-title = Консоль управления счетами
+economybanksystem-management-console-management-title = Управление счетом
+economybanksystem-management-console-management-blocked = Статус блокировки
+economybanksystem-management-console-management-block = Заблокирован
+economybanksystem-management-console-management-unblock = Разблокирован
+economybanksystem-management-console-management-block-button = Заблокировать
+economybanksystem-management-console-management-unblock-button = Разблокировать
+economybanksystem-management-console-management-find-account = Найти счёт
+economybanksystem-management-console-management-change-name = Изменить имя

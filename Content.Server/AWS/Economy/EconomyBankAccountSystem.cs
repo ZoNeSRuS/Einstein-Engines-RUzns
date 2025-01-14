@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using Content.Server.Station.Systems;
 using Robust.Server.GameStates;
 using Content.Shared.Store;
+using Content.Shared.Access.Systems;
 
 namespace Content.Server.AWS.Economy
 {
@@ -36,6 +37,7 @@ namespace Content.Server.AWS.Economy
         [Dependency] private readonly StationSystem _stationSystem = default!;
         [Dependency] private readonly PvsOverrideSystem _pvsOverrideSystem = default!;
         [Dependency] private readonly MetaDataSystem _metaDataSystem = default!;
+        [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
 
         public override void Initialize()
         {
@@ -47,6 +49,8 @@ namespace Content.Server.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, InteractUsingEvent>(OnATMInteracted);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMWithdrawMessage>(OnATMWithdrawMessage);
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
+
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsoleChangeParameterMessage>(OnManagementConsoleParameterMessage);
         }
 
         #region Account management
@@ -62,6 +66,7 @@ namespace Content.Server.AWS.Economy
                                      ulong penalty = 0,
                                      bool blocked = false,
                                      bool canReachPayDay = true,
+                                     List<BankAccountTag>? accountTags = default!,
                                      MapCoordinates? cords = null)
         {
             // Return if account with this id already exists.
@@ -80,6 +85,7 @@ namespace Content.Server.AWS.Economy
             accountComp.Penalty = penalty;
             accountComp.Blocked = blocked;
             accountComp.CanReachPayDay = canReachPayDay;
+            accountComp.AccountTags = accountTags ?? [];
 
             _pvsOverrideSystem.AddGlobalOverride(accountEntity);
             Dirty(accountEntity, accountComp);
@@ -124,6 +130,7 @@ namespace Content.Server.AWS.Economy
                                       setup.Penalty ?? 0,
                                       setup.Blocked ?? false,
                                       setup.CanReachPayDay ?? true,
+                                      setup.AccountTags ?? [],
                                       cords))
                     return false;
 
@@ -145,6 +152,7 @@ namespace Content.Server.AWS.Economy
                                       accountSetup?.Penalty ?? 0,
                                       accountSetup?.Blocked ?? false,
                                       accountSetup?.CanReachPayDay ?? true,
+                                      accountSetup?.AccountTags ?? [],
                                       cords))
                     return false;
 
@@ -192,13 +200,6 @@ namespace Content.Server.AWS.Economy
 
             Dirty(entity);
             return true;
-        }
-
-        public enum EconomyBankAccountParam
-        {
-            AccountName,
-            Blocked,
-            CanReachPayDay,
         }
 
         [PublicAPI]
@@ -614,6 +615,21 @@ namespace Content.Server.AWS.Economy
             UpdateTerminal((uid, component), 0, string.Empty);
 
             _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", receiverAccount.Comp.AllowedCurrency)), uid, type: PopupType.Medium);
+        }
+
+        private void OnManagementConsoleParameterMessage(Entity<EconomyManagementConsoleComponent> ent, ref EconomyManagementConsoleChangeParameterMessage args)
+        {
+            if (!TryComp<AccessReaderComponent>(ent, out var accessReader) || ent.Comp.CardSlot.Item is not { } idCard)
+                return;
+
+            // Check for priveleges
+            if (!_accessReaderSystem.IsAllowed(idCard, ent.Owner, accessReader))
+                return;
+
+            if (!IsValidAccount(args.AccountID))
+                return;
+
+            TrySetAccountParameter(args.AccountID, args.Param, args.Value);
         }
     }
 }

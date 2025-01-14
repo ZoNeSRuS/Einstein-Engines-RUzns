@@ -43,3 +43,59 @@
       state: cpu_command
     - type: ComputerBoard
       prototype: ComputerLogs
+
+- type: entity
+  parent: BaseComputer
+  id: ComputerEconomyManagement
+  name: Консоль управления счетами
+  description: Компьютер, используемый для управления финансовыми счетами.
+  components:
+  - type: EconomyManagementConsole
+    cardSlot:
+      ejectSound: /Audio/Machines/id_swipe.ogg
+      insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+      ejectOnBreak: true
+      swap: false
+      whitelist:
+        components:
+        - IdCard
+  - type: StationAiWhitelist
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: AccessReader
+    access: [[ "Captain", "HeadOfPersonnel" ]]
+  - type: ActivatableUI
+    key: enum.EconomyManagementConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.EconomyManagementConsoleUiKey.Key:
+        type: EconomyManagementConsoleBoundUserInterface
+  - type: ItemSlots
+  - type: Computer
+    board: ComputerLogsCircuitboard
+  - type: PointLight
+    radius: 1.5
+    energy: 1.6
+    color: "#3c5eb5"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+
+- type: entity
+  parent: [ BaseComputerCircuitboard, BaseGrandTheftContraband ]
+  id: ComputerEconomyManagementCircuitboard
+  name: Плата консоли управления счетами
+  description: Печатная плата для консоли, используемой для управления финансовыми счетами.
+  components:
+    - type: Sprite
+      state: cpu_command
+    - type: ComputerBoard
+      prototype: ComputerEconomyManagement

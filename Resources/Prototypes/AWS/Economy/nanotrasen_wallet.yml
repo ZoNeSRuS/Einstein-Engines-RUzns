@@ -114,6 +114,8 @@
       accountName: Станция
       allowedCurrency: Thaler
       balance: 10000
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -129,6 +131,8 @@
       accountName: Инженерный отдел
       allowedCurrency: Thaler
       balance: 1000
+      accountTags:
+        - Department
     
 
 - type: entity
@@ -145,6 +149,8 @@
       accountName: Сервисный отдел
       allowedCurrency: Thaler
       balance: 500
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -160,6 +166,8 @@
       allowedCurrency: Thaler
       accountName: Служба безопасности
       balance: 1000
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -175,6 +183,8 @@
       accountName: Медицинский отдел
       allowedCurrency: Thaler
       balance: 900
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -190,6 +200,8 @@
       accountName: Научный отдел
       allowedCurrency: Thaler
       balance: 1000
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -205,6 +217,8 @@
       accountName: Карго отдел
       allowedCurrency: Thaler
       balance: 1000
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -238,6 +252,8 @@
       accountName: Касса Бара
       allowedCurrency: Thaler
       balance: 250
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -254,6 +270,8 @@
       accountName: Касса Кухни
       allowedCurrency: Thaler
       balance: 125
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -270,6 +288,8 @@
       accountName: Касса Гидропоники
       allowedCurrency: Thaler
       balance: 125
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -286,6 +306,8 @@
       accountName: Касса Химии
       allowedCurrency: Thaler
       balance: 100
+      accountTags:
+        - Department
 
 - type: entity
   parent: BankAccountNanotrasen
@@ -302,6 +324,8 @@
       accountName: Касса Меда
       allowedCurrency: Thaler
       balance: 50
+      accountTags:
+        - Department
 
 #Сейфы
 - type: entity

@@ -75,7 +75,7 @@ public sealed class EconomyPayDayRule : StationEventSystem<EconomyPayDayRuleComp
                 case EconomyPayDayRuleType.Decrementing:
                     if (!_bankAccountSystem.TrySendMoney(account.AccountID, payerAccount.Comp.AccountID, sallary, out err))
                     {
-                        if (_bankAccountSystem.TrySetAccountParameter(account.AccountID, EconomyBankAccountSystem.EconomyBankAccountParam.Blocked, true))
+                        if (_bankAccountSystem.TrySetAccountParameter(account.AccountID, EconomyBankAccountParam.Blocked, true))
                             blockedAccounts.Add(accountEntity);
                     }
                     break;

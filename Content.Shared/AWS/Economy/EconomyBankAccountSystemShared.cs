@@ -3,6 +3,10 @@ using Content.Shared.Examine;
 using Robust.Shared.Containers;
 using Content.Shared.Popups;
 using JetBrains.Annotations;
+using Robust.Shared.Serialization;
+using System.Linq;
+using Content.Shared.Access.Systems;
+using Content.Shared.Access.Components;
 
 namespace Content.Shared.AWS.Economy
 {
@@ -12,6 +16,7 @@ namespace Content.Shared.AWS.Economy
         [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
         [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
         [Dependency] private readonly SharedUserInterfaceSystem _userInterfaceSystem = default!;
+        [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
 
         public override void Initialize()
         {
@@ -26,6 +31,11 @@ namespace Content.Shared.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, ComponentRemove>(OnATMComponentRemove);
             SubscribeLocalEvent<EconomyBankATMComponent, EntInsertedIntoContainerMessage>(OnATMItemSlotChanged);
             SubscribeLocalEvent<EconomyBankATMComponent, EntRemovedFromContainerMessage>(OnATMItemSlotChanged);
+
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, ComponentInit>(OnManagementConsoleInit);
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, ComponentRemove>(OnManagementConsoleRemove);
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, EntInsertedIntoContainerMessage>(OnManagementConsoleSlotChanged);
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, EntRemovedFromContainerMessage>(OnManagementConsoleEntRemoved);
         }
 
         /// <summary>
@@ -55,7 +65,7 @@ namespace Content.Shared.AWS.Economy
         /// </summary>
         /// <param name="flag">Filter mask to fetch accounts.</param>
         [PublicAPI]
-        public IReadOnlyDictionary<string, Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked)
+        public IReadOnlyDictionary<string, Entity<EconomyBankAccountComponent>> GetAccounts(EconomyBankAccountMask flag = EconomyBankAccountMask.NotBlocked, List<BankAccountTag>? accountTags = null)
         {
             var accountsEnum = _entManager.EntityQueryEnumerator<EconomyBankAccountComponent>();
             var result = new Dictionary<string, Entity<EconomyBankAccountComponent>>();
@@ -73,6 +83,10 @@ namespace Content.Shared.AWS.Economy
                         break;
                     case EconomyBankAccountMask.Blocked:
                         if (comp.Blocked)
+                            result.Add(comp.AccountID, (ent, comp));
+                        break;
+                    case EconomyBankAccountMask.ByTags:
+                        if (accountTags != null && comp.AccountTags.Any(accountTags.Contains))
                             result.Add(comp.AccountID, (ent, comp));
                         break;
                 }
@@ -180,11 +194,70 @@ namespace Content.Shared.AWS.Economy
 
             _entManager.Dirty(entity);
         }
+
+        private void OnManagementConsoleInit(Entity<EconomyManagementConsoleComponent> ent, ref ComponentInit args)
+        {
+            _itemSlotsSystem.AddItemSlot(ent, EconomyManagementConsoleComponent.ConsoleCardID, ent.Comp.CardSlot);
+        }
+
+        private void OnManagementConsoleRemove(Entity<EconomyManagementConsoleComponent> ent, ref ComponentRemove args)
+        {
+            _itemSlotsSystem.RemoveItemSlot(ent, ent.Comp.CardSlot);
+        }
+
+        private void OnManagementConsoleSlotChanged(EntityUid ent, EconomyManagementConsoleComponent comp, ContainerModifiedMessage args)
+        {
+            if (args.Container.ID != comp.CardSlot.ID)
+                return;
+
+            if (!TryComp<AccessReaderComponent>(ent, out var accessReader))
+                return;
+
+            if (comp.CardSlot.Item is not { } idCard)
+                return;
+
+            UpdateManagementConsoleUserInterface((ent, comp), _accessReaderSystem.IsAllowed(idCard, ent, accessReader));
+        }
+
+
+        private void OnManagementConsoleEntRemoved(Entity<EconomyManagementConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
+        {
+            if (args.Container.ID != ent.Comp.CardSlot.ID)
+                return;
+
+            // Card got removed, so no priveleges
+            UpdateManagementConsoleUserInterface(ent, false);
+        }
+
+        [PublicAPI]
+        public void UpdateManagementConsoleUserInterface(Entity<EconomyManagementConsoleComponent> ent, bool priveleged)
+        {
+            var uiState = new EconomyManagementConsoleUserInterfaceState()
+            {
+                Priveleged = priveleged
+            };
+            _userInterfaceSystem.SetUiState(ent.Owner, EconomyManagementConsoleUiKey.Key, uiState);
+        }
     }
     public enum EconomyBankAccountMask
     {
         All,
         NotBlocked,
         Blocked,
+        ByTags,
+    }
+
+    [Serializable, NetSerializable]
+    public enum EconomyBankAccountParam
+    {
+        AccountName,
+        Blocked,
+        CanReachPayDay,
+    }
+
+    [Serializable, NetSerializable]
+    public enum BankAccountTag
+    {
+        Department,
     }
 }
