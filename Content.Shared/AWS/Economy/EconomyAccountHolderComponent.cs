@@ -6,6 +6,8 @@ namespace Content.Shared.AWS.Economy;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class EconomyAccountHolderComponent : Component
 {
+    public const string NoValueID = "NO VALUE";
+
     [ViewVariables(VVAccess.ReadWrite), DataField(required: true)]
     public ProtoId<EconomyAccountIdPrototype> AccountIdByProto = "Nanotrasen";
 

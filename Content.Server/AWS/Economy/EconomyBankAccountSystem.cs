@@ -51,6 +51,8 @@ namespace Content.Server.AWS.Economy
             SubscribeLocalEvent<EconomyBankATMComponent, EconomyBankATMTransferMessage>(OnATMTransferMessage);
 
             SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsoleChangeParameterMessage>(OnManagementConsoleParameterMessage);
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsoleChangeHolderIDMessage>(OnManagementConsoleChangeHolderIDMessage);
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsoleInitAccountOnHolderMessage>(OnManagementConsoleInitAccountOnHolderMessage);
         }
 
         #region Account management
@@ -62,13 +64,15 @@ namespace Content.Server.AWS.Economy
         public bool TryCreateAccount(string accountID,
                                      string accountName,
                                      ProtoId<CurrencyPrototype> allowedCurrency,
-                                     ulong balance = 0,
-                                     ulong penalty = 0,
-                                     bool blocked = false,
-                                     bool canReachPayDay = true,
-                                     List<BankAccountTag>? accountTags = default!,
-                                     MapCoordinates? cords = null)
+                                     ulong balance,
+                                     ulong penalty,
+                                     bool blocked,
+                                     bool canReachPayDay,
+                                     List<BankAccountTag>? accountTags,
+                                     MapCoordinates? cords,
+                                     [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? account)
         {
+            account = null;
             // Return if account with this id already exists.
             if (IsValidAccount(accountID))
                 return false;
@@ -87,6 +91,7 @@ namespace Content.Server.AWS.Economy
             accountComp.CanReachPayDay = canReachPayDay;
             accountComp.AccountTags = accountTags ?? [];
 
+            account = (accountEntity, accountComp);
             _pvsOverrideSystem.AddGlobalOverride(accountEntity);
             Dirty(accountEntity, accountComp);
             return true;
@@ -96,8 +101,9 @@ namespace Content.Server.AWS.Economy
         /// Enables a card or a bank account (described in setup) for usage.
         /// </summary>
         [PublicAPI]
-        public bool TryActivate(Entity<EconomyAccountHolderComponent> entity)
+        public bool TryActivate(Entity<EconomyAccountHolderComponent> entity, [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? activatedAccount)
         {
+            activatedAccount = null;
             if (!_prototypeManager.TryIndex(entity.Comp.AccountIdByProto, out EconomyAccountIdPrototype? proto))
                 return false;
 
@@ -131,7 +137,8 @@ namespace Content.Server.AWS.Economy
                                       setup.Blocked ?? false,
                                       setup.CanReachPayDay ?? true,
                                       setup.AccountTags ?? [],
-                                      cords))
+                                      cords,
+                                      out activatedAccount))
                     return false;
 
                 entity.Comp.AccountID = setupID;
@@ -153,7 +160,8 @@ namespace Content.Server.AWS.Economy
                                       accountSetup?.Blocked ?? false,
                                       accountSetup?.CanReachPayDay ?? true,
                                       accountSetup?.AccountTags ?? [],
-                                      cords))
+                                      cords,
+                                      out activatedAccount))
                     return false;
 
                 entity.Comp.AccountID = accountID;
@@ -467,7 +475,7 @@ namespace Content.Server.AWS.Economy
             if (entity.Comp.AccountSetup is null || HasComp<IdCardComponent>(entity))
                 return;
 
-            TryActivate(entity);
+            TryActivate(entity, out _);
         }
 
         private void OnATMWithdrawMessage(EntityUid uid, EconomyBankATMComponent atm, EconomyBankATMWithdrawMessage args)
@@ -617,6 +625,50 @@ namespace Content.Server.AWS.Economy
             _popupSystem.PopupEntity(Loc.GetString("economybanksystem-transaction-success", ("amount", amount), ("currencyName", receiverAccount.Comp.AllowedCurrency)), uid, type: PopupType.Medium);
         }
 
+        private void OnManagementConsoleChangeHolderIDMessage(Entity<EconomyManagementConsoleComponent> ent, ref EconomyManagementConsoleChangeHolderIDMessage args)
+        {
+            if (!TryComp<AccessReaderComponent>(ent, out var accessReader) || ent.Comp.CardSlot.Item is not { } idCard)
+                return;
+
+            // Check for privileges
+            if (!_accessReaderSystem.IsAllowed(idCard, ent.Owner, accessReader))
+                return;
+
+            var holder = GetEntity(args.AccountHolder);
+            if (!TryComp<EconomyAccountHolderComponent>(holder, out var holderComp))
+                return;
+
+            // Change the holder ID
+            if (!TryGetAccount(args.NewID, out var account))
+                return;
+
+            holderComp.AccountID = account.Comp.AccountID;
+            holderComp.AccountName = account.Comp.AccountName;
+            Dirty(holder, holderComp);
+            UpdateManagementConsoleUserInterface(ent);
+        }
+
+        private void OnManagementConsoleInitAccountOnHolderMessage(Entity<EconomyManagementConsoleComponent> ent, ref EconomyManagementConsoleInitAccountOnHolderMessage args)
+        {
+            if (!TryComp<AccessReaderComponent>(ent, out var accessReader) || ent.Comp.CardSlot.Item is not { } idCard)
+                return;
+
+            // Check for privileges
+            if (!_accessReaderSystem.IsAllowed(idCard, ent.Owner, accessReader))
+                return;
+
+            // Initialize account on holder
+            var holder = GetEntity(args.AccountHolder);
+
+            if (!TryComp<EconomyAccountHolderComponent>(holder, out var holderComp) || !TryActivate((holder, holderComp), out var account))
+                return;
+
+            holderComp.AccountID = account.Value.Comp.AccountID;
+            holderComp.AccountName = account.Value.Comp.AccountName;
+            Dirty(holder, holderComp);
+            UpdateManagementConsoleUserInterface(ent);
+        }
+
         private void OnManagementConsoleParameterMessage(Entity<EconomyManagementConsoleComponent> ent, ref EconomyManagementConsoleChangeParameterMessage args)
         {
             if (!TryComp<AccessReaderComponent>(ent, out var accessReader) || ent.Comp.CardSlot.Item is not { } idCard)
@@ -630,6 +682,7 @@ namespace Content.Server.AWS.Economy
                 return;
 
             TrySetAccountParameter(args.AccountID, args.Param, args.Value);
+            UpdateManagementConsoleUserInterface(ent);
         }
     }
 }

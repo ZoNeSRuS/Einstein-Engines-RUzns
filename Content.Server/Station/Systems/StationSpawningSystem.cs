@@ -253,7 +253,7 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
 
         // SS14RU
         if (TryComp<Shared.AWS.Economy.EconomyAccountHolderComponent>(cardId, out var economyAccountHolder))
-            _bankAccountSystem.TryActivate((cardId, economyAccountHolder));
+            _bankAccountSystem.TryActivate((cardId, economyAccountHolder), out _);
         // SS14RU
     }
 

@@ -1,0 +1,36 @@
+<Control xmlns="https://spacestation14.io"
+         xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:ui="clr-namespace:Content.Client.AWS.Economy.UI.ManagementConsole"
+    MinSize="550 320">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="5">
+        <GridContainer Columns="2" HorizontalExpand="True" Margin="0 0 0 10">
+            <Label Text="{Loc 'economybanksystem-management-console-management-initialized-title'}" HorizontalExpand="True" />
+            <Label Name="AccountInitLabel" HorizontalExpand="True" />
+            <Label Text="{Loc 'economy-bank-atm-menu-account-id'}" HorizontalExpand="True" />
+            <Label Name="AccountIdLabel" HorizontalExpand="True" />
+            <Label Text="{Loc 'economy-bank-atm-menu-account-owner'}" HorizontalExpand="True" />
+            <Label Name="AccountOwnerLabel" HorizontalExpand="True" />
+            <Label Text="{Loc 'economy-bank-atm-menu-account-balance'}" HorizontalExpand="True" />
+            <Label Name="AccountBalanceLabel" HorizontalExpand="True" />
+            <Label Text="{Loc 'economybanksystem-management-console-management-blocked'}" HorizontalExpand="True" />
+            <Label Name="AccountBlockStatusLabel" HorizontalExpand="True" />
+            <Label Text="{Loc 'economybanksystem-management-console-management-salary'}" HorizontalExpand="True" />
+            <Label Name="AccountPaydayStatusLabel" HorizontalExpand="True" />
+        </GridContainer>
+        <PanelContainer StyleClasses="LowDivider" />
+        <Label Text="{Loc 'economybanksystem-management-console-management-change-name'}" />
+        <LineEdit Name="ChangeNamePrompt" HorizontalExpand="True" />
+        <Button Name="ChangeNameButton" Text="{Loc 'economybanksystem-management-console-management-change-name'}" Disabled="True" HorizontalAlignment="Right" />
+        <PanelContainer StyleClasses="LowDivider" />
+        <Label Text="{Loc 'economybanksystem-management-console-management-block-title'}" />
+        <Button Name="BlockButton" Text="-" Disabled="True" HorizontalAlignment="Right" />
+        <PanelContainer StyleClasses="LowDivider" />
+        <Label Text="{Loc 'economybanksystem-management-console-management-account-title'}" />
+        <LineEdit Name="ChangeAccountPrompt" HorizontalExpand="True" />
+        <Button Name="ChangeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-change-button'}" Disabled="True" HorizontalAlignment="Right" />
+        <Button Name="InitializeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-initialize'}" Disabled="True" HorizontalAlignment="Right" />
+        <PanelContainer StyleClasses="LowDivider" />
+        <Label Name="ErrorLabel" Text="-" />
+    </BoxContainer>
+</Control>

@@ -35,10 +35,7 @@ public sealed class EconomyManagementConsoleBoundUserInterface : BoundUserInterf
         if (state is not EconomyManagementConsoleUserInterfaceState consoleState)
             return;
 
-        if (_menu is null)
-            return;
-
-        _menu.Priveleged = consoleState.Priveleged;
+        _menu?.UpdateState(consoleState);
     }
 
     public void BlockAccountToggle(EconomyBankAccountComponent? account)
@@ -59,6 +56,18 @@ public sealed class EconomyManagementConsoleBoundUserInterface : BoundUserInterf
             return;
 
         var msg = new EconomyManagementConsoleChangeParameterMessage(account.AccountID, EconomyBankAccountParam.AccountName, newName);
+        SendMessage(msg);
+    }
+
+    public void ChangeAccountHolderID(NetEntity holder, string newID)
+    {
+        var msg = new EconomyManagementConsoleChangeHolderIDMessage(holder, newID);
+        SendMessage(msg);
+    }
+
+    public void InitializeAccountOnHolder(NetEntity holder)
+    {
+        var msg = new EconomyManagementConsoleInitAccountOnHolderMessage(holder);
         SendMessage(msg);
     }
 }
