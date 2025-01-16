@@ -200,7 +200,7 @@ namespace Content.Shared.AWS.Economy
             _itemSlotsSystem.AddItemSlot(ent, EconomyManagementConsoleComponent.ConsoleCardID, ent.Comp.CardSlot);
             _itemSlotsSystem.AddItemSlot(ent, EconomyManagementConsoleComponent.TargetCardID, ent.Comp.TargetCardSlot);
 
-            UpdateManagementConsoleUserInterface(ent);
+            UpdateManagementConsoleUserInterface(ent, null);
         }
 
         private void OnManagementConsoleRemove(Entity<EconomyManagementConsoleComponent> ent, ref ComponentRemove args)
@@ -211,13 +211,28 @@ namespace Content.Shared.AWS.Economy
 
         private void OnManagementConsoleSlotChanged(EntityUid ent, EconomyManagementConsoleComponent comp, ContainerModifiedMessage args)
         {
-            UpdateManagementConsoleUserInterface((ent, comp));
+            EconomyBankAccountComponent? account = null;
+            if (TryComp<EconomyAccountHolderComponent>(comp.TargetCardSlot.Item, out var holder))
+            {
+                TryGetAccount(holder.AccountID, out var accountEnt);
+                account = accountEnt.Comp;
+            }
+
+            UpdateManagementConsoleUserInterface((ent, comp), account);
         }
 
 
         private void OnManagementConsoleEntRemoved(Entity<EconomyManagementConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
         {
-            UpdateManagementConsoleUserInterface(ent);
+            // Keep the inserted account info if we took out the ID card.
+            EconomyBankAccountComponent? account = null;
+            if (args.Container.ID == ent.Comp.CardSlot.ID && TryComp<EconomyAccountHolderComponent>(ent.Comp.TargetCardSlot.Item, out var holder))
+            {
+                TryGetAccount(holder.AccountID, out var accountEnt);
+                account = accountEnt.Comp;
+            }
+
+            UpdateManagementConsoleUserInterface(ent, account);
         }
 
         [PublicAPI]
@@ -235,14 +250,20 @@ namespace Content.Shared.AWS.Economy
         }
 
         [PublicAPI]
-        public void UpdateManagementConsoleUserInterface(Entity<EconomyManagementConsoleComponent> ent)
+        public void UpdateManagementConsoleUserInterface(Entity<EconomyManagementConsoleComponent> ent, EconomyBankAccountComponent? bankAccount)
         {
             var stateInfo = GetManagementConsoleInsertedCardsStateInfo(ent);
             var netHolder = GetNetEntity(stateInfo.Item2);
             var uiState = new EconomyManagementConsoleUserInterfaceState()
             {
                 Priveleged = stateInfo.Item1,
-                Holder = netHolder
+                Holder = netHolder,
+                AccountID = bankAccount?.AccountID,
+                AccountName = bankAccount?.AccountName,
+                Balance = bankAccount?.Balance,
+                Penalty = bankAccount?.Penalty,
+                Blocked = bankAccount?.Blocked,
+                CanReachPayDay = bankAccount?.CanReachPayDay
             };
             _userInterfaceSystem.SetUiState(ent.Owner, EconomyManagementConsoleUiKey.Key, uiState);
         }

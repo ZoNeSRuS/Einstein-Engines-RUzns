@@ -66,7 +66,7 @@ public sealed partial class AccountHolderTab : Control
         };
     }
 
-    public void GetAccount(EconomyAccountHolderComponent? accountHolder)
+    private void GetAccount(EconomyAccountHolderComponent? accountHolder)
     {
         var economySystem = _entityManager.System<EconomyBankAccountSystemShared>();
         if (accountHolder is not null && economySystem.TryGetAccount(accountHolder.AccountID, out var accountEnt))
@@ -101,11 +101,50 @@ public sealed partial class AccountHolderTab : Control
         AccountPaydayStatusLabel.Text = paydayStatus;
     }
 
-    public void UpdateButtons(bool priveleged)
+    private void UpdateButtons(bool priveleged)
     {
         ChangeNameButton.Disabled = !priveleged || _currentAccount is null;
         BlockButton.Disabled = !priveleged || _currentAccount is null;
         ChangeAccountButton.Disabled = !priveleged || CurrentCard is null;
         InitializeAccountButton.Disabled = !priveleged || _currentAccount is not null || CurrentCard is null;
+    }
+
+    public void OnUpdateState(string? accountID,
+                              string? accountName,
+                              ulong? balance,
+                              ulong? penalty,
+                              bool? blocked,
+                              bool? canReachPayDay)
+    {
+        _currentAccount = null;
+
+        if (accountID is null)
+        {
+            FillAccount(null);
+            UpdateButtons(Priveleged);
+            return;
+        }
+
+        AccountInitLabel.Text = accountID is not null ? Loc.GetString("economybanksystem-management-console-management-initialized") :
+                                                      Loc.GetString("economybanksystem-management-console-management-not-initialized");
+        var _accountID = accountID ?? "-";
+        AccountIdLabel.Text = _accountID;
+        AccountOwnerLabel.Text = accountName ?? "-";
+        var accountBalance = balance is not null ? string.Format("{0:N0}", balance) : "-";
+        AccountBalanceLabel.Text = accountBalance;
+        var accountBlocked = blocked is not null ? (blocked.Value ? Loc.GetString("economybanksystem-management-console-management-block") : Loc.GetString("economybanksystem-management-console-management-unblock"))
+                                          : "-";
+        var blockedButton = blocked is not null ? (blocked.Value ? Loc.GetString("economybanksystem-management-console-management-unblock-button") : Loc.GetString("economybanksystem-management-console-management-block-button"))
+                                                : "-";
+        AccountBlockStatusLabel.Text = accountBlocked;
+        BlockButton.Text = blockedButton;
+        var paydayStatus = canReachPayDay is not null ? (canReachPayDay.Value ? Loc.GetString("economybanksystem-management-console-management-salary-reachable") : Loc.GetString("economybanksystem-management-console-management-salary-not-reachable"))
+                                               : "-";
+        AccountPaydayStatusLabel.Text = paydayStatus;
+
+        var economySystem = _entityManager.System<EconomyBankAccountSystemShared>();
+        if (economySystem.TryGetAccount(_accountID, out var foundAccount))
+            _currentAccount = foundAccount.Comp;
+        UpdateButtons(Priveleged);
     }
 }

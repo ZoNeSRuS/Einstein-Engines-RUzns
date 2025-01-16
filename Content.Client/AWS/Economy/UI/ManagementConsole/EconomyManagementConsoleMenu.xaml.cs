@@ -34,26 +34,23 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
 
     public void UpdateState(EconomyManagementConsoleUserInterfaceState state)
     {
-        UpdatePriveleges(state.Priveleged);
-        UpdateHolder(state.Holder);
+        UpdateAccountManagement(state.Priveleged);
+        UpdateHolder(state);
+    }
 
+    private void UpdateAccountManagement(bool priveleged)
+    {
+        AccountManagementTab.Priveleged = priveleged;
         AccountManagementTab.Initialize();
     }
 
-    private void UpdatePriveleges(bool priveleged)
+    private void UpdateHolder(EconomyManagementConsoleUserInterfaceState state)
     {
-        AccountManagementTab.Priveleged = priveleged;
-        AccountHolderTab.Priveleged = priveleged;
-        AccountHolderTab.UpdateButtons(priveleged);
-    }
+        var localHolder = _entityManager.GetEntity(state.Holder);
+        _entityManager.TryGetComponent<EconomyAccountHolderComponent>(localHolder, out var holderComp);
 
-    private void UpdateHolder(NetEntity? holder)
-    {
-        var localHolder = _entityManager.GetEntity(holder);
-        if (!_entityManager.TryGetComponent<EconomyAccountHolderComponent>(localHolder, out var holderComp))
-            return;
-
-        AccountHolderTab.CurrentCard = (localHolder.Value, holderComp);
-        AccountHolderTab.GetAccount(AccountHolderTab.CurrentCard);
+        AccountHolderTab.CurrentCard = holderComp is not null && localHolder is not null ? (localHolder.Value, holderComp) : null;
+        AccountHolderTab.Priveleged = state.Priveleged;
+        AccountHolderTab.OnUpdateState(state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay);
     }
 }

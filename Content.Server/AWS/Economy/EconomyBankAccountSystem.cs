@@ -645,7 +645,7 @@ namespace Content.Server.AWS.Economy
             holderComp.AccountID = account.Comp.AccountID;
             holderComp.AccountName = account.Comp.AccountName;
             Dirty(holder, holderComp);
-            UpdateManagementConsoleUserInterface(ent);
+            UpdateManagementConsoleUserInterface(ent, account.Comp);
         }
 
         private void OnManagementConsoleInitAccountOnHolderMessage(Entity<EconomyManagementConsoleComponent> ent, ref EconomyManagementConsoleInitAccountOnHolderMessage args)
@@ -666,7 +666,7 @@ namespace Content.Server.AWS.Economy
             holderComp.AccountID = account.Value.Comp.AccountID;
             holderComp.AccountName = account.Value.Comp.AccountName;
             Dirty(holder, holderComp);
-            UpdateManagementConsoleUserInterface(ent);
+            UpdateManagementConsoleUserInterface(ent, account.Value.Comp);
         }
 
         private void OnManagementConsoleParameterMessage(Entity<EconomyManagementConsoleComponent> ent, ref EconomyManagementConsoleChangeParameterMessage args)
@@ -678,11 +678,11 @@ namespace Content.Server.AWS.Economy
             if (!_accessReaderSystem.IsAllowed(idCard, ent.Owner, accessReader))
                 return;
 
-            if (!IsValidAccount(args.AccountID))
+            if (!TryGetAccount(args.AccountID, out var account))
                 return;
 
             TrySetAccountParameter(args.AccountID, args.Param, args.Value);
-            UpdateManagementConsoleUserInterface(ent);
+            UpdateManagementConsoleUserInterface(ent, account.Comp);
         }
     }
 }

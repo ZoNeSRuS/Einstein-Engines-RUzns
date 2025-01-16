@@ -51,4 +51,11 @@ public sealed class EconomyManagementConsoleUserInterfaceState : BoundUserInterf
 {
     public bool Priveleged;
     public NetEntity? Holder;
+    public string? AccountID;
+    public string? AccountName;
+    public ulong? Balance;
+    public ulong? Penalty;
+    public bool? Blocked;
+    public bool? CanReachPayDay;
+
 }
