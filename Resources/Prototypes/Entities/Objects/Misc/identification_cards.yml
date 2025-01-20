@@ -43,6 +43,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: PassengerIDCard
@@ -56,6 +58,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
   - type: Sprite
     layers:
     - state: default
@@ -73,6 +77,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
   - type: Sprite
     layers:
     - state: default
@@ -90,6 +96,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
   - type: Sprite
     layers:
     - state: default
@@ -107,6 +115,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
   - type: Sprite
     layers:
     - state: default
@@ -124,6 +134,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
   - type: Sprite
     layers:
     - state: default
@@ -154,6 +166,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -171,6 +185,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -188,6 +204,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -205,6 +223,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -222,6 +242,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -239,6 +261,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -256,6 +280,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -273,6 +299,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -290,6 +318,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -309,6 +339,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -326,6 +358,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -343,6 +377,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -360,6 +396,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -377,6 +415,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -394,6 +434,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -411,6 +453,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -429,6 +473,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -446,6 +492,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -463,6 +511,8 @@
       moneyHolderEntId: ThalerHolder
       accountSetup:
         allowedCurrency: Thaler
+        accountTags:
+          - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -480,6 +530,8 @@
       moneyHolderEntId: ThalerHolder
       accountSetup:
         allowedCurrency: Thaler
+        accountTags:
+          - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -497,6 +549,8 @@
       moneyHolderEntId: ThalerHolder
       accountSetup:
         allowedCurrency: Thaler
+        accountTags:
+          - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -516,6 +570,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -535,6 +591,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -554,6 +612,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -573,6 +633,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -592,6 +654,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -612,6 +676,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -627,6 +693,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -646,6 +714,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -665,6 +735,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -684,6 +756,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -701,6 +775,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -718,6 +794,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -735,6 +813,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -752,6 +832,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -769,6 +851,8 @@
       moneyHolderEntId: ThalerHolder
       accountSetup:
         allowedCurrency: Thaler
+        accountTags:
+          - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -787,6 +871,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   name: passenger ID card
@@ -864,6 +950,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -907,6 +995,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -924,6 +1014,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -941,6 +1033,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -958,6 +1052,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard
@@ -975,6 +1071,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: CentcomIDCard
@@ -994,6 +1092,8 @@
     moneyHolderEntId: ThalerHolder
     accountSetup:
       allowedCurrency: Thaler
+      accountTags:
+        - Personal
 
 - type: entity
   parent: IDCardStandard

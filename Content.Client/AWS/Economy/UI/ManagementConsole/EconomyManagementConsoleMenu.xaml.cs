@@ -30,12 +30,15 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
         AccountHolderTab.OnBlockAccountPressed += Owner.BlockAccountToggle;
         AccountHolderTab.OnChangeAccountPressed += Owner.ChangeAccountHolderID;
         AccountHolderTab.OnInitializeAccountPressed += Owner.InitializeAccountOnHolder;
+
+        BonusTab.OnPayBonusPressed += Owner.PayBonus;
     }
 
     public void UpdateState(EconomyManagementConsoleUserInterfaceState state)
     {
         UpdateAccountManagement(state.Priveleged);
         UpdateHolder(state);
+        UpdateBonus(state.Priveleged);
     }
 
     private void UpdateAccountManagement(bool priveleged)
@@ -52,5 +55,10 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
         AccountHolderTab.CurrentCard = holderComp is not null && localHolder is not null ? (localHolder.Value, holderComp) : null;
         AccountHolderTab.Priveleged = state.Priveleged;
         AccountHolderTab.OnUpdateState(state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay);
+    }
+
+    private void UpdateBonus(bool priveleged)
+    {
+        BonusTab.OnUpdateState(priveleged);
     }
 }

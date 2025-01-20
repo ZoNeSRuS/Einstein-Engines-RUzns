@@ -9,6 +9,9 @@ economybanksystem-management-console-management-salary-not-reachable = Нево�
 economybanksystem-management-console-management-initialized-title = Счёт на носителе
 economybanksystem-management-console-management-initialized = Действителен
 economybanksystem-management-console-management-not-initialized = Не действителен
+economybanksystem-management-console-bonus-payer-account = Счёт выплаты
+economybanksystem-management-console-bonus-total-bonus = Итого к выплате
+economybanksystem-management-console-bonus-percent = Множитель премии, %
 
 economybanksystem-management-console-management-block-title = Блокировка счёта
 economybanksystem-management-console-management-block-button = Заблокировать
@@ -18,6 +21,8 @@ economybanksystem-management-console-management-change-name = Изменить �
 economybanksystem-management-console-management-account-title = Счёт носителя
 economybanksystem-management-console-management-account-change-button = Изменить привязанный счёт
 economybanksystem-management-console-management-account-initialize = Инициализировать новый аккаунт
+economybanksystem-management-console-bonus-pay-button = Выплатить премии
+economybanksystem-management-console-bonus-clear-selected-button = Очистить выбранные счета
 
 economybanksystem-management-console-error-invalid-account = Счёт не найден!
 

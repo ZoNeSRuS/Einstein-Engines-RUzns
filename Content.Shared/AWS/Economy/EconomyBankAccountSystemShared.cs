@@ -263,7 +263,8 @@ namespace Content.Shared.AWS.Economy
                 Balance = bankAccount?.Balance,
                 Penalty = bankAccount?.Penalty,
                 Blocked = bankAccount?.Blocked,
-                CanReachPayDay = bankAccount?.CanReachPayDay
+                CanReachPayDay = bankAccount?.CanReachPayDay,
+                Salary = bankAccount?.Salary
             };
             _userInterfaceSystem.SetUiState(ent.Owner, EconomyManagementConsoleUiKey.Key, uiState);
         }
@@ -288,5 +289,7 @@ namespace Content.Shared.AWS.Economy
     public enum BankAccountTag
     {
         Department,
+        Station,
+        Personal
     }
 }

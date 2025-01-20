@@ -55,7 +55,15 @@ public sealed partial class AccountManagementTab : Control
         AccountList.Clear();
         var bankAccountSystem = _entityManager.System<EconomyBankAccountSystemShared>();
         var tags = new List<BankAccountTag>() { BankAccountTag.Department };
-        _accounts = bankAccountSystem.GetAccounts(EconomyBankAccountMask.ByTags, tags).Values.ToList();
+        var accounts = bankAccountSystem.GetAccounts(EconomyBankAccountMask.ByTags, tags);
+        _accounts = accounts.Values.ToList();
+
+        // Update selected account if we had any
+        if (_currentAccount is not null && accounts.TryGetValue(_currentAccount.AccountID, out var currentAccount))
+        {
+            _currentAccount = currentAccount;
+            FillAccountInfo(_currentAccount);
+        }
 
         FillList();
     }

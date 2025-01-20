@@ -51,11 +51,21 @@ public sealed class EconomyManagementConsoleUserInterfaceState : BoundUserInterf
 {
     public bool Priveleged;
     public NetEntity? Holder;
+
+    // Account that has been selected when performing the last action (this is kinda dumb yeah)
     public string? AccountID;
     public string? AccountName;
     public ulong? Balance;
     public ulong? Penalty;
     public bool? Blocked;
     public bool? CanReachPayDay;
+    public ulong? Salary;
+}
 
+[Serializable, NetSerializable]
+public sealed class EconomyManagementConsolePayBonusMessage(string payer, float bonusPercent, List<string> accounts) : BoundUserInterfaceMessage
+{
+    public readonly string Payer = payer;
+    public readonly float BonusPercent = bonusPercent;
+    public readonly List<string> Accounts = accounts;
 }

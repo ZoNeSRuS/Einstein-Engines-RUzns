@@ -41,6 +41,10 @@ namespace Content.Shared.AWS.Economy
 
         [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
+        public ulong? Salary;
+
+        [ViewVariables(VVAccess.ReadWrite)]
+        [AutoNetworkedField]
         public List<EconomyBankAccountLogField> Logs = new();
 
         [ViewVariables(VVAccess.ReadWrite)]

@@ -21,6 +21,7 @@ using Content.Server.Station.Systems;
 using Robust.Server.GameStates;
 using Content.Shared.Store;
 using Content.Shared.Access.Systems;
+using System.Linq;
 
 namespace Content.Server.AWS.Economy
 {
@@ -53,6 +54,7 @@ namespace Content.Server.AWS.Economy
             SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsoleChangeParameterMessage>(OnManagementConsoleParameterMessage);
             SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsoleChangeHolderIDMessage>(OnManagementConsoleChangeHolderIDMessage);
             SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsoleInitAccountOnHolderMessage>(OnManagementConsoleInitAccountOnHolderMessage);
+            SubscribeLocalEvent<EconomyManagementConsoleComponent, EconomyManagementConsolePayBonusMessage>(OnManagementConsolePayBonusMessage);
         }
 
         #region Account management
@@ -69,6 +71,7 @@ namespace Content.Server.AWS.Economy
                                      bool blocked,
                                      bool canReachPayDay,
                                      List<BankAccountTag>? accountTags,
+                                     ulong? salary,
                                      MapCoordinates? cords,
                                      [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? account)
         {
@@ -90,6 +93,7 @@ namespace Content.Server.AWS.Economy
             accountComp.Blocked = blocked;
             accountComp.CanReachPayDay = canReachPayDay;
             accountComp.AccountTags = accountTags ?? [];
+            accountComp.Salary = salary;
 
             account = (accountEntity, accountComp);
             _pvsOverrideSystem.AddGlobalOverride(accountEntity);
@@ -110,14 +114,15 @@ namespace Content.Server.AWS.Economy
             var accountID = GenerateAccountId(proto.Prefix, proto.Streak, proto.NumbersPerStreak, proto.Descriptior);
             var accountName = entity.Comp.AccountName;
             var balance = (ulong)0;
+            EconomySallariesJobEntry jobEntry = new();
 
             if (TryComp<IdCardComponent>(entity, out var idCardComponent))
                 accountName = idCardComponent.FullName ?? entity.Comp.AccountName;
             if (TryComp<PresetIdCardComponent>(entity, out var presetIdCardComponent))
                 if (_prototypeManager.TryIndex<EconomySallariesPrototype>("NanotrasenDefaultSallaries", out var sallariesPrototype)
                     && presetIdCardComponent.JobName is not null)
-                    if (sallariesPrototype.Jobs.TryGetValue(presetIdCardComponent.JobName.Value, out var entry))
-                        balance = (ulong)(entry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
+                    if (sallariesPrototype.Jobs.TryGetValue(presetIdCardComponent.JobName.Value, out jobEntry))
+                        balance = (ulong)(jobEntry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
 
             var station = _stationSystem.GetOwningStation(entity);
             var cords = station != null ? _transformSystem.GetMapCoordinates(station.Value) : MapCoordinates.Nullspace;
@@ -137,6 +142,7 @@ namespace Content.Server.AWS.Economy
                                       setup.Blocked ?? false,
                                       setup.CanReachPayDay ?? true,
                                       setup.AccountTags ?? [],
+                                      jobEntry.Sallary,
                                       cords,
                                       out activatedAccount))
                     return false;
@@ -160,6 +166,7 @@ namespace Content.Server.AWS.Economy
                                       accountSetup?.Blocked ?? false,
                                       accountSetup?.CanReachPayDay ?? true,
                                       accountSetup?.AccountTags ?? [],
+                                      jobEntry.Sallary,
                                       cords,
                                       out activatedAccount))
                     return false;
@@ -683,6 +690,51 @@ namespace Content.Server.AWS.Economy
 
             TrySetAccountParameter(args.AccountID, args.Param, args.Value);
             UpdateManagementConsoleUserInterface(ent, account.Comp);
+        }
+
+        private void OnManagementConsolePayBonusMessage(Entity<EconomyManagementConsoleComponent> ent, ref EconomyManagementConsolePayBonusMessage args)
+        {
+            // Check for priveleges
+            if (!TryComp<AccessReaderComponent>(ent, out var accessReader) || ent.Comp.CardSlot.Item is not { } idCard)
+                return;
+
+            if (!_accessReaderSystem.IsAllowed(idCard, ent.Owner, accessReader))
+                return;
+
+            // Validate accounts and operation itself
+            if (!TryGetAccount(args.Payer, out var payerAccount))
+                return;
+
+            var accounts = GetAccounts(EconomyBankAccountMask.ByTags, new List<BankAccountTag> { BankAccountTag.Personal });
+            var accountList = args.Accounts;
+            var intersectedAccounts = accounts.Where(account => accountList.Contains(account.Value.Comp.AccountID)).GetEnumerator();
+
+            Dictionary<Entity<EconomyBankAccountComponent>, ulong> accountsToPay = new();
+            ulong total = 0;
+            while (intersectedAccounts.MoveNext())
+            {
+                var account = intersectedAccounts.Current.Value.Comp;
+                if (account.Salary is null)
+                    continue;
+
+                var bonus = (ulong)(account.Salary * args.BonusPercent);
+                total += bonus;
+                accountsToPay.Add(intersectedAccounts.Current.Value, bonus);
+            }
+
+            if (total > payerAccount.Comp.Balance)
+                return;
+
+            // Proceed to payment
+            foreach (var kvp in accountsToPay)
+            {
+                var account = kvp.Key.Comp;
+                var bonus = kvp.Value;
+
+                TrySendMoney(payerAccount.Comp.AccountID, account.AccountID, bonus, out _);
+            }
+
+            UpdateManagementConsoleUserInterface(ent, null);
         }
     }
 }

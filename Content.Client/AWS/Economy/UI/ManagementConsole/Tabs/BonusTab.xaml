@@ -5,54 +5,41 @@
     <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
         <!-- Left: Account List -->
         <BoxContainer Orientation="Vertical" Margin="5" MinWidth="300">
-            <Label Text="{Loc 'economybanksystem-management-console-accounts-title'}" HorizontalExpand="True" Align="Center"/>
             <LineEdit Name="FindAccount" HorizontalExpand="True" />
             <ScrollContainer VerticalExpand="True">
                 <ItemList Name="AccountList" />
             </ScrollContainer>
         </BoxContainer>
 
-        <!-- Right: Account Management -->
+        <!-- Right: Bonus Management -->
         <BoxContainer Orientation="Vertical" Margin="5" VerticalExpand="True" HorizontalExpand="True">
-            <Label Text="{Loc 'economybanksystem-management-console-management-title'}" HorizontalExpand="True" Align="Center"/>
+            <Label Text="{Loc 'economybanksystem-management-console-bonus-tab'}" HorizontalExpand="True" Align="Center"/>
             <PanelContainer StyleClasses="LowDivider" />
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <LineEdit Name="FindAccountBox"
-                        HorizontalExpand="True"/>
-                <Button Name="FindAccountButton"
-                        Text="{Loc 'economybanksystem-management-console-management-find-account'}"
-                        Disabled="True"/>
-            </BoxContainer>
+            <ScrollContainer VerticalExpand="True">
+                <ItemList Name="SelectedAccountList" />
+            </ScrollContainer>
             <PanelContainer StyleClasses="LowDivider" />
             <GridContainer Columns="2"
                     HorizontalExpand="True"
                     Margin="0 0 0 10">
-                <Label Text="{Loc 'economy-bank-atm-menu-account-id'}"
+                <Label Text="{Loc 'economybanksystem-management-console-bonus-payer-account'}"
                         HorizontalExpand="True"/>
-                <Label Name="AccountIdLabel"
-                        HorizontalExpand="True"/>
-                <Label Text="{Loc 'economy-bank-atm-menu-account-owner'}"
-                        HorizontalExpand="True"/>
-                <Label Name="AccountOwnerLabel"
+                <Label Name="PayerAccountIDLabel"
                         HorizontalExpand="True"/>
                 <Label Text="{Loc 'economy-bank-atm-menu-account-balance'}"
                         HorizontalExpand="True"/>
-                <Label Name="AccountBalanceLabel"
+                <Label Name="PayerAccountBalanceLabel"
                         HorizontalExpand="True"/>
-                <Label Text="{Loc 'economybanksystem-management-console-management-blocked'}"
+                <Label Text="{Loc 'economybanksystem-management-console-bonus-total-bonus'}"
                         HorizontalExpand="True"/>
-                <Label Name="AccountBlockedLabel"
+                <Label Name="TotalBonusLabel"
                         HorizontalExpand="True"/>
             </GridContainer>
             <PanelContainer StyleClasses="LowDivider" />
-            <Button Name="BlockButton" Text="-" Disabled="True" HorizontalAlignment="Left" MaxWidth="150"/>
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <LineEdit Name="ChangeNameBox"
-                        HorizontalExpand="True"/>
-                <Button Name="ChangeNameButton"
-                        Text="{Loc 'economybanksystem-management-console-management-change-name'}"
-                        Disabled="True"/>
-            </BoxContainer>
+            <Label Text="{Loc 'economybanksystem-management-console-bonus-percent'}" />
+            <SpinBox Name="BonusPercentBox" HorizontalExpand="True" Value="10" />
+            <Button Name="PayBonusButton" Text="{Loc 'economybanksystem-management-console-bonus-pay-button'}" Disabled="True" HorizontalAlignment="Left" MaxWidth="300"/>
+            <Button Name="ClearSelectedButton" Text="{Loc 'economybanksystem-management-console-bonus-clear-selected-button'}" HorizontalAlignment="Left" MaxWidth="300"/>
         </BoxContainer>
     </BoxContainer>
 </Control>

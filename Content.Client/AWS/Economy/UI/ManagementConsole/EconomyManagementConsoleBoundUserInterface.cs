@@ -70,4 +70,10 @@ public sealed class EconomyManagementConsoleBoundUserInterface : BoundUserInterf
         var msg = new EconomyManagementConsoleInitAccountOnHolderMessage(holder);
         SendMessage(msg);
     }
+
+    public void PayBonus(string payer, float bonusPercent, List<string> accounts)
+    {
+        var msg = new EconomyManagementConsolePayBonusMessage(payer, bonusPercent, accounts);
+        SendMessage(msg);
+    }
 }

@@ -116,6 +116,7 @@
       balance: 10000
       accountTags:
         - Department
+        - Station
 
 - type: entity
   parent: BankAccountNanotrasen
