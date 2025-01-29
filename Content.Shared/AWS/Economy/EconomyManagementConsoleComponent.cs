@@ -50,7 +50,8 @@ public sealed class EconomyManagementConsoleInitAccountOnHolderMessage(NetEntity
 public sealed class EconomyManagementConsoleUserInterfaceState : BoundUserInterfaceState
 {
     public bool Priveleged;
-    public NetEntity? Holder;
+    public string? IDCardName;
+    public NetEntity? AccountHolder;
 
     // Account that has been selected when performing the last action (this is kinda dumb yeah)
     public string? AccountID;

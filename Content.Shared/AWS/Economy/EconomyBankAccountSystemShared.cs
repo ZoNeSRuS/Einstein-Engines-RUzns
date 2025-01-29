@@ -209,16 +209,16 @@ namespace Content.Shared.AWS.Economy
             _itemSlotsSystem.RemoveItemSlot(ent, ent.Comp.TargetCardSlot);
         }
 
-        private void OnManagementConsoleSlotChanged(EntityUid ent, EconomyManagementConsoleComponent comp, ContainerModifiedMessage args)
+        private void OnManagementConsoleSlotChanged(Entity<EconomyManagementConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
         {
             EconomyBankAccountComponent? account = null;
-            if (TryComp<EconomyAccountHolderComponent>(comp.TargetCardSlot.Item, out var holder))
+            if (TryComp<EconomyAccountHolderComponent>(ent.Comp.TargetCardSlot.Item, out var holder))
             {
                 TryGetAccount(holder.AccountID, out var accountEnt);
                 account = accountEnt.Comp;
             }
 
-            UpdateManagementConsoleUserInterface((ent, comp), account);
+            UpdateManagementConsoleUserInterface(ent, account);
         }
 
 
@@ -236,28 +236,37 @@ namespace Content.Shared.AWS.Economy
         }
 
         [PublicAPI]
-        public (bool, Entity<EconomyAccountHolderComponent>?) GetManagementConsoleInsertedCardsStateInfo(Entity<EconomyManagementConsoleComponent> ent)
+        public (bool, string?, Entity<EconomyAccountHolderComponent>?) GetManagementConsoleInsertedCardsStateInfo(Entity<EconomyManagementConsoleComponent> ent)
         {
             if (!TryComp<AccessReaderComponent>(ent, out var accessReader))
-                return (false, null);
+                return (false, null, null);
 
-            var priveleged = ent.Comp.CardSlot.Item is not null && _accessReaderSystem.IsAllowed(ent.Comp.CardSlot.Item.Value, ent, accessReader);
             Entity<EconomyAccountHolderComponent>? accountHolder = null;
             if (ent.Comp.TargetCardSlot.Item is { } targetCard && TryComp<EconomyAccountHolderComponent>(targetCard, out var holderComp))
                 accountHolder = (targetCard, holderComp);
 
-            return (priveleged, accountHolder);
+            var priveleged = false;
+            string? idCardName = null;
+            if (ent.Comp.CardSlot.Item is { } idCard)
+            {
+                priveleged = _accessReaderSystem.IsAllowed(idCard, ent, accessReader);
+                if (TryComp<IdCardComponent>(idCard, out var idCardComp))
+                    idCardName = idCardComp.FullName;
+            }
+
+            return (priveleged, idCardName, accountHolder);
         }
 
         [PublicAPI]
         public void UpdateManagementConsoleUserInterface(Entity<EconomyManagementConsoleComponent> ent, EconomyBankAccountComponent? bankAccount)
         {
             var stateInfo = GetManagementConsoleInsertedCardsStateInfo(ent);
-            var netHolder = GetNetEntity(stateInfo.Item2);
+            var netHolder = GetNetEntity(stateInfo.Item3);
             var uiState = new EconomyManagementConsoleUserInterfaceState()
             {
                 Priveleged = stateInfo.Item1,
-                Holder = netHolder,
+                IDCardName = stateInfo.Item2,
+                AccountHolder = netHolder,
                 AccountID = bankAccount?.AccountID,
                 AccountName = bankAccount?.AccountName,
                 Balance = bankAccount?.Balance,

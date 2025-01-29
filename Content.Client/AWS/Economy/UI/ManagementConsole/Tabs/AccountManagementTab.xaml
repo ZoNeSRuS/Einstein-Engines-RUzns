@@ -15,14 +15,6 @@
         <BoxContainer Orientation="Vertical" Margin="5" VerticalExpand="True" HorizontalExpand="True">
             <Label Text="{Loc 'economybanksystem-management-console-management-title'}" HorizontalExpand="True" Align="Center"/>
             <PanelContainer StyleClasses="LowDivider" />
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <LineEdit Name="FindAccountBox"
-                        HorizontalExpand="True"/>
-                <Button Name="FindAccountButton"
-                        Text="{Loc 'economybanksystem-management-console-management-find-account'}"
-                        Disabled="True"/>
-            </BoxContainer>
-            <PanelContainer StyleClasses="LowDivider" />
             <GridContainer Columns="2"
                     HorizontalExpand="True"
                     Margin="0 0 0 10">
@@ -44,11 +36,12 @@
                         HorizontalExpand="True"/>
             </GridContainer>
             <PanelContainer StyleClasses="LowDivider" />
-            <Button Name="BlockButton" Text="-" Disabled="True" HorizontalAlignment="Left" MaxWidth="150"/>
+            <Button Name="BlockButton" Text="-" Disabled="True" Margin = "0 5" HorizontalAlignment="Left" MaxWidth="150"/>
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
                 <LineEdit Name="ChangeNameBox"
                         HorizontalExpand="True"/>
                 <Button Name="ChangeNameButton"
+                        Margin = "5 0"
                         Text="{Loc 'economybanksystem-management-console-management-change-name'}"
                         Disabled="True"/>
             </BoxContainer>

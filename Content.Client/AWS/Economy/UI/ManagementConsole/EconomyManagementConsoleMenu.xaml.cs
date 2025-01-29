@@ -36,23 +36,35 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
 
     public void UpdateState(EconomyManagementConsoleUserInterfaceState state)
     {
-        UpdateAccountManagement(state.Priveleged);
-        UpdateHolder(state);
+        PrivilegedIdButton.Disabled = !state.Priveleged;
+        PrivilegedIdLabel.Text = state.IDCardName ?? "-";
+
+        TargetIdButton.Disabled = true;
+        TargetIdLabel.Text = "-";
+        Entity<EconomyAccountHolderComponent>? holder = null;
+        if (_entityManager.TryGetEntity(state.AccountHolder, out var localHolder) &&
+            _entityManager.TryGetComponent<EconomyAccountHolderComponent>(localHolder, out var holderComp))
+        {
+            TargetIdLabel.Text = holderComp.AccountID;
+            TargetIdButton.Disabled = false;
+            holder = (localHolder.Value, holderComp);
+        }
+
+        UpdateAccountManagement(state);
+        UpdateHolder(state, holder);
         UpdateBonus(state.Priveleged);
     }
 
-    private void UpdateAccountManagement(bool priveleged)
+    private void UpdateAccountManagement(EconomyManagementConsoleUserInterfaceState state)
     {
-        AccountManagementTab.Priveleged = priveleged;
+        AccountManagementTab.Priveleged = state.Priveleged;
         AccountManagementTab.Initialize();
+        AccountManagementTab.OnUpdateState(state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay);
     }
 
-    private void UpdateHolder(EconomyManagementConsoleUserInterfaceState state)
+    private void UpdateHolder(EconomyManagementConsoleUserInterfaceState state, Entity<EconomyAccountHolderComponent>? holder)
     {
-        var localHolder = _entityManager.GetEntity(state.Holder);
-        _entityManager.TryGetComponent<EconomyAccountHolderComponent>(localHolder, out var holderComp);
-
-        AccountHolderTab.CurrentCard = holderComp is not null && localHolder is not null ? (localHolder.Value, holderComp) : null;
+        AccountHolderTab.CurrentCard = holder ?? null;
         AccountHolderTab.Priveleged = state.Priveleged;
         AccountHolderTab.OnUpdateState(state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay);
     }

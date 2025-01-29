@@ -12,6 +12,8 @@ economybanksystem-management-console-management-not-initialized = Не дейс�
 economybanksystem-management-console-bonus-payer-account = Счёт выплаты
 economybanksystem-management-console-bonus-total-bonus = Итого к выплате
 economybanksystem-management-console-bonus-percent = Множитель премии, %
+economybanksystem-management-console-main-id = Основная ID карта:
+economybanksystem-management-console-target-card = Целевая карта:
 
 economybanksystem-management-console-management-block-title = Блокировка счёта
 economybanksystem-management-console-management-block-button = Заблокировать

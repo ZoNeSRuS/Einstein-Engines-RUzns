@@ -21,16 +21,16 @@
         <PanelContainer StyleClasses="LowDivider" />
         <Label Text="{Loc 'economybanksystem-management-console-management-change-name'}" />
         <LineEdit Name="ChangeNamePrompt" HorizontalExpand="True" />
-        <Button Name="ChangeNameButton" Text="{Loc 'economybanksystem-management-console-management-change-name'}" Disabled="True" HorizontalAlignment="Right" />
+        <Button Name="ChangeNameButton" Text="{Loc 'economybanksystem-management-console-management-change-name'}" Disabled="True" Margin="0 5" HorizontalAlignment="Left" />
         <PanelContainer StyleClasses="LowDivider" />
         <Label Text="{Loc 'economybanksystem-management-console-management-block-title'}" />
-        <Button Name="BlockButton" Text="-" Disabled="True" HorizontalAlignment="Right" />
+        <Button Name="BlockButton" Text="-" Disabled="True" Margin="0 5" HorizontalAlignment="Left" />
         <PanelContainer StyleClasses="LowDivider" />
         <Label Text="{Loc 'economybanksystem-management-console-management-account-title'}" />
         <LineEdit Name="ChangeAccountPrompt" HorizontalExpand="True" />
-        <Button Name="ChangeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-change-button'}" Disabled="True" HorizontalAlignment="Right" />
-        <Button Name="InitializeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-initialize'}" Disabled="True" HorizontalAlignment="Right" />
-        <PanelContainer StyleClasses="LowDivider" />
+        <Button Name="ChangeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-change-button'}" Disabled="True" Margin="0 5" HorizontalAlignment="Left" />
+        <Button Name="InitializeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-initialize'}" Disabled="True" HorizontalAlignment="Left" />
+        <PanelContainer StyleClasses="LowDivider" Margin="0 5"/>
         <Label Name="ErrorLabel" Text="-" />
     </BoxContainer>
 </Control>

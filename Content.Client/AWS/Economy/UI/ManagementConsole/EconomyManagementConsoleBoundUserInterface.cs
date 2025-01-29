@@ -1,4 +1,5 @@
 using Content.Shared.AWS.Economy;
+using Content.Shared.Containers.ItemSlots;
 
 namespace Content.Client.AWS.Economy.UI.ManagementConsole;
 
@@ -17,6 +18,8 @@ public sealed class EconomyManagementConsoleBoundUserInterface : BoundUserInterf
         _menu = new EconomyManagementConsoleMenu(this);
         _menu.OnClose += Close;
 
+        _menu.PrivilegedIdButton.OnPressed += _ => SendMessage(new ItemSlotButtonPressedEvent(EconomyManagementConsoleComponent.ConsoleCardID));
+        _menu.TargetIdButton.OnPressed += _ => SendMessage(new ItemSlotButtonPressedEvent(EconomyManagementConsoleComponent.TargetCardID));
         _menu?.OpenCentered();
     }
 
