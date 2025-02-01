@@ -45,6 +45,16 @@
                         Text="{Loc 'economybanksystem-management-console-management-change-name'}"
                         Disabled="True"/>
             </BoxContainer>
+            <PanelContainer StyleClasses="LowDivider" Margin = "0 5"/>
+            <GridContainer Columns="2">
+                <Label Text="{Loc 'economybanksystem-management-console-management-job-preset'}"/>
+                <OptionButton Name="JobPresetOptionButton" Disabled="True"/>
+                <Label Text="{Loc 'economybanksystem-management-console-management-salary'}" />
+                <SpinBox Name="SalaryAmountBox" HorizontalExpand="True" Value="0" LineEditDisabled="True"/>
+                <Button Name="ChangeSalaryInfoButton"
+                        Text="{Loc 'economybanksystem-management-console-management-change-salary-info-button'}"
+                        Disabled="True"/>
+            </GridContainer>
         </BoxContainer>
     </BoxContainer>
 </Control>

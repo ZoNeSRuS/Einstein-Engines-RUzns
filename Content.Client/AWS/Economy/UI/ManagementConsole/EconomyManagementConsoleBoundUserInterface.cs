@@ -62,6 +62,24 @@ public sealed class EconomyManagementConsoleBoundUserInterface : BoundUserInterf
         SendMessage(msg);
     }
 
+    public void ChangeJob(EconomyBankAccountComponent? account, string jobName)
+    {
+        if (account is null)
+            return;
+
+        var msg = new EconomyManagementConsoleChangeParameterMessage(account.AccountID, EconomyBankAccountParam.JobName, jobName);
+        SendMessage(msg);
+    }
+
+    public void ChangeSalary(EconomyBankAccountComponent? account, ulong salary)
+    {
+        if (account is null)
+            return;
+
+        var msg = new EconomyManagementConsoleChangeParameterMessage(account.AccountID, EconomyBankAccountParam.Salary, salary);
+        SendMessage(msg);
+    }
+
     public void ChangeAccountHolderID(NetEntity holder, string newID)
     {
         var msg = new EconomyManagementConsoleChangeHolderIDMessage(holder, newID);

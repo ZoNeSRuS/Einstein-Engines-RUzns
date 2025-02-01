@@ -7,6 +7,9 @@ using Robust.Shared.Serialization;
 using System.Linq;
 using Content.Shared.Access.Systems;
 using Content.Shared.Access.Components;
+using Robust.Shared.Prototypes;
+using Content.Shared.Roles;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Shared.AWS.Economy
 {
@@ -17,6 +20,7 @@ namespace Content.Shared.AWS.Economy
         [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;
         [Dependency] private readonly SharedUserInterfaceSystem _userInterfaceSystem = default!;
         [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
+        [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
         public override void Initialize()
         {
@@ -93,6 +97,23 @@ namespace Content.Shared.AWS.Economy
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Returns JobEntry from salaries prototype.
+        /// </summary>
+        [PublicAPI]
+        public bool TryGetSalaryJobEntry(ProtoId<JobPrototype> jobName, ProtoId<EconomySallariesPrototype> salaries, [NotNullWhen(true)] out EconomySallariesJobEntry? jobEntry)
+        {
+            jobEntry = null;
+            if (!_prototypeManager.TryIndex(salaries, out var salariesPrototype))
+                return false;
+
+            if (!salariesPrototype.Jobs.TryGetValue(jobName, out var job))
+                return false;
+
+            jobEntry = job;
+            return true;
         }
 
         private void OnBankAccountExamine(Entity<EconomyAccountHolderComponent> entity, ref ExaminedEvent args)
@@ -273,6 +294,7 @@ namespace Content.Shared.AWS.Economy
                 Penalty = bankAccount?.Penalty,
                 Blocked = bankAccount?.Blocked,
                 CanReachPayDay = bankAccount?.CanReachPayDay,
+                JobName = bankAccount?.JobName,
                 Salary = bankAccount?.Salary
             };
             _userInterfaceSystem.SetUiState(ent.Owner, EconomyManagementConsoleUiKey.Key, uiState);
@@ -292,6 +314,8 @@ namespace Content.Shared.AWS.Economy
         AccountName,
         Blocked,
         CanReachPayDay,
+        JobName,
+        Salary
     }
 
     [Serializable, NetSerializable]

@@ -25,6 +25,8 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
 
         AccountManagementTab.OnBlockAccountPressed += Owner.BlockAccountToggle;
         AccountManagementTab.OnChangeNamePressed += Owner.ChangeName;
+        AccountManagementTab.OnChangeJob += Owner.ChangeJob;
+        AccountManagementTab.OnChangeSalary += Owner.ChangeSalary;
 
         AccountHolderTab.OnChangeNamePressed += Owner.ChangeName;
         AccountHolderTab.OnBlockAccountPressed += Owner.BlockAccountToggle;
@@ -58,8 +60,8 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
     private void UpdateAccountManagement(EconomyManagementConsoleUserInterfaceState state)
     {
         AccountManagementTab.Priveleged = state.Priveleged;
-        AccountManagementTab.Initialize();
-        AccountManagementTab.OnUpdateState(state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay);
+        AccountManagementTab.UpdateAccountList();
+        AccountManagementTab.OnUpdateState(state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay, state.JobName, state.Salary);
     }
 
     private void UpdateHolder(EconomyManagementConsoleUserInterfaceState state, Entity<EconomyAccountHolderComponent>? holder)

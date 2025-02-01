@@ -2,6 +2,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 using Content.Shared.Store;
+using Content.Shared.Roles;
 
 namespace Content.Shared.AWS.Economy
 {
@@ -38,6 +39,10 @@ namespace Content.Shared.AWS.Economy
         [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]
         public bool CanReachPayDay = true;
+
+        [ViewVariables(VVAccess.ReadWrite)]
+        [AutoNetworkedField]
+        public ProtoId<JobPrototype>? JobName;
 
         [ViewVariables(VVAccess.ReadWrite)]
         [AutoNetworkedField]

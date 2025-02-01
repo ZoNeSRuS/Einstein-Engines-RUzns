@@ -1,7 +1,5 @@
 using Content.Shared.Containers.ItemSlots;
-using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.AWS.Economy;
@@ -60,6 +58,7 @@ public sealed class EconomyManagementConsoleUserInterfaceState : BoundUserInterf
     public ulong? Penalty;
     public bool? Blocked;
     public bool? CanReachPayDay;
+    public string? JobName;
     public ulong? Salary;
 }
 

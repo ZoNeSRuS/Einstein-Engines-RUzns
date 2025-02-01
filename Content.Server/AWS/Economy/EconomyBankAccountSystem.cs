@@ -22,6 +22,7 @@ using Robust.Server.GameStates;
 using Content.Shared.Store;
 using Content.Shared.Access.Systems;
 using System.Linq;
+using Content.Shared.Roles;
 
 namespace Content.Server.AWS.Economy
 {
@@ -71,6 +72,7 @@ namespace Content.Server.AWS.Economy
                                      bool blocked,
                                      bool canReachPayDay,
                                      List<BankAccountTag>? accountTags,
+                                     ProtoId<JobPrototype>? jobName,
                                      ulong? salary,
                                      MapCoordinates? cords,
                                      [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? account)
@@ -93,6 +95,7 @@ namespace Content.Server.AWS.Economy
             accountComp.Blocked = blocked;
             accountComp.CanReachPayDay = canReachPayDay;
             accountComp.AccountTags = accountTags ?? [];
+            accountComp.JobName = jobName;
             accountComp.Salary = salary;
 
             account = (accountEntity, accountComp);
@@ -114,15 +117,20 @@ namespace Content.Server.AWS.Economy
             var accountID = GenerateAccountId(proto.Prefix, proto.Streak, proto.NumbersPerStreak, proto.Descriptior);
             var accountName = entity.Comp.AccountName;
             var balance = (ulong)0;
-            EconomySallariesJobEntry jobEntry = new();
+            ProtoId<JobPrototype>? jobName = null;
+            ulong? salary = null;
 
             if (TryComp<IdCardComponent>(entity, out var idCardComponent))
                 accountName = idCardComponent.FullName ?? entity.Comp.AccountName;
-            if (TryComp<PresetIdCardComponent>(entity, out var presetIdCardComponent))
-                if (_prototypeManager.TryIndex<EconomySallariesPrototype>("NanotrasenDefaultSallaries", out var sallariesPrototype)
-                    && presetIdCardComponent.JobName is not null)
-                    if (sallariesPrototype.Jobs.TryGetValue(presetIdCardComponent.JobName.Value, out jobEntry))
-                        balance = (ulong)(jobEntry.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
+
+            if (TryComp<PresetIdCardComponent>(entity, out var presetIdCardComponent) &&
+                presetIdCardComponent.JobName is { } job &&
+                TryGetSalaryJobEntry(job, "NanotrasenDefaultSallaries", out var jobEntry))
+            {
+                jobName = job;
+                salary = jobEntry.Value.Sallary;
+                balance = (ulong)(jobEntry.Value.StartMoney * _robustRandom.NextDouble(0.5, 1.5));
+            }
 
             var station = _stationSystem.GetOwningStation(entity);
             var cords = station != null ? _transformSystem.GetMapCoordinates(station.Value) : MapCoordinates.Nullspace;
@@ -142,7 +150,8 @@ namespace Content.Server.AWS.Economy
                                       setup.Blocked ?? false,
                                       setup.CanReachPayDay ?? true,
                                       setup.AccountTags ?? [],
-                                      jobEntry.Sallary,
+                                      jobName,
+                                      salary,
                                       cords,
                                       out activatedAccount))
                     return false;
@@ -166,7 +175,8 @@ namespace Content.Server.AWS.Economy
                                       accountSetup?.Blocked ?? false,
                                       accountSetup?.CanReachPayDay ?? true,
                                       accountSetup?.AccountTags ?? [],
-                                      jobEntry.Sallary,
+                                      jobName,
+                                      salary,
                                       cords,
                                       out activatedAccount))
                     return false;
@@ -208,6 +218,16 @@ namespace Content.Server.AWS.Economy
                     if (value is not bool canReachPayDay)
                         return false;
                     account.CanReachPayDay = canReachPayDay;
+                    break;
+                case EconomyBankAccountParam.JobName:
+                    if (value is not string jobName)
+                        return false;
+                    account.JobName = jobName;
+                    break;
+                case EconomyBankAccountParam.Salary:
+                    if (value is not ulong salary)
+                        return false;
+                    account.Salary = salary;
                     break;
                 default:
                     return false;
