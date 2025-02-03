@@ -100,6 +100,10 @@
   - type: Appearance
   - type: StaticPrice
     price: 500
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: double-barreled shotgun
@@ -123,6 +127,10 @@
     graph: ShotgunSawn
     node: start
     deconstructionTarget: null
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: double-barreled shotgun
@@ -133,6 +141,10 @@
   components:
   - type: BallisticAmmoProvider
     proto: ShellShotgunBeanbag
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: Enforcer
@@ -151,6 +163,10 @@
   - type: Gun # Corvax-Guns
     soundGunshot:
       path: /Audio/Corvax/Weapons/Guns/Gunshots/shotgun_metal.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   parent: WeaponShotgunEnforcer
@@ -162,6 +178,10 @@
   - type: Gun # Corvax-Guns
     soundGunshot:
       path: /Audio/Corvax/Weapons/Guns/Gunshots/shotgun_metal.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: Kammerer
@@ -187,6 +207,10 @@
   - type: Gun # Corvax-Guns
     soundGunshot:
       path: /Audio/Corvax/Weapons/Guns/Gunshots/shotgun_alt.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: sawn-off shotgun
@@ -211,6 +235,10 @@
     graph: ShotgunSawn
     node: shotgunsawn
     deconstructionTarget: null
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: sawn-off shotgun
@@ -225,6 +253,10 @@
     graph: ShotgunSawn
     node: shotgunsawn
     deconstructionTarget: null
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: handmade pistol
@@ -251,6 +283,10 @@
     deconstructionTarget: null
   - type: StaticPrice
     price: 0
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: blunderbuss
@@ -272,6 +308,10 @@
     capacity: 1
   - type: StaticPrice
     price: 0
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: improvised shotgun
@@ -299,6 +339,10 @@
     node: shotgun
   - type: StaticPrice
     price: 20
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: improvised shotgun
@@ -308,3 +352,7 @@
   components:
   - type: BallisticAmmoProvider
     proto: ShellShotgunImprovised
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic

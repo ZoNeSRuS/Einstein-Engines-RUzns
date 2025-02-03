@@ -46,6 +46,7 @@
   - type: ContainerAmmoProvider
     container: projectiles
 
+
 - type: entity
   id: BowImprovised
   parent: BaseBow
@@ -93,3 +94,7 @@
   - type: Construction
     graph: ImprovisedBow
     node: ImprovisedBow
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic

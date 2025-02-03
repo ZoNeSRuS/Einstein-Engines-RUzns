@@ -46,6 +46,10 @@
       - SemiAuto
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/flaregun.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.NonSkilled
 
 
 - type: entity
@@ -73,3 +77,7 @@
   - type: Tag
     tags:
     - Sidearm
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.NonSkilled

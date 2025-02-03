@@ -122,6 +122,10 @@
     magState: mag
     steps: 5
     zeroVisible: true
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: retro laser blaster
@@ -145,6 +149,10 @@
     steps: 5
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: makeshift laser pistol
@@ -168,6 +176,10 @@
   - type: Battery
     maxCharge: 500
     startingCharge: 500
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: tesla gun
@@ -197,6 +209,10 @@
     steps: 5
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: practice laser rifle
@@ -223,6 +239,10 @@
     fireCost: 62.5
   - type: StaticPrice
     price: 300
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: laser rifle
@@ -235,6 +255,10 @@
   - type: HitscanBatteryAmmoProvider
     proto: RedLaser
     fireCost: 62.5
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: pulse pistol
@@ -264,6 +288,10 @@
   - type: Battery
     maxCharge: 2000
     startingCharge: 2000
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: pulse carbine
@@ -295,6 +323,10 @@
   - type: Battery
     maxCharge: 5000
     startingCharge: 5000
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: pulse rifle
@@ -322,6 +354,10 @@
   - type: Battery
     maxCharge: 40000
     startingCharge: 40000
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: laser cannon
@@ -346,6 +382,10 @@
   - type: HitscanBatteryAmmoProvider
     proto: RedHeavyLaser
     fireCost: 100
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: portable particle decelerator
@@ -377,6 +417,10 @@
     - type: Battery
       maxCharge: 10000
       startingCharge: 10000
+    - type: RequiredSkill
+      container:
+        skills:
+          weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: x-ray cannon
@@ -405,6 +449,10 @@
     steps: 5
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: practice disabler
@@ -443,6 +491,10 @@
     tags:
     - Taser
     - Sidearm
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: disabler
@@ -471,6 +523,10 @@
     guides:
     - Security
     - Antagonists
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: disabler SMG
@@ -508,6 +564,10 @@
     zeroVisible: true
   - type: StaticPrice
     price: 260
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: taser
@@ -544,6 +604,10 @@
     steps: 5
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: antique laser pistol
@@ -588,6 +652,10 @@
     flavorKind: station-event-random-sentience-flavor-inanimate
     weight: 0.0002 # 5,000 times less likely than 1 regular animal
     # not putting a BlockMovement component here cause that's funny.
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: advanced laser pistol
@@ -623,6 +691,10 @@
   - type: Appearance
   - type: StaticPrice
     price: 63
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: C.H.I.M.P. handcannon
@@ -669,6 +741,10 @@
     node: start
   - type: StaticPrice
     price: 100
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: experimental C.H.I.M.P. handcannon
@@ -688,6 +764,10 @@
       fireCost: 100
     - proto: AnomalousParticleSigmaStrong
       fireCost: 100
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: eye of a behonker
@@ -764,3 +844,7 @@
   - type: Battery
     maxCharge: 800
     startingCharge: 800
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Experienced

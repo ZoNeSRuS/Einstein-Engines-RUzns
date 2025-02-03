@@ -83,6 +83,11 @@
     steps: 4
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Experienced
+
 
 - type: entity
   name: L6C ROW

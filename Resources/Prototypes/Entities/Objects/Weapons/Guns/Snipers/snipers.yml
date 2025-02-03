@@ -46,6 +46,10 @@
   components:
   - type: Sprite
     sprite: Objects/Weapons/Guns/Snipers/bolt_gun_wood.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: Hristov
@@ -63,6 +67,10 @@
       - CartridgeAntiMateriel
     capacity: 5
     proto: CartridgeAntiMateriel
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Experienced
 
 - type: entity
   name: musket
@@ -101,6 +109,10 @@
     animation: WeaponArcThrust
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: flintlock pistol
@@ -129,4 +141,8 @@
     proto: CartridgeAntiMateriel
   - type: StaticPrice
     price: 0
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 

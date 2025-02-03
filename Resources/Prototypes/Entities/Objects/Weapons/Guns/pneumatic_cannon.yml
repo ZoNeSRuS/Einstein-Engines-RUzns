@@ -61,6 +61,10 @@
       storagebase: !type:Container
         ents: []
       gas_tank: !type:ContainerSlot
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: pie cannon
@@ -103,7 +107,11 @@
     containers:
       storagebase: !type:Container
         ents: []
-        
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
+
 - type: entity
   name: syringe gun
   parent: BaseStorageItem
@@ -140,6 +148,10 @@
     containers:
       storagebase: !type:Container
         ents: []
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 # shoots bullets instead of throwing them, no other changes
 - type: entity
@@ -149,6 +161,10 @@
   components:
   - type: PneumaticCannon
     throwItems: false
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Basic
 
 # doesn't need gas, extra capacity
 - type: entity

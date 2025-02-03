@@ -99,6 +99,10 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: M-90gl
@@ -143,6 +147,10 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: Lecter
@@ -190,6 +198,10 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: Foam Force Astro Ace
@@ -221,3 +233,7 @@
       path: /Audio/Weapons/Guns/Empty/empty.ogg
     clumsyProof: true
   - type: PacifismAllowedGun
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.NonSkilled

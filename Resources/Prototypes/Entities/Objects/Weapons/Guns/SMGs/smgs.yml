@@ -80,6 +80,10 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: C-20r sub machine gun
@@ -118,6 +122,10 @@
     steps: 6
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: Drozd
@@ -175,6 +183,10 @@
       steps: 1
       zeroVisible: true
     - type: Appearance
+    - type: RequiredSkill
+      container:
+        skills:
+          weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: Vector
@@ -223,6 +235,10 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained
 
 - type: entity
   name: WT550
@@ -285,3 +301,7 @@
     steps: 6
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Trained

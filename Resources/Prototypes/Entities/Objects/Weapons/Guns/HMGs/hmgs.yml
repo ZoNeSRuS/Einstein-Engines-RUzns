@@ -50,3 +50,7 @@
     containers:
       ballistic-ammo: !type:Container
         ents: []
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Master

@@ -52,6 +52,10 @@
     proto: GrenadeFrag
     soundInsert:
       path: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Master
 
 - type: entity
   name: RPG-7
@@ -85,6 +89,10 @@
     steps: 2
     zeroVisible: false
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Master
 
 - type: entity
   name: multiple rocket launcher
@@ -120,6 +128,10 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: RequiredSkill
+    container:
+      skills:
+        weapon: enum.SkillLevel.Master
 
 - type: entity
   name: pirate cannon
@@ -152,6 +164,10 @@
       proto: CannonBall
       soundInsert:
         path: /Audio/Weapons/Guns/Gunshots/grenade_launcher.ogg
+    - type: RequiredSkill
+      container:
+        skills:
+          weapon: enum.SkillLevel.Master
 
 - type: entity
   name: tether gun
@@ -194,6 +210,10 @@
           unshaded:
             True: { visible: true }
             False: { visible: false }
+    - type: RequiredSkill
+      container:
+        skills:
+          weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: force gun
@@ -242,6 +262,10 @@
               unshaded:
                 True: { visible: true }
                 False: { visible: false }
+        - type: RequiredSkill
+          container:
+            skills:
+              weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: grappling gun
@@ -274,6 +298,10 @@
             True: { state: base-unshaded }
             False: { state: base-unshaded-off }
     - type: PacifismAllowedGun
+    - type: RequiredSkill
+      container:
+        skills:
+          weapon: enum.SkillLevel.Basic
 
 # Admeme
 - type: entity
