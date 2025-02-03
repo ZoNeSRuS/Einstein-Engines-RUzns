@@ -52,7 +52,7 @@
   - type: RequiredSkill
     container:
       skills:
-        electricity: enum.SkillLevel.Trained
+        medicine: enum.SkillLevel.Basic
 
 
 - type: entity

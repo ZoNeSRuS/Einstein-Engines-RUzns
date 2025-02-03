@@ -28,6 +28,10 @@
     - HighRiskItem
   - type: StealTarget
     stealGroup: Hypospray
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.Experienced
 
 - type: entity
   name: gorlex hypospray
@@ -52,6 +56,10 @@
     onlyAffectsMobs: false
   - type: UseDelay
     delay: 0.5
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.Experienced
 
 - type: entity
   name: borghypo
@@ -132,6 +140,10 @@
     price: 75 # These are limited supply items.
   - type: TrashOnSolutionEmpty
     solution: pen
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: emergency medipen
@@ -159,6 +171,10 @@
           Quantity: 3
   - type: Tag
     tags: []
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: poison auto-injector
@@ -546,6 +562,10 @@
         - Scientist
         - Borg
 # Corvax-HiddenDesc-End
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.Trained
 
 - type: entity
   parent: [ BaseItem, BaseSyndicateContraband ]

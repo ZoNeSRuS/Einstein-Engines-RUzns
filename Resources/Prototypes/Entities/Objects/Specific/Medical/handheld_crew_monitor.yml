@@ -29,6 +29,10 @@
     - HighRiskItem
   - type: StealTarget
     stealGroup: HandheldCrewMonitor
+  - type: RequiredSkill
+    container:
+      skills:
+       medicine: enum.SkillLevel.Basic
 
 - type: entity
   id: HandheldCrewMonitorEmpty

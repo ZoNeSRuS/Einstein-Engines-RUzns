@@ -374,6 +374,10 @@
   - type: Tag
     tags:
     - Syringe
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.Trained
 
 - type: entity
   parent: BaseSyringe

@@ -12,6 +12,10 @@
   # Inherited
   - type: StaticPrice
     price: 0
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.Basic
 
 - type: entity
   name: ointment
@@ -96,6 +100,10 @@
     count: 10
   - type: StackPrice
     price: 20
+  - type: RequiredSkill
+    container:
+      skills:
+       medicine: enum.SkillLevel.Experienced
 
 - type: entity
   id: OintmentAdvanced1
@@ -183,6 +191,10 @@
     count: 10
   - type: StackPrice
     price: 20
+  - type: RequiredSkill
+    container:
+       skills:
+        medicine: enum.SkillLevel.Experienced
 
 - type: entity
   id: BrutepackAdvanced1
@@ -344,6 +356,10 @@
       path: "/Audio/Items/Medical/ointment_begin.ogg"
     healingEndSound:
       path: "/Audio/Items/Medical/ointment_end.ogg"
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.Experienced
 
 # Pills
 - type: entity
@@ -365,6 +381,10 @@
         reagents:
         - ReagentId: Dexalin
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -398,6 +418,10 @@
         reagents:
         - ReagentId: Dylovene
           Quantity: 10
+  - type: RequiredSkill
+    container:
+     skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -431,6 +455,10 @@
         reagents:
         - ReagentId: Hyronalin
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -464,6 +492,10 @@
         reagents:
         - ReagentId: PotassiumIodide
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -497,6 +529,10 @@
         reagents:
         - ReagentId: Iron
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill
@@ -517,6 +553,10 @@
         reagents:
         - ReagentId: Copper
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -563,6 +603,10 @@
         reagents:
         - ReagentId: Kelotane
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -596,6 +640,10 @@
         reagents:
         - ReagentId: Dermaline
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -622,6 +670,10 @@
         reagents:
         - ReagentId: SpaceDrugs
           Quantity: 15
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill
@@ -642,6 +694,10 @@
         reagents:
         - ReagentId: Tricordrazine
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -675,6 +731,10 @@
         reagents:
         - ReagentId: Bicaridine
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -708,6 +768,10 @@
         reagents:
         - ReagentId: Charcoal
           Quantity: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: pill canister
@@ -734,6 +798,10 @@
         reagents:
         - ReagentId: Romerol
           Quantity: 10
+  - type: RequiredSkill
+    container:
+       skills:
+       medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: ambuzol pill
@@ -747,6 +815,10 @@
           reagents:
             - ReagentId: Ambuzol
               Quantity: 10
+    - type: RequiredSkill
+      container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: ambuzol plus pill
@@ -764,6 +836,10 @@
           reagents:
             - ReagentId: AmbuzolPlus
               Quantity: 5
+    - type: RequiredSkill
+      container:
+      skills:
+        medicine: enum.SkillLevel.NonSkilled
 
 - type: entity
   parent: PillCanister
