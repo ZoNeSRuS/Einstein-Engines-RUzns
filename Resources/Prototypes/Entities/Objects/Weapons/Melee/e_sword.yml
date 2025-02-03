@@ -109,6 +109,10 @@
       map: [ "blade" ]
   - type: Item
     sprite: Objects/Weapons/Melee/e_sword-inhands.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Experienced
 
 - type: entity
   name: energy dagger
@@ -173,6 +177,10 @@
     energy: 1.5
     color: white
     netsync: false
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   name: pen
@@ -258,6 +266,10 @@
         - Scientist
         - Borg
 # Corvax-HiddenDesc-End
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   parent: [BaseItem, BaseSyndicateContraband]
@@ -316,6 +328,10 @@
       jobRequired:
       - SalvageSpecialist
   # Corvax-HiddenDesc-End
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Experienced
 
 - type: entity
   name: double-bladed energy sword
@@ -400,6 +416,10 @@
       jobRequired:
       - SalvageSpecialist
   # Corvax-HiddenDesc-End
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Master
 
 - type: entity
   suffix: One-Handed, For Borgs

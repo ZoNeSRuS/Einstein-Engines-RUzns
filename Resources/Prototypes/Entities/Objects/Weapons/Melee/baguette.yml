@@ -13,3 +13,7 @@
   - type: Reflect
     reflectProb: 0.05
     spread: 90
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic

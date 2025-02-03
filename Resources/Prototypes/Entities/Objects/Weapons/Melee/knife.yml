@@ -47,6 +47,10 @@
     guides:
     - Chef
     - FoodRecipes
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: butcher's cleaver
@@ -74,6 +78,10 @@
     guides:
     - Chef
     - FoodRecipes
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: combat knife
@@ -108,6 +116,10 @@
       sprite: Objects/Weapons/Melee/combat_knife.rsi
   - type: DisarmMalus
     malus: 0.225
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: survival knife
@@ -123,6 +135,10 @@
     storedSprite:
       state: storage
       sprite: Objects/Weapons/Melee/survival_knife.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: kukri knife
@@ -140,6 +156,10 @@
         Slash: 15
   - type: Item
     sprite: Objects/Weapons/Melee/kukri_knife.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   parent: ClothingHeadHatGreyFlatcap
@@ -166,6 +186,10 @@
     sprite: Clothing/Head/Hats/greyflatcap.rsi
   - type: Clothing
     sprite: Clothing/Head/Hats/greyflatcap.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   parent: BladedFlatcapGrey
@@ -179,6 +203,10 @@
     sprite: Clothing/Head/Hats/brownflatcap.rsi
   - type: Clothing
     sprite: Clothing/Head/Hats/brownflatcap.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: shiv
@@ -206,6 +234,10 @@
     sprite: Objects/Weapons/Melee/shiv.rsi
   - type: DisarmMalus
     malus: 0.225
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: reinforced shiv
@@ -225,6 +257,10 @@
     sprite: Objects/Weapons/Melee/reinforced_shiv.rsi
   - type: Sprite
     sprite: Objects/Weapons/Melee/reinforced_shiv.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: plasma shiv
@@ -244,6 +280,10 @@
     sprite: Objects/Weapons/Melee/plasma_shiv.rsi
   - type: Sprite
     sprite: Objects/Weapons/Melee/plasma_shiv.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: uranium shiv
@@ -264,6 +304,10 @@
     sprite: Objects/Weapons/Melee/uranium_shiv.rsi
   - type: Sprite
     sprite: Objects/Weapons/Melee/uranium_shiv.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: throwing knife
@@ -295,3 +339,7 @@
         Piercing: 15
   - type: Item
     sprite: Objects/Weapons/Melee/throwing_knife.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained

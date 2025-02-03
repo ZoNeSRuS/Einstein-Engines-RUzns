@@ -48,3 +48,8 @@
     canThrowTrigger: true
     canMoveBreakout: true
   - type: LandAtCursor
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic

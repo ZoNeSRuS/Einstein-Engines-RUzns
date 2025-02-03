@@ -21,3 +21,8 @@
       types:
         Slash: 5
         Piercing: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic

@@ -41,6 +41,11 @@
     damage: 45
   - type: StaminaDamageOnEmbed
     damage: 10
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: ThrowingStar
@@ -51,3 +56,8 @@
   # also limits the crew's use
   - type: TimedDespawn
     lifetime: 30
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic

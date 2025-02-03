@@ -24,4 +24,8 @@
         Blunt: 3
   - type: UseDelay
     delay: 1
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.NonSkilled
 

@@ -48,6 +48,10 @@
     weight: 0.0002 # 5,000 times less likely than 1 regular animal
   - type: PirateAccent
     # not putting a BlockMovement component here cause that's funny.
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   name: katana
@@ -69,6 +73,10 @@
   - type: Item
     sprite: Objects/Weapons/Melee/katana.rsi
   - type: DisarmMalus
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   name: energy katana
@@ -98,6 +106,10 @@
     - Back
     - Belt
   - type: Reflect
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Experienced
 
 - type: entity
   name: machete
@@ -119,6 +131,10 @@
   - type: Item
     sprite: Objects/Weapons/Melee/machete.rsi
   - type: DisarmMalus
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   name: claymore
@@ -141,6 +157,10 @@
     slots:
     - back
   - type: DisarmMalus
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   name: cutlass
@@ -162,6 +182,10 @@
   - type: Item
     sprite: Objects/Weapons/Melee/cutlass.rsi
   - type: DisarmMalus
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   name: throngler
@@ -193,3 +217,8 @@
     - type: Grammar
       attributes:
         proper: true
+    - type: RequiredSkill
+      container:
+        skills:
+          melee: enum.SkillLevel.Master
+

@@ -48,6 +48,11 @@
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [GrenadeBase, BaseSyndicateContraband]
@@ -77,6 +82,11 @@
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [BaseItem, BaseSyndicateContraband]
@@ -114,6 +124,11 @@
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [GrenadeBase, BaseSecurityContraband]
@@ -143,6 +158,11 @@
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [GrenadeBase, BaseSyndicateContraband]
@@ -172,6 +192,11 @@
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [GrenadeBase, BaseSyndicateContraband]
@@ -201,6 +226,11 @@
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: SoapSyndie
@@ -243,6 +273,11 @@
   - type: ContainerContainer
     containers:
       cluster-payload: !type:Container
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: GrenadeShrapnel
@@ -262,3 +297,8 @@
     maxGrenadesCount: 30
     grenadeType: enum.GrenadeType.Throw
     velocity: 70
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.NonSkilled
+        weapon: enum.SkillLevel.NonSkilled

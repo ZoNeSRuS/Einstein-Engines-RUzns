@@ -1,7 +1,8 @@
 - type: skill
   id: weapon
   category: security
-  cost: 
+  color: "#a61c1c"
+  cost:
     enum.SkillLevel.NonSkilled: 0
     enum.SkillLevel.Basic: 1
     enum.SkillLevel.Trained: 2

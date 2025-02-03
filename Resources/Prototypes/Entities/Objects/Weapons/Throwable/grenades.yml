@@ -56,6 +56,11 @@
         volume: 5
     initialBeepDelay: 0
     beepInterval: 2 # 2 beeps total (at 0 and 2)
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: flashbang
@@ -81,6 +86,11 @@
     guides:
     - Security
     - Antagonists
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   id: GrenadeFlashEffect
@@ -136,6 +146,11 @@
       path: /Audio/Effects/minibombcountdown.ogg
       params:
         volume: 12
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: self destruct
@@ -223,6 +238,11 @@
           params:
             volume: 5
       - type: ExplodeOnTrigger
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: whitehole grenade
@@ -270,6 +290,11 @@
           params:
             volume: 15
       - type: DeleteOnTrigger
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: the nuclear option
@@ -300,6 +325,11 @@
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Effects/countdown.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Experienced
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: modular grenade
@@ -345,6 +375,12 @@
           # Unprimed: <Use state determined by enum.ConstructionVisuals.Layer>
   - type: StaticPrice
     price: 75
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
+        chemistry: enum.SkillLevel.Basic
 
 - type: entity
   name: EMP grenade
@@ -362,6 +398,11 @@
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Effects/countdown.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: holy hand grenade
@@ -402,7 +443,12 @@
         - Scientist
         - Borg
 # Corvax-HiddenDesc-End
-          
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
+
 - type: entity
   parent: [ GrenadeBase, BaseRestrictedContraband ]
   id: SmokeGrenade
@@ -420,6 +466,11 @@
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Items/smoke_grenade_prime.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [ BaseCivilianContraband, SmokeGrenade ]
@@ -437,6 +488,11 @@
       reagents:
       - ReagentId: SpaceCleaner
         Quantity: 30
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+
 
 - type: entity
   parent: SmokeGrenade
@@ -453,6 +509,11 @@
       reagents:
       - ReagentId: TearGas
         Quantity: 50
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [ BaseEngineeringContraband, SmokeGrenade ]
@@ -468,6 +529,12 @@
     smokePrototype: AluminiumMetalFoam
   - type: StaticPrice
     price: 350
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
+        construction: enum.SkillLevel.Basic
 
 # Non-explosive "dummy" grenades to use as a distraction.
 
@@ -489,6 +556,11 @@
   - type: TimerTriggerVisuals
     primingSound:
       path: /Audio/Effects/countdown.ogg
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   name: syndicate trickybomb
@@ -507,3 +579,9 @@
       path: /Audio/Effects/minibombcountdown.ogg
       params:
         volume: 12
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
+

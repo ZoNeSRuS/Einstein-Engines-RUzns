@@ -72,6 +72,13 @@
   - type: HolidayRsiSwap
     sprite:
       festive: Objects/Weapons/Bombs/c4gift.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
+        electricity: enum.SkillLevel.Basic
+        construction: enum.SkillLevel.Basic
 
 - type: entity
   name: seismic charge
@@ -106,3 +113,10 @@
     maxIntensity: 30
     canCreateVacuum: false
   - type: ExplodeOnTrigger
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
+        electricity: enum.SkillLevel.Basic
+        construction: enum.SkillLevel.Basic

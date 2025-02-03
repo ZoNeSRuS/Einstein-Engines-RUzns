@@ -37,6 +37,10 @@
         - Scientist
         - Borg
 # Corvax-HiddenDesc-End
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   parent: [BaseItem, BaseSyndicateContraband]

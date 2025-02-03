@@ -116,6 +116,10 @@
     inHandsMaxFillLevels: 1
     equippedFillBaseName: -fill-
     equippedMaxFillLevels: 1
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 
 - type: entity
@@ -137,6 +141,10 @@
         Piercing: 18
   - type: Construction
     graph: SpearReinforced
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: plasma spear
@@ -157,6 +165,10 @@
         Piercing: 21
   - type: Construction
     graph: SpearPlasma
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: uranium spear
@@ -179,6 +191,10 @@
         Radiation: 9
   - type: Construction
     graph: SpearUranium
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: bone spear
@@ -214,3 +230,7 @@
             max: 2
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic

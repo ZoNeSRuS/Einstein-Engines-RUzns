@@ -52,6 +52,11 @@
   - type: Construction
     graph: FireBomb
     node: firebomb
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 # has igniter but no fuel or wires
 - type: entity

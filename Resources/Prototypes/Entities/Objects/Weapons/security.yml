@@ -88,6 +88,10 @@
     guides:
     - Security
     - Antagonists
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: truncheon
@@ -125,6 +129,10 @@
     guides:
     - Security
     - Antagonists
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: flash
@@ -171,6 +179,10 @@
       guides:
       - Security
       - Antagonists
+    - type: RequiredSkill
+      container:
+        skills:
+          melee: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: flash
@@ -181,6 +193,10 @@
     - type: LimitedCharges
       maxCharges: 2
       charges: 2
+    - type: RequiredSkill
+      container:
+        skills:
+          melee: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: portable flasher

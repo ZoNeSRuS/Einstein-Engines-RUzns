@@ -21,6 +21,10 @@
     slots:
     - back
   - type: DisarmMalus
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: eldritch blade
@@ -45,6 +49,10 @@
     slots:
     - back
   - type: DisarmMalus
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: unholy halberd
@@ -85,3 +93,7 @@
     - back
   - type: UseDelay
     delay: 1
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained

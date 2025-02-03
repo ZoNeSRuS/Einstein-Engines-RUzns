@@ -49,6 +49,11 @@
           base:
             Primed: { state: activated }
             Unprimed: { state: complete }
+    - type: RequiredSkill
+      container:
+        skills:
+          melee: enum.SkillLevel.NonSkilled
+          weapon: enum.SkillLevel.NonSkilled
 
 - type: entity
   id: HotPotatoEffect
@@ -101,6 +106,10 @@
       - !type:TriggerBehavior
       - !type:DoActsBehavior
         acts: ["Destruction"]
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   parent: BaseItem
@@ -120,3 +129,7 @@
   - type: Tag
     tags:
     - Banana
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic

@@ -23,3 +23,7 @@
         Structural: 10
   - type: Item
     size: Large
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained

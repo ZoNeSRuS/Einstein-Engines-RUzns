@@ -35,6 +35,10 @@
     sprite: Objects/Weapons/Melee/pickaxe.rsi
     storedRotation: -45
   - type: UseDelay
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: mining drill
@@ -62,6 +66,10 @@
         Brute: 3
       types:
         Structural: 15
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: diamond tipped mining drill
@@ -84,6 +92,10 @@
         Brute: 6
       types:
         Structural: 30
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 
 - type: entity
@@ -99,6 +111,7 @@
     color: "#ffeead"
     enabled: false
     radius: 4
+
 
 - type: entity
   parent: [BaseWeaponCrusher, BaseSecurityCargoContraband]
@@ -152,6 +165,11 @@
     sprite: Objects/Weapons/Melee/crusher-inhands.rsi
   - type: DisarmMalus
   - type: Prying
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: [ BaseWeaponCrusher, BaseSecurityCargoContraband]
@@ -172,6 +190,10 @@
   - type: Tag
     tags:
     - Knife
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 # Like a crusher... but better
 - type: entity
@@ -195,3 +217,8 @@
   - type: Item
     size: Ginormous
     sprite: Objects/Weapons/Melee/crusher_glaive-inhands.rsi
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
+        weapon: enum.SkillLevel.Basic

@@ -30,6 +30,11 @@
   - type: Construction
     graph: PipeBomb
     node: pipebomb
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: BaseItem
@@ -45,6 +50,11 @@
     graph: PipeBomb
     node: gunpowder
     defaultTarget: pipebomb
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
+        weapon: enum.SkillLevel.Basic
 
 - type: entity
   parent: BaseItem

@@ -42,6 +42,10 @@
   - type: Tag
     tags:
     - BaseballBat
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic
 
 - type: entity
   name: incomplete baseball bat
@@ -70,3 +74,7 @@
     damage:
       types:
         Blunt: 1
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Basic

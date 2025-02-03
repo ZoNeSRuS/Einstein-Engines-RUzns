@@ -25,6 +25,10 @@
         Blunt: 3
   - type: UseDelay
     delay: 1
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.NonSkilled
 
 - type: entity
   name: cane blade
@@ -51,6 +55,10 @@
     tags:
       - CaneBlade
   - type: DisarmMalus
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.Trained
 
 - type: entity
   parent: Cane
@@ -86,6 +94,10 @@
         whitelist:
           tags:
           - CaneBlade
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.NonSkilled
 
 - type: entity
   id: CaneSheathFilled
@@ -96,3 +108,7 @@
     containers:
       item:
       - CaneBlade
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.NonSkilled

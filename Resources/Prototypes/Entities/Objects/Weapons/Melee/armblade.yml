@@ -21,3 +21,7 @@
     size: Normal
     sprite: Objects/Weapons/Melee/armblade.rsi
   - type: Prying
+  - type: RequiredSkill
+    container:
+      skills:
+        melee: enum.SkillLevel.NonSkilled
