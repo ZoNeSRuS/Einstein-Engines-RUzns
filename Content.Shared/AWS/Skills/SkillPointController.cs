@@ -56,13 +56,18 @@ public class SkillPointController
         return mostMatched;
     }
 
-    private SkillLevel GetAnyHigerThan(SkillPrototype skillProto, SkillLevel currentSkillLevel)
+    private SkillLevel GetAnyHigerMostMatchedThanAndLess(SkillPrototype skillProto, SkillLevel currentSkillLevel, SkillLevel selectedSkillLevel)
     {
-        foreach (var (key, value) in skillProto.Cost)
-            if ((SkillLevel)key > currentSkillLevel)
-                return (SkillLevel)key;
+        var currentSkillPoints = CurrentPoints;
+        SkillLevel lastCycledLevel = currentSkillLevel;
 
-        return currentSkillLevel;
+        foreach (var (key, value) in skillProto.Cost)
+            if (key is SkillLevel cycleLevel)
+                if (cycleLevel > currentSkillLevel && cycleLevel <= selectedSkillLevel)
+                    if (currentSkillPoints + GetPointsForSkill(skillProto.ID, cycleLevel) >= 0)
+                        lastCycledLevel = cycleLevel;
+
+        return lastCycledLevel;
     }
 
     public SkillLevel MatchMoreExistenceLevel(ProtoId<SkillPrototype> protoId, SkillLevel currentSkillLevel, SkillLevel selectedSkillLevel)
@@ -77,12 +82,12 @@ public class SkillPointController
             return GetAnyLessThan(skillProto, currentSkillLevel);
 
         if (selectedSkillLevel > currentSkillLevel)
-            return GetAnyHigerThan(skillProto, currentSkillLevel);
+            return GetAnyHigerMostMatchedThanAndLess(skillProto, currentSkillLevel, selectedSkillLevel);
 
         return currentSkillLevel;
     }
 
-    public int GetPointsForSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
+    private int GetPointsForSkillByCurrentSkillLevel(SkillLevel currentSkillLevel, ProtoId<SkillPrototype> protoId, SkillLevel level)
     {
         if (!_prototypeManager.TryIndex(protoId, out var skillProto))
             return 0;
@@ -90,19 +95,17 @@ public class SkillPointController
         if (!skillProto.Cost.TryGetValue(level, out var selectedSkillCost))
             return 0;
 
-        var currentSkillLevel = GetCurrentSkillLevel(protoId);
-
         if (currentSkillLevel == level)
             return ((int)selectedSkillCost);
 
         var currentSkillCost = skillProto.Cost[currentSkillLevel];
 
         return (int)(currentSkillCost - selectedSkillCost);
+    }
 
-        /*if (currentSkillCost > selectedSkillCost)
-            return (int)(currentSkillCost - selectedSkillCost);
-
-        return (int)(selectedSkillCost - currentSkillCost);*/
+    public int GetPointsForSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
+    {
+        return GetPointsForSkillByCurrentSkillLevel(GetCurrentSkillLevel(protoId), protoId, level);
     }
 
     public void ProcessSkill(ProtoId<SkillPrototype> protoId, SkillLevel level)
@@ -126,8 +129,8 @@ public class SkillPointController
 
         if (CurrentPoints + skillCost >= 0)
         {
-            SetSkillLevel(protoId, level);
-            OnRecalculateSkill?.Invoke(protoId, level);
+            SetSkillLevel(protoId, moreExistenceLevel);
+            OnRecalculateSkill?.Invoke(protoId, moreExistenceLevel);
         }
     }
 
