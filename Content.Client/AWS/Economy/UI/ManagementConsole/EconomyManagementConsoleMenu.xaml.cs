@@ -30,6 +30,8 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
 
         AccountHolderTab.OnChangeNamePressed += Owner.ChangeName;
         AccountHolderTab.OnBlockAccountPressed += Owner.BlockAccountToggle;
+        AccountHolderTab.OnChangeJob += Owner.ChangeJob;
+        AccountHolderTab.OnChangeSalary += Owner.ChangeSalary;
         AccountHolderTab.OnChangeAccountPressed += Owner.ChangeAccountHolderID;
         AccountHolderTab.OnInitializeAccountPressed += Owner.InitializeAccountOnHolder;
 
@@ -42,12 +44,11 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
         PrivilegedIdLabel.Text = state.IDCardName ?? "-";
 
         TargetIdButton.Disabled = true;
-        TargetIdLabel.Text = "-";
+        TargetIdLabel.Text = state.HolderID ?? "-";
         Entity<EconomyAccountHolderComponent>? holder = null;
         if (_entityManager.TryGetEntity(state.AccountHolder, out var localHolder) &&
             _entityManager.TryGetComponent<EconomyAccountHolderComponent>(localHolder, out var holderComp))
         {
-            TargetIdLabel.Text = holderComp.AccountID;
             TargetIdButton.Disabled = false;
             holder = (localHolder.Value, holderComp);
         }
@@ -68,7 +69,7 @@ public sealed partial class EconomyManagementConsoleMenu : FancyWindow
     {
         AccountHolderTab.CurrentCard = holder ?? null;
         AccountHolderTab.Priveleged = state.Priveleged;
-        AccountHolderTab.OnUpdateState(state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay);
+        AccountHolderTab.OnUpdateState(state.HolderID, state.AccountID, state.AccountName, state.Balance, state.Penalty, state.Blocked, state.CanReachPayDay, state.JobName, state.Salary);
     }
 
     private void UpdateBonus(bool priveleged)

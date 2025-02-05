@@ -19,16 +19,42 @@
             <Label Name="AccountPaydayStatusLabel" HorizontalExpand="True" />
         </GridContainer>
         <PanelContainer StyleClasses="LowDivider" />
-        <Label Text="{Loc 'economybanksystem-management-console-management-change-name'}" />
-        <LineEdit Name="ChangeNamePrompt" HorizontalExpand="True" />
-        <Button Name="ChangeNameButton" Text="{Loc 'economybanksystem-management-console-management-change-name'}" Disabled="True" Margin="0 5" HorizontalAlignment="Left" />
+        <GridContainer Columns="2" Margin="5">
+            <LineEdit Name="ChangeNamePrompt"
+                    HorizontalExpand="True"/>
+            <Button Name="ChangeNameButton"
+                    Text="{Loc 'economybanksystem-management-console-management-change-name'}"
+                    Disabled="True"
+                    HorizontalAlignment="Left"/>
+            <Label Text="{Loc 'economybanksystem-management-console-management-block-title'}"/>
+            <Button Name="BlockButton" Text="-" Disabled="True" HorizontalAlignment="Left" />
+        </GridContainer>
         <PanelContainer StyleClasses="LowDivider" />
-        <Label Text="{Loc 'economybanksystem-management-console-management-block-title'}" />
-        <Button Name="BlockButton" Text="-" Disabled="True" Margin="0 5" HorizontalAlignment="Left" />
+        <GridContainer Columns="2" Margin="5">
+            <Label Text="{Loc 'economybanksystem-management-console-management-job-preset'}"/>
+            <OptionButton Name="JobPresetOptionButton"
+                    Disabled="True"/>
+            <Label Text="{Loc 'economybanksystem-management-console-management-salary'}"/>
+            <SpinBox Name="SalaryAmountBox"
+                    HorizontalExpand="True"
+                    Value="0"
+                    LineEditDisabled="True"/>
+            <Button Name="ChangeSalaryInfoButton"
+                    Text="{Loc 'economybanksystem-management-console-management-change-salary-info-button'}"
+                    Disabled="True"/>
+        </GridContainer>
         <PanelContainer StyleClasses="LowDivider" />
         <Label Text="{Loc 'economybanksystem-management-console-management-account-title'}" />
-        <LineEdit Name="ChangeAccountPrompt" HorizontalExpand="True" />
-        <Button Name="ChangeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-change-button'}" Disabled="True" Margin="0 5" HorizontalAlignment="Left" />
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+            <LineEdit Name="ChangeAccountPrompt"
+                    Margin="0 5"
+                    HorizontalExpand="True"/>
+            <Button Name="ChangeAccountButton"
+                    Text="{Loc 'economybanksystem-management-console-management-account-change-button'}"
+                    Disabled="True"
+                    Margin="0 5"
+                    HorizontalAlignment="Left"/>
+        </BoxContainer>
         <Button Name="InitializeAccountButton" Text="{Loc 'economybanksystem-management-console-management-account-initialize'}" Disabled="True" HorizontalAlignment="Left" />
         <PanelContainer StyleClasses="LowDivider" Margin="0 5"/>
         <Label Name="ErrorLabel" Text="-" />

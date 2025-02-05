@@ -288,6 +288,7 @@ namespace Content.Shared.AWS.Economy
                 Priveleged = stateInfo.Item1,
                 IDCardName = stateInfo.Item2,
                 AccountHolder = netHolder,
+                HolderID = stateInfo.Item3?.Comp.AccountID,
                 AccountID = bankAccount?.AccountID,
                 AccountName = bankAccount?.AccountName,
                 Balance = bankAccount?.Balance,

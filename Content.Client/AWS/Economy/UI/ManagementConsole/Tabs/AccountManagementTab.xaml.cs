@@ -110,28 +110,31 @@ public sealed partial class AccountManagementTab : Control
                               string? jobName,
                               ulong? salary)
     {
-        if (accountID is null)
+        if (accountID is null || _currentAccount?.AccountID != accountID)
         {
             ClearCurrentAccount();
             return;
         }
 
-        var _accountID = accountID ?? "-";
-        AccountIdLabel.Text = _accountID;
+        accountID ??= "-";
+        AccountIdLabel.Text = accountID;
         AccountOwnerLabel.Text = accountName ?? "-";
         var accountBalance = balance is not null ? string.Format("{0:N0}", balance) : "-";
         AccountBalanceLabel.Text = accountBalance;
         var accountBlocked = blocked is not null ? (blocked.Value ? Loc.GetString("economybanksystem-management-console-management-block") : Loc.GetString("economybanksystem-management-console-management-unblock"))
                                           : "-";
+        AccountBlockedLabel.Text = accountBlocked;
+        salary ??= 0;
+        AccountPaydayStatusLabel.Text = canReachPayDay is not null ? (canReachPayDay.Value ? Loc.GetString("economybanksystem-management-console-management-salary-reachable", ("salary", salary)) : Loc.GetString("economybanksystem-management-console-management-salary-not-reachable"))
+                                                      : "-";
         var blockedButton = blocked is not null ? (blocked.Value ? Loc.GetString("economybanksystem-management-console-management-unblock-button") : Loc.GetString("economybanksystem-management-console-management-block-button"))
                                                 : "-";
-        AccountBlockedLabel.Text = accountBlocked;
         BlockButton.Text = blockedButton;
         JobPresetOptionButton.SelectId(GetJobIndex(jobName));
-        SalaryAmountBox.Value = (int)(salary ?? 0);
+        SalaryAmountBox.Value = (int)salary;
 
         var economySystem = _entityManager.System<EconomyBankAccountSystemShared>();
-        if (economySystem.TryGetAccount(_accountID, out var foundAccount))
+        if (economySystem.TryGetAccount(accountID, out var foundAccount))
             _currentAccount = foundAccount.Comp;
         UpdateButtons(Priveleged);
     }
@@ -217,7 +220,9 @@ public sealed partial class AccountManagementTab : Control
         AccountOwnerLabel.Text = "-";
         AccountBalanceLabel.Text = "-";
         AccountBlockedLabel.Text = "-";
+        AccountPaydayStatusLabel.Text = "-";
         BlockButton.Text = "-";
+        SalaryAmountBox.Value = 0;
 
         _currentAccount = null;
         UpdateButtons(Priveleged);
@@ -231,9 +236,12 @@ public sealed partial class AccountManagementTab : Control
         AccountBalanceLabel.Text = balance.ToString("N0") ?? "-";
         AccountBlockedLabel.Text = account.Blocked ? Loc.GetString("economybanksystem-management-console-management-block") :
                                                      Loc.GetString("economybanksystem-management-console-management-unblock");
+        var salary = account.Salary ?? 0;
+        AccountPaydayStatusLabel.Text = account.CanReachPayDay ? Loc.GetString("economybanksystem-management-console-management-salary-reachable", ("salary", salary)) :
+                                                                 Loc.GetString("economybanksystem-management-console-management-salary-not-reachable");
         BlockButton.Text = account.Blocked ? Loc.GetString("economybanksystem-management-console-management-unblock-button") :
                                              Loc.GetString("economybanksystem-management-console-management-block-button");
         JobPresetOptionButton.SelectId(GetJobIndex(account.JobName));
-        SalaryAmountBox.Value = (int)(account.Salary ?? 0);
+        SalaryAmountBox.Value = (int)salary;
     }
 }

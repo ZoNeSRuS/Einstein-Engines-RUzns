@@ -34,6 +34,10 @@
                         HorizontalExpand="True"/>
                 <Label Name="AccountBlockedLabel"
                         HorizontalExpand="True"/>
+                <Label Text="{Loc 'economybanksystem-management-console-management-salary'}"
+                        HorizontalExpand="True"/>
+                <Label Name="AccountPaydayStatusLabel"
+                        HorizontalExpand="True"/>
             </GridContainer>
             <PanelContainer StyleClasses="LowDivider" />
             <Button Name="BlockButton" Text="-" Disabled="True" Margin = "0 5" HorizontalAlignment="Left" MaxWidth="150"/>
