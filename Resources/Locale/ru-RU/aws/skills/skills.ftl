@@ -8,5 +8,7 @@ skills-skillname-weapon = Оружейный опыт
 skills-skillname-medicine = Медицина
 skills-skillname-chemistry = Химия
 skills-skillname-bureaucracy = Бюрократия
+skills-skillname-research = Изучение
+skills-skillname-devices = Сложные устройства
 
 skills-examie-minimal = Для этого требуется [color={$skillColor}]{$skillName}[/color] не ниже [color={$levelColor}]{$skillLevel}[/color]
