@@ -538,11 +538,15 @@ namespace Content.Client.Lobby.UI
 
             #region SS14RU-SKILLS
 
-            TabContainer.SetTabTitle(5, Loc.GetString("Навыки"));
+            //CTabContainer.SetTabTitle(6, Loc.GetString("Навыки"));
+            SkillsTab.Orphan();
+            CTabContainer.AddTab(SkillsTab, Loc.GetString("Навыки"));
 
             RefreshSkills();
 
-            TabContainer.SetTabTitle(6, Loc.GetString("История"));
+            //CTabContainer.SetTabTitle(7, Loc.GetString("История"));
+            HistoricalTab.Orphan();
+            CTabContainer.AddTab(HistoricalTab, Loc.GetString("История"));
 
             RefreshHistorical();
 
@@ -1426,7 +1430,7 @@ namespace Content.Client.Lobby.UI
                             RgbSkinColorContainer.Visible = false;
                         }
 
-                        var color = SkinColor.HumanSkinTone((int)Skin.Value);
+                        var color = SkinColor.HumanSkinTone((int) Skin.Value);
 
                         Markings.CurrentSkinColor = color;
                         Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));//
@@ -1446,8 +1450,6 @@ namespace Content.Client.Lobby.UI
                     }
                 case HumanoidSkinColor.TintedHues:
                 case HumanoidSkinColor.TintedHuesSkin: // DeltaV - Tone blending
-                {
-                    if (!RgbSkinColorContainer.Visible)
                     {
                         if (!RgbSkinColorContainer.Visible)
                         {
@@ -1455,24 +1457,17 @@ namespace Content.Client.Lobby.UI
                             RgbSkinColorContainer.Visible = true;
                         }
 
-                        var color = SkinColor.TintedHues(_rgbSkinColorSelector.Color);
+                        var color = skin switch // DeltaV - Tone blending
+                        {
+                            HumanoidSkinColor.TintedHues => SkinColor.TintedHues(_rgbSkinColorSelector.Color),
+                            HumanoidSkinColor.TintedHuesSkin => SkinColor.TintedHuesSkin(_rgbSkinColorSelector.Color, skinColor),
+                            _ => Color.White
+                        };
 
                         Markings.CurrentSkinColor = color;
                         Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
                         break;
                     }
-
-                    var color = skin switch // DeltaV - Tone blending
-                    {
-                        HumanoidSkinColor.TintedHues => SkinColor.TintedHues(_rgbSkinColorSelector.Color),
-                        HumanoidSkinColor.TintedHuesSkin => SkinColor.TintedHuesSkin(_rgbSkinColorSelector.Color, skinColor),
-                        _ => Color.White
-                    };
-
-                    Markings.CurrentSkinColor = color;
-                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                    break;
-                }
                 case HumanoidSkinColor.VoxFeathers:
                     {
                         if (!RgbSkinColorContainer.Visible)
@@ -1487,13 +1482,6 @@ namespace Content.Client.Lobby.UI
                         Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
                         break;
                     }
-
-                    var color = SkinColor.ClosestVoxColor(_rgbSkinColorSelector.Color);
-
-                    Markings.CurrentSkinColor = color;
-                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                    break;
-                }
                 case HumanoidSkinColor.AnimalFur: // Einstein Engines - Tajaran
                     {
                         if (!RgbSkinColorContainer.Visible)
@@ -1507,7 +1495,7 @@ namespace Content.Client.Lobby.UI
                         Markings.CurrentSkinColor = color;
                         Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
                         break;
-                }
+                    }
             }
 
             SetDirty();
@@ -1782,13 +1770,8 @@ namespace Content.Client.Lobby.UI
                         }
 
                         Skin.Value = SkinColor.HumanSkinToneFromColor(Profile.Appearance.SkinColor);
-
                         break;
                     }
-
-                    Skin.Value = SkinColor.HumanSkinToneFromColor(Profile.Appearance.SkinColor);
-                    break;
-                }
                 case HumanoidSkinColor.Hues:
                     {
                         if (!RgbSkinColorContainer.Visible)
@@ -1797,10 +1780,10 @@ namespace Content.Client.Lobby.UI
                             RgbSkinColorContainer.Visible = true;
                         }
 
-                    // Set the RGB values to the direct values otherwise
-                    _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
-                    break;
-                }
+                        // Set the RGB values to the direct values otherwise
+                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
+                        break;
+                    }
                 case HumanoidSkinColor.TintedHues:
                     {
                         if (!RgbSkinColorContainer.Visible)
@@ -1809,10 +1792,10 @@ namespace Content.Client.Lobby.UI
                             RgbSkinColorContainer.Visible = true;
                         }
 
-                    // Set the RGB values to the direct values otherwise
-                    _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
-                    break;
-                }
+                        // Set the RGB values to the direct values otherwise
+                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
+                        break;
+                    }
                 case HumanoidSkinColor.VoxFeathers:
                     {
                         if (!RgbSkinColorContainer.Visible)
@@ -1825,11 +1808,6 @@ namespace Content.Client.Lobby.UI
 
                         break;
                     }
-
-                    _rgbSkinColorSelector.Color = SkinColor.ClosestVoxColor(Profile.Appearance.SkinColor);
-
-                    break;
-                }
                 case HumanoidSkinColor.AnimalFur: // Einstein Engines - Tajaran
                     {
                         if (!RgbSkinColorContainer.Visible)
@@ -1841,7 +1819,7 @@ namespace Content.Client.Lobby.UI
                         _rgbSkinColorSelector.Color = SkinColor.ClosestAnimalFurColor(Profile.Appearance.SkinColor);
 
                         break;
-                }
+                    }
             }
         }
 
@@ -2698,7 +2676,7 @@ namespace Content.Client.Lobby.UI
                     loadout, highJob ?? new JobPrototype(),
                     Profile ?? HumanoidCharacterProfile.DefaultWithSpecies(), ref _dummyLoadouts,
                     _entManager, _prototypeManager, _cfgManager, _characterRequirementsSystem, _requirements)
-                    { Preference = new(loadout.ID) };
+                { Preference = new(loadout.ID) };
                 UpdateSelector(selector, usable);
                 AddSelector(selector);
 
@@ -2714,6 +2692,7 @@ namespace Content.Client.Lobby.UI
 
             UpdateLoadoutPreferences();
             return;
+
 
 
             void UpdateSelector(LoadoutPreferenceSelector selector, bool usable)

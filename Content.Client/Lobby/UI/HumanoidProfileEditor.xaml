@@ -10,7 +10,8 @@
         <!-- Middle container -->
         <BoxContainer Orientation="Horizontal" SeparationOverride="10">
             <!-- Name box-->
-            <PanelContainer StyleClasses="PanelBackground"> <!-- WD EDIT -->
+            <PanelContainer StyleClasses="PanelBackground">
+                <!-- WD EDIT -->
                 <BoxContainer Orientation="Vertical">
                     <prefUi:HighlightedContainer>
                         <BoxContainer Orientation="Vertical">
@@ -32,7 +33,8 @@
                 </BoxContainer>
             </PanelContainer>
             <!-- Import/Export -->
-            <PanelContainer StyleClasses="PanelBackground"> <!-- WD EDIT -->
+            <PanelContainer StyleClasses="PanelBackground">
+                <!-- WD EDIT -->
                 <BoxContainer Orientation="Vertical">
                     <prefUi:HighlightedContainer>
                         <BoxContainer Orientation="Horizontal" SeparationOverride="5">
@@ -47,7 +49,8 @@
         </BoxContainer>
         <Control MinHeight="10" />
         <!-- TabContainer -->
-        <PanelContainer StyleClasses="PanelBackground" VerticalExpand="True" VerticalAlignment="Stretch"> <!-- WD EDIT -->
+        <PanelContainer StyleClasses="PanelBackground" VerticalExpand="True" VerticalAlignment="Stretch">
+            <!-- WD EDIT -->
             <ui:NeoTabContainer Name="CTabContainer" VerticalExpand="True" HScrollEnabled="False" VScrollEnabled="False">
                 <BoxContainer Name="Appearance" HorizontalExpand="True" Orientation="Vertical">
                     <!-- appearanceList -->
@@ -66,7 +69,7 @@
                                 <BoxContainer Name="CCustomSpecieName" HorizontalExpand="True">
                                     <Label Text="{Loc 'humanoid-profile-editor-customspeciename-label'}" />
                                     <Control HorizontalExpand="True"/>
-                                        <LineEdit Name="CCustomSpecieNameEdit" MinSize="270 0" HorizontalAlignment="Right" />
+                                    <LineEdit Name="CCustomSpecieNameEdit" MinSize="270 0" HorizontalAlignment="Right" />
                                 </BoxContainer>
                                 <!--WD EDIT START-->
                                 <!-- Body Type -->
@@ -139,7 +142,7 @@
                                     <Control HorizontalExpand="True"/>
                                     <OptionButton Name="SpawnPriorityButton" HorizontalAlignment="Right" />
                                 </BoxContainer>
-						        <!-- Height -->
+                                <!-- Height -->
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Name="HeightLabel" MinWidth="110" />
                                     <Slider Name="HeightSlider" MinValue="0.5" Value="1" MaxValue="1.5" HorizontalExpand="True" Margin="5 0 5 0" />
@@ -155,121 +158,118 @@
                                 <BoxContainer HorizontalExpand="True">
                                     <Label Name="WeightLabel" />
                                 </BoxContainer>
+                            </BoxContainer>
+                            <!-- Skin -->
+                            <BoxContainer Margin="10" HorizontalExpand="True" Orientation="Vertical">
+                                <Label Text="{Loc 'humanoid-profile-editor-skin-color-label'}" />
+                                <Slider HorizontalExpand="True" Name="Skin" MinValue="0" MaxValue="100" Value="20" />
+                                <BoxContainer Name="RgbSkinColorContainer" Visible="False" Orientation="Vertical" HorizontalExpand="True"></BoxContainer>
+                            </BoxContainer>
+                            <!-- Hair -->
+                            <BoxContainer Margin="10" Orientation="Horizontal">
+                                <humanoid:SingleMarkingPicker Name="HairStylePicker" Category="Hair" />
+                                <humanoid:SingleMarkingPicker Name="FacialHairPicker" Category="FacialHair" />
+                            </BoxContainer>
+                            <!-- Eyes -->
+                            <BoxContainer Margin="10" Orientation="Vertical">
+                                <Label Text="{Loc 'humanoid-profile-editor-eyes-label'}" />
+                                <humanoid:EyeColorPicker Name="EyeColorPicker" />
+                            </BoxContainer>
                         </BoxContainer>
-                        <!-- Skin -->
-                        <BoxContainer Margin="10" HorizontalExpand="True" Orientation="Vertical">
-                            <Label Text="{Loc 'humanoid-profile-editor-skin-color-label'}" />
-                            <Slider HorizontalExpand="True" Name="Skin" MinValue="0" MaxValue="100" Value="20" />
-                            <BoxContainer Name="RgbSkinColorContainer" Visible="False" Orientation="Vertical" HorizontalExpand="True"></BoxContainer>
+                    </ScrollContainer>
+                </BoxContainer>
+                <BoxContainer Name="Jobs" HorizontalExpand="True">
+                    <!-- Jobs -->
+                    <ScrollContainer HorizontalExpand="True" HScrollEnabled="True" VerticalExpand="True" VScrollEnabled="True">
+                        <BoxContainer HorizontalExpand="True" Orientation="Vertical">
+                            <OptionButton Name="PreferenceUnavailableButton" StyleClasses="OpenBoth" />
+                            <BoxContainer Name="JobList" Orientation="Vertical" />
                         </BoxContainer>
-                        <!-- Hair -->
-                        <BoxContainer Margin="10" Orientation="Horizontal">
-                            <humanoid:SingleMarkingPicker Name="HairStylePicker" Category="Hair" />
-                            <humanoid:SingleMarkingPicker Name="FacialHairPicker" Category="FacialHair" />
-                        </BoxContainer>
-                        <!-- Eyes -->
-                        <BoxContainer Margin="10" Orientation="Vertical">
-                            <Label Text="{Loc 'humanoid-profile-editor-eyes-label'}" />
-                            <humanoid:EyeColorPicker Name="EyeColorPicker" />
-                        </BoxContainer>
+                    </ScrollContainer>
+                </BoxContainer>
+                <BoxContainer Name="Antags" HorizontalExpand="True" Orientation="Vertical" Margin="10">
+                    <!-- Antags -->
+                    <ScrollContainer HorizontalExpand="True" HScrollEnabled="True" VerticalExpand="True" VScrollEnabled="True">
+                        <BoxContainer Name="AntagList" Orientation="Vertical" />
+                    </ScrollContainer>
+                </BoxContainer>
+                <BoxContainer Name="TraitsTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
+                    <!-- Traits -->
+                    <Label Name="TraitPointsLabel" HorizontalAlignment="Stretch" Align="Center" />
+                    <ProgressBar Name="TraitPointsBar" MaxValue="1" Value="1" MaxHeight="8" Margin="0 5" />
+
+                    <BoxContainer HorizontalExpand="True" Margin="0 0 0 5">
+                        <Button
+                            Name="TraitsShowUnusableButton"
+                            Text="{Loc 'humanoid-profile-editor-traits-show-unusable-button'}"
+                            ToolTip="{Loc 'humanoid-profile-editor-traits-show-unusable-button-tooltip'}"
+                            ToggleMode="True"
+                            HorizontalAlignment="Stretch"
+                            HorizontalExpand="True"
+                            StyleClasses="OpenRight" />
+                        <Button
+                            Name="TraitsRemoveUnusableButton"
+                            Text="You shouldn't see this"
+                            ToolTip="{Loc 'humanoid-profile-editor-traits-remove-unusable-button-tooltip'}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalExpand="True"
+                            StyleClasses="OpenLeft" />
                     </BoxContainer>
-                </ScrollContainer>
-            </BoxContainer>
-            <BoxContainer Name="Jobs" HorizontalExpand="True">
-                <!-- Jobs -->
-                <ScrollContainer HorizontalExpand="True" HScrollEnabled="True" VerticalExpand="True" VScrollEnabled="True">
-                    <BoxContainer HorizontalExpand="True" Orientation="Vertical">
-                        <OptionButton Name="PreferenceUnavailableButton" StyleClasses="OpenBoth" />
-                        <BoxContainer Name="JobList" Orientation="Vertical" />
+
+                    <ui:NeoTabContainer Name="TraitsTabs" VerticalExpand="True" SeparatorMargin="0" />
+                </BoxContainer>
+                <BoxContainer Name="LoadoutsTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
+                    <!-- Loadouts -->
+                    <Label Name="LoadoutPointsLabel" HorizontalAlignment="Stretch" Align="Center" />
+                    <ProgressBar Name="LoadoutPointsBar" MaxValue="1" Value="1" MaxHeight="8" Margin="0 5" />
+
+                    <BoxContainer HorizontalExpand="True" Margin="0 0 0 5">
+                        <Button
+                            Name="LoadoutsShowUnusableButton"
+                            Text="{Loc 'humanoid-profile-editor-loadouts-show-unusable-button'}"
+                            ToolTip="{Loc 'humanoid-profile-editor-loadouts-show-unusable-button-tooltip'}"
+                            ToggleMode="True"
+                            HorizontalAlignment="Stretch"
+                            HorizontalExpand="True"
+                            StyleClasses="OpenRight" />
+                        <Button
+                            Name="LoadoutsRemoveUnusableButton"
+                            Text="You shouldn't see this"
+                            ToolTip="{Loc 'humanoid-profile-editor-loadouts-remove-unusable-button-tooltip'}"
+                            HorizontalAlignment="Stretch"
+                            HorizontalExpand="True"
+                            StyleClasses="OpenLeft" />
                     </BoxContainer>
-                </ScrollContainer>
+
+                    <ui:NeoTabContainer Name="LoadoutsTabs" VerticalExpand="True" SeparatorMargin="0" />
                 </BoxContainer>
-            <BoxContainer Name="Antags" HorizontalExpand="True" Orientation="Vertical" Margin="10">
-                <!-- Antags -->
-                <ScrollContainer HorizontalExpand="True" HScrollEnabled="True" VerticalExpand="True" VScrollEnabled="True">
-                    <BoxContainer Name="AntagList" Orientation="Vertical" />
-                </ScrollContainer>
-            </BoxContainer>
-            <BoxContainer Name="TraitsTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
-                <!-- Traits -->
-                <Label Name="TraitPointsLabel" HorizontalAlignment="Stretch" Align="Center" />
-                <ProgressBar Name="TraitPointsBar" MaxValue="1" Value="1" MaxHeight="8" Margin="0 5" />
-
-                <BoxContainer HorizontalExpand="True" Margin="0 0 0 5">
-                    <Button
-                        Name="TraitsShowUnusableButton"
-                        Text="{Loc 'humanoid-profile-editor-traits-show-unusable-button'}"
-                        ToolTip="{Loc 'humanoid-profile-editor-traits-show-unusable-button-tooltip'}"
-                        ToggleMode="True"
-                        HorizontalAlignment="Stretch"
-                        HorizontalExpand="True"
-                        StyleClasses="OpenRight" />
-                    <Button
-                        Name="TraitsRemoveUnusableButton"
-                        Text="You shouldn't see this"
-                        ToolTip="{Loc 'humanoid-profile-editor-traits-remove-unusable-button-tooltip'}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalExpand="True"
-                        StyleClasses="OpenLeft" />
+                <BoxContainer Name="MarkingsTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
+                    <ScrollContainer HorizontalExpand="True" HScrollEnabled="True" VerticalExpand="True" VScrollEnabled="True">
+                        <!-- Markings -->
+                        <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
+                    </ScrollContainer>
                 </BoxContainer>
-
-                <ui:NeoTabContainer Name="TraitsTabs" VerticalExpand="True" SeparatorMargin="0" />
-            </BoxContainer>
-            <BoxContainer Name="LoadoutsTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
-                <!-- Loadouts -->
-                <Label Name="LoadoutPointsLabel" HorizontalAlignment="Stretch" Align="Center" />
-                <ProgressBar Name="LoadoutPointsBar" MaxValue="1" Value="1" MaxHeight="8" Margin="0 5" />
-
-                <BoxContainer HorizontalExpand="True" Margin="0 0 0 5">
-                    <Button
-                        Name="LoadoutsShowUnusableButton"
-                        Text="{Loc 'humanoid-profile-editor-loadouts-show-unusable-button'}"
-                        ToolTip="{Loc 'humanoid-profile-editor-loadouts-show-unusable-button-tooltip'}"
-                        ToggleMode="True"
-                        HorizontalAlignment="Stretch"
-                        HorizontalExpand="True"
-                        StyleClasses="OpenRight" />
-                    <Button
-                        Name="LoadoutsRemoveUnusableButton"
-                        Text="You shouldn't see this"
-                        ToolTip="{Loc 'humanoid-profile-editor-loadouts-remove-unusable-button-tooltip'}"
-                        HorizontalAlignment="Stretch"
-                        HorizontalExpand="True"
-                        StyleClasses="OpenLeft" />
+                <BoxContainer Name="SkillsTab" Orientation="Vertical" Margin="10">
+                    <!-- Skills -->
+                    <ScrollContainer VerticalExpand="True">
+                        <Label Name="LeftSkillPoints"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Top"/>
+                        <BoxContainer Name="SkillsList" Orientation="Vertical" Margin="15"/>
+                    </ScrollContainer>
                 </BoxContainer>
-
-                <ui:NeoTabContainer Name="LoadoutsTabs" VerticalExpand="True" SeparatorMargin="0" />
-            </BoxContainer>
-            <BoxContainer Name="MarkingsTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
-                <ScrollContainer HorizontalExpand="True" HScrollEnabled="True" VerticalExpand="True" VScrollEnabled="True">
-                    <!-- Markings -->
-                    <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
-                </ScrollContainer>
-            </BoxContainer>
-        </ui:NeoTabContainer>
+                <BoxContainer Name="HistoricalTab" Orientation="Vertical" Margin="10">
+                    <!-- Historical -->
+                    <ScrollContainer VerticalExpand="True">
+                        <BoxContainer Name="HistoricalContainer" Orientation="Vertical" Margin="15"/>
+                    </ScrollContainer>
+                </BoxContainer>
+            </ui:NeoTabContainer>
         </PanelContainer>
     </BoxContainer>
     <!-- Right side -->
-    <PanelContainer StyleClasses="PanelBackground"> <!-- WD EDIT -->
-        <ScrollContainer VerticalExpand="True">
-            <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
-        </ScrollContainer>
-        <BoxContainer Orientation="Vertical" Margin="10">
-            <!-- Skills -->
-            <ScrollContainer VerticalExpand="True">
-                <Label Name="LeftSkillPoints"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Top"/>
-                <BoxContainer Name="SkillsList" Orientation="Vertical" Margin="15"/>
-            </ScrollContainer>
-            <BoxContainer Orientation="Vertical" Margin="10">
-                     <!-- Historical -->
-                     <ScrollContainer VerticalExpand="True">
-                         <BoxContainer Name="HistoricalContainer" Orientation="Vertical" Margin="15"/>
-                     </ScrollContainer>
-            </BoxContainer>
-        </BoxContainer>
-        <!-- Right side -->
+    <PanelContainer StyleClasses="PanelBackground">
+        <!-- WD EDIT -->
         <BoxContainer Orientation="Vertical" VerticalExpand="True" VerticalAlignment="Center">
             <SpriteView Name="SpriteView" Scale="8 8" SizeFlagsStretchRatio="1" />
             <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 5">
