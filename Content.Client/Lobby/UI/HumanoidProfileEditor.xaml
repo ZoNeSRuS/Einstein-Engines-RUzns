@@ -249,7 +249,7 @@
                         <humanoid:MarkingPicker Name="Markings" IgnoreCategories="Hair,FacialHair" />
                     </ScrollContainer>
                 </BoxContainer>
-                <BoxContainer Name="SkillsTab" Orientation="Vertical" Margin="10">
+                <BoxContainer Name="SkillsTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
                     <!-- Skills -->
                     <ScrollContainer VerticalExpand="True">
                         <Label Name="LeftSkillPoints"
@@ -258,7 +258,7 @@
                         <BoxContainer Name="SkillsList" Orientation="Vertical" Margin="15"/>
                     </ScrollContainer>
                 </BoxContainer>
-                <BoxContainer Name="HistoricalTab" Orientation="Vertical" Margin="10">
+                <BoxContainer Name="HistoricalTab" HorizontalExpand="True" Orientation="Vertical" Margin="10">
                     <!-- Historical -->
                     <ScrollContainer VerticalExpand="True">
                         <BoxContainer Name="HistoricalContainer" Orientation="Vertical" Margin="15"/>
