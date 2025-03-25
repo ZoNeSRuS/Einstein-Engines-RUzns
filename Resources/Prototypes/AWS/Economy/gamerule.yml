@@ -6,8 +6,6 @@
     weight: 8
     duration: 1
     maxOccurrences: 1 # this event has diminishing returns on interesting-ness, so we cap it
-    startAudio:
-      path: /Audio/Announcements/attention.ogg
   - type: EconomyPayDayRule
     payerAccountId: "NT-CentCom"
     proccessOnlyPrefixedAccounts: "NT-"

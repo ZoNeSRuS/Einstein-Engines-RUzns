@@ -711,9 +711,9 @@
       accountIdByProto: Nanotrasen
       moneyHolderEntId: ThalerHolder
       accountSetup:
-      allowedCurrency: Thaler
-      accountTags:
-        - Personal
+        allowedCurrency: Thaler
+        accountTags:
+          - Personal
     - type: Sprite
       layers:
       - state: default
@@ -734,9 +734,9 @@
       accountIdByProto: Nanotrasen
       moneyHolderEntId: ThalerHolder
       accountSetup:
-      allowedCurrency: Thaler
-      accountTags:
-        - Personal
+        allowedCurrency: Thaler
+        accountTags:
+          - Personal
     - type: Sprite
       layers:
       - state: default
