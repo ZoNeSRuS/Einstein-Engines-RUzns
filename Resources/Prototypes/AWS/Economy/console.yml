@@ -88,7 +88,7 @@
         type: EconomyManagementConsoleBoundUserInterface
   - type: ItemSlots
   - type: Computer
-    board: ComputerLogsCircuitboard
+    board: ComputerEconomyManagementCircuitboard
   - type: PointLight
     radius: 1.5
     energy: 1.6

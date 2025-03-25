@@ -130,7 +130,6 @@
     DrinkIceBucket: 5
     BarSpoon: 100
     CustomDrinkJug: 5
-    DrinkCampariBottleFull: 25
     DrinkAbsintheBottleFull: 25
     DrinkAleBottleFull: 25
     DrinkBeerBottleFull: 25
@@ -236,22 +235,6 @@
     ClothingUniformJumpskirtChef:  10
     ClothingHeadHatChef: 10
     ClothingShoesChef: 10
-    ClothingBeltChefApronWhite: 10
-    ClothingBeltChefApronGreen: 10
-    ClothingBeltChefApronBlack: 10
-    ClothingBeltChefApronRed: 10
-    ClothingHeadHatChefWhite: 10
-    ClothingHeadHatChefGreen: 10
-    ClothingHeadHatChefBlack: 10
-    ClothingUniformJumpsuitChefWhite: 10
-    ClothingUniformJumpsuitChefGreen: 10
-    ClothingUniformJumpsuitChefBlack: 10
-    ClothingUniformJumpskirtChefWhite: 10
-    ClothingUniformJumpskirtChefGreen: 10
-    ClothingUniformJumpskirtChefBlack: 10
-    ClothingOuterJacketChefWhite: 10
-    ClothingOuterJacketChefGreen: 10
-    ClothingOuterJacketChefBlack: 10
 # id: ChefvendInventory
     ReagentContainerFlour: 10
     ReagentContainerCornmeal: 10
@@ -399,7 +382,6 @@
     ClothingHandsGlovesColorWhite: 5
     ClothingHandsGlovesColorRed: 5
     ClothingHandsGlovesColorBlue: 5
-    ClothingHandsGlovesColorTeal: 5
     ClothingHandsGlovesColorGreen: 5
     ClothingHandsGlovesColorOrange: 5
     ClothingHandsGlovesColorPurple: 5
@@ -448,13 +430,10 @@
     ClothingUniformJumpskirtCurator: 5
     ClothingUniformJumpsuitLibrarian: 5
     ClothingUniformJumpskirtLibrarian: 5
-    PrinterDocFlatpack: 5
 # id: DetDrobeInventory
     ClothingUniformJumpsuitDetective: 5
     ClothingUniformJumpskirtDetective: 5
     ClothingOuterCoatDetectiveLoadout: 30
-    ClothingOuterCoatDetectiveLoadoutGrey: 30
-    ClothingOuterCoatDetectiveDark: 30
     ClothingHeadHatFedoraBrown: 5
     ClothingUniformJumpsuitDetectiveGrey: 5
     ClothingUniformJumpskirtDetectiveGrey: 5
@@ -475,7 +454,6 @@
     FoodKebabSkewer: 5
     Beaker: 5
     LargeBeaker: 5
-    Pitcher: 2
     DrinkMug: 5
     DrinkMugBlack: 5
     DrinkMugBlue: 5
@@ -514,7 +492,6 @@
 # id: EngiVendInventory
     ClothingEyesGlassesMeson: 10
     ClothingHeadHatWelding: 5
-    CrowbarYellow: 5
     Multitool: 15
     NetworkConfigurator: 5
     PowerCellMedium: 5
@@ -528,7 +505,6 @@
     BackgammonBoard: 5
     ParchisBoard: 5
     CheckerBoard: 5
-    BookStationsAndAgents: 5
     ShipBattlemap: 5
     SnowBattlemap: 5
     SandBattlemap: 5
@@ -559,7 +535,6 @@
     ClothingHandsGlovesJanitor: 5
     ClothingBeltJanitor: 15
     ClothingOuterWinterJani: 20
-    ClothingUniformJumpskirtElegantMaid: 0
     ClothingUniformJumpskirtJanimaid: 0
     ClothingUniformJumpskirtJanimaidmini: 0
 # id: LawDrobeInventory
@@ -574,9 +549,7 @@
     ClothingUniformJumpsuitLawyerGood: 5
     ClothingUniformJumpskirtLawyerGood: 5
     ClothingShoesBootsLaceup: 20
-    ClothingHeadsetIAA: 50
     ClothingNeckLawyerbadge: 20
-    BookSpaceLaw: 15
     ClothingHeadHatOutlawHat: 5
     LuxuryPen: 50
     ClothingOuterRobesJudge: 10
@@ -636,7 +609,6 @@
     EZNutrientChemistryBottle: 10
     Bucket: 5
     DiseaseSwab: 5
-    BoxAgrichem: 30
     Left4ZedChemistryBottle: 0
 # id: PwrGameInventory
     DrinkPwrGameCan: 10
@@ -724,8 +696,6 @@
     ClothingEyesBlindfold: 5
     ClothingShoesBootsCombat: 5
     ClothingShoesBootsWinterSec: 10
-    ClothingHeadHelmetJustice: 100
-    ClothingMaskClownSecurity: 0
 # id: MegaSeedServitorInventory
     AloeSeeds: 5
     AmbrosiaVulgarisSeeds: 5
@@ -760,7 +730,6 @@
     RiceSeeds: 5
     SoybeanSeeds: 5
     SugarcaneSeeds: 5
-    TeaPlantSeeds: 5
     TomatoSeeds: 5
     TowercapSeeds: 5
     WheatSeeds: 5
