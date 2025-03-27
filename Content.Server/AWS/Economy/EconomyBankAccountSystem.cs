@@ -60,7 +60,7 @@ namespace Content.Server.AWS.Economy
 
         #region Account management
         /// <summary>
-        /// Creates a new bank account entity.
+        /// Creates a new bank account entity. If account already exists - fetch it instead, but still return false.
         /// </summary>
         /// <returns>Whether the account was successfully created.</returns>
         [PublicAPI]
@@ -75,12 +75,14 @@ namespace Content.Server.AWS.Economy
                                      ProtoId<JobPrototype>? jobName,
                                      ulong? salary,
                                      MapCoordinates? cords,
-                                     [NotNullWhen(true)] out Entity<EconomyBankAccountComponent>? account)
+                                     out Entity<EconomyBankAccountComponent> account)
         {
-            account = null;
             // Return if account with this id already exists.
-            if (IsValidAccount(accountID))
+            if (TryGetAccount(accountID, out var foundAccount))
+            {
+                account = foundAccount;
                 return false;
+            }
 
             var spawnCords = cords ?? MapCoordinates.Nullspace;
             var accountEntity = Spawn(null, spawnCords);
@@ -114,6 +116,7 @@ namespace Content.Server.AWS.Economy
             if (!_prototypeManager.TryIndex(entity.Comp.AccountIdByProto, out EconomyAccountIdPrototype? proto))
                 return false;
 
+            // Setup standard starting values for account details
             var accountID = GenerateAccountId(proto.Prefix, proto.Streak, proto.NumbersPerStreak, proto.Descriptior);
             var accountName = entity.Comp.AccountName;
             var balance = (ulong)0;
@@ -134,60 +137,56 @@ namespace Content.Server.AWS.Economy
 
             var station = _stationSystem.GetOwningStation(entity);
             var cords = station != null ? _transformSystem.GetMapCoordinates(station.Value) : MapCoordinates.Nullspace;
-            if (entity.Comp.AccountSetup is { } setup && presetIdCardComponent is null && idCardComponent is null)
-            {
-                var setupID = setup.GenerateAccountID ? accountID :
-                                                        setup.AccountID;
+            // if (entity.Comp.AccountSetup is { } setup && presetIdCardComponent is null && idCardComponent is null)
+            // {
+            //     var setupID = setup.GenerateAccountID || setup.AccountID is null ? accountID :
+            //                                             setup.AccountID;
 
-                if (setupID is null)
-                    return false;
+            //     if (!TryCreateAccount(setupID,
+            //                           setup.AccountName ?? accountName,
+            //                           setup.AllowedCurrency ?? "Thaler",
+            //                           setup.Balance ?? balance,
+            //                           setup.Penalty ?? 0,
+            //                           setup.Blocked ?? false,
+            //                           setup.CanReachPayDay ?? true,
+            //                           setup.AccountTags ?? [],
+            //                           jobName,
+            //                           salary,
+            //                           cords,
+            //                           out activatedAccount))
+            //         return false;
 
-                if (!TryCreateAccount(setupID,
-                                      setup.AccountName ?? "UNEXPECTED USER",
-                                      setup.AllowedCurrency ?? "Thaler",
-                                      setup.Balance ?? balance,
-                                      setup.Penalty ?? 0,
-                                      setup.Blocked ?? false,
-                                      setup.CanReachPayDay ?? true,
-                                      setup.AccountTags ?? [],
-                                      jobName,
-                                      salary,
-                                      cords,
-                                      out activatedAccount))
-                    return false;
+            //     entity.Comp.AccountID = setupID;
+            //     entity.Comp.AccountName = setup.AccountName ?? "UNEXPECTED USER";
+            //     Dirty(entity);
+            //     return true;
+            // }
 
-                entity.Comp.AccountID = setupID;
-                entity.Comp.AccountName = setup.AccountName ?? "UNEXPECTED USER";
-                Dirty(entity);
-                return true;
-            }
+            // Setup values are always coming first if they can
+            var accountSetup = entity.Comp.AccountSetup;
+            accountID = accountSetup.GenerateAccountID || accountSetup.AccountID is null ? accountID :
+                                        accountSetup.AccountID;
+            accountName = accountSetup.AccountName ?? accountName;
+            balance = accountSetup.Balance ?? balance;
 
-            if (presetIdCardComponent is not null && idCardComponent is not null)
-            {
-                var accountSetup = entity.Comp.AccountSetup;
-                balance = accountSetup?.Balance ?? balance;
+            TryCreateAccount(accountID,
+                            accountName,
+                            accountSetup.AllowedCurrency ?? "Thaler",
+                            balance,
+                            accountSetup.Penalty ?? 0,
+                            accountSetup.Blocked ?? false,
+                            accountSetup.CanReachPayDay ?? true,
+                            accountSetup.AccountTags ?? [],
+                            jobName,
+                            salary,
+                            cords,
+                            out var account);
 
-                if (!TryCreateAccount(accountID,
-                                      accountName,
-                                      accountSetup?.AllowedCurrency ?? "Thaler",
-                                      balance,
-                                      accountSetup?.Penalty ?? 0,
-                                      accountSetup?.Blocked ?? false,
-                                      accountSetup?.CanReachPayDay ?? true,
-                                      accountSetup?.AccountTags ?? [],
-                                      jobName,
-                                      salary,
-                                      cords,
-                                      out activatedAccount))
-                    return false;
-
-                entity.Comp.AccountID = accountID;
-                entity.Comp.AccountName = accountName;
-                Dirty(entity);
-                return true;
-            }
-
-            return false;
+            activatedAccount = account;
+            entity.Comp.AccountID = accountID;
+            entity.Comp.AccountName = accountName;
+            Dirty(entity);
+            return true;
         }
 
         /// <summary>

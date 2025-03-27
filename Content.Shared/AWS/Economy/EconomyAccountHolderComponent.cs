@@ -33,5 +33,5 @@ public sealed partial class EconomyAccountHolderComponent : Component
     /// Also, parameters beyond AccountName can be used with IDCards (if you want to setup other currency, for example).
     /// </summary>
     [ViewVariables(VVAccess.ReadOnly), DataField]
-    public BankAccountSetup? AccountSetup;
+    public BankAccountSetup AccountSetup;
 }
