@@ -8,12 +8,16 @@
   canBeAntag: false
   icon: "JobIconGladiator"
   supervisors: job-supervisors-security
-  setPreference: true
+  setPreference: false # WWDP disabled
 #  whitelistRequired: true
   requirements:
     - !type:CharacterDepartmentTimeRequirement
       department: Security
       min: 21600
+    - !type:CharacterEmployerRequirement
+      inverted: true
+      employers:
+      - Unemployed
   special:
   - !type:AddTraitSpecial
     traits:
